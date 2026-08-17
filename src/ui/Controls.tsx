@@ -24,9 +24,16 @@ export function Controls({ sim }: { sim: SimHandle }) {
             {preset.name}
           </button>
         ))}
-        <button className="chip chip-zap" title="New random network, same parameters" onClick={sim.reroll}>
-          ↻ New network
-        </button>
+        <span className="reroll-group">
+          <span className="control-hint">sliders keep the same random draw —</span>
+          <button
+            className="chip chip-zap"
+            title="Reroll the seed: a fresh random network with the current parameters"
+            onClick={sim.reroll}
+          >
+            ↻ New network
+          </button>
+        </span>
       </div>
 
       <div className="control-row">

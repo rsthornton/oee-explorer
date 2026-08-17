@@ -171,8 +171,20 @@ body {
 }
 
 .chip-zap {
-  margin-left: auto;
   color: var(--accent-ink);
+}
+
+.reroll-group {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.control-hint {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-style: italic;
 }
 
 .btn {

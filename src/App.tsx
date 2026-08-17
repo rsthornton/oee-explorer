@@ -45,6 +45,9 @@ export default function App() {
         <span className="stat">
           <strong>{sim.realizedK.toFixed(2)}</strong> realized K
         </span>
+        <span className="stat" title="the random draw behind this network — sliders keep it, “New network” rerolls it">
+          <strong>{sim.seed.toString(36)}</strong> seed
+        </span>
       </div>
 
       <Controls sim={sim} />
