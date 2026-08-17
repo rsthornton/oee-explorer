@@ -252,17 +252,22 @@ body {
   display: flex;
   gap: 26px;
   align-items: stretch;
+  flex-wrap: wrap;
   border-bottom: 1px solid var(--border);
   padding-bottom: 12px;
 }
 
+/* fixed basis, NOT auto: long captions must wrap inside the column,
+   never widen it (a basis of auto let the caption shove the raster
+   panel to zero width) */
 .live-row .panel-network {
-  flex: 0 0 auto;
+  flex: 0 0 340px;
+  max-width: 340px;
 }
 
 .live-row .panel:last-child {
-  flex: 1 1 auto;
-  min-width: 0;
+  flex: 1 1 280px;
+  min-width: 280px;
 }
 
 .network-canvas {
