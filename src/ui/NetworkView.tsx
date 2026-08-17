@@ -121,9 +121,8 @@ export function NetworkView({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">The network</span>
         <span className="panel-note">
-          {net?.n ?? 0} on/off switches, {net ? net.inputOffset[net.n] : 0} wires · dark = ON ·
-          hover shows a node&apos;s inputs · click flips one — a nudge: does the network absorb
-          it, or get knocked into a new loop?
+          {net?.n ?? 0} switches, {net ? net.inputOffset[net.n] : 0} wires · dark = ON · hover:
+          inputs · click: flip a node
         </span>
       </div>
       <canvas

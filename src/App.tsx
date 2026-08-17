@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { useSimulation } from './ui/useSimulation';
-import { DEFAULT_PARAMS } from './engine/presets';
-import { PRESETS } from './engine/presets';
-import { Intro } from './ui/Intro';
+import { DEFAULT_PARAMS, PRESETS } from './engine/presets';
+import { Guide } from './ui/Guide';
 import { Controls } from './ui/Controls';
 import { NetworkView } from './ui/NetworkView';
 import { RasterView } from './ui/RasterView';
@@ -10,8 +10,11 @@ import { OmegaChart } from './ui/OmegaChart';
 import { fmtOmega } from './ui/format';
 import './App.css';
 
+type View = 'instrument' | 'guide';
+
 export default function App() {
   const sim = useSimulation(DEFAULT_PARAMS);
+  const [view, setView] = useState<View>('instrument');
 
   return (
     <div className="app">
@@ -28,66 +31,74 @@ export default function App() {
         <div className="hero">
           <span className="hero-value">{fmtOmega(sim.omega)}</span>
           <span className="hero-formula">Ω = Σ k·d / t²</span>
-          <span className="hero-gloss">
-            each loop&apos;s length × time spent in it, summed, ÷ run time² — see below
-          </span>
+          <span className="hero-gloss">each loop&apos;s length × time in it, summed, ÷ run time²</span>
         </div>
       </header>
 
-      <div className="stats-rule">
-        <span className="stat">
-          <strong>{sim.t.toLocaleString()}</strong> steps
-        </span>
-        <span className="stat">
-          <strong>{sim.episodes.length}</strong> episodes
-        </span>
-        <span className="stat">
-          <strong>{sim.distinctAttractors}</strong> attractors
-        </span>
-        <span className="stat">
-          <strong>{sim.realizedK.toFixed(2)}</strong> realized K
-        </span>
-        <span className="stat" title="the random draw behind this network — sliders keep it, “New network” rerolls it">
-          <strong>{sim.seed.toString(36)}</strong> seed
-        </span>
-      </div>
+      <nav className="tabs">
+        <button
+          className={view === 'instrument' ? 'tab tab-active' : 'tab'}
+          onClick={() => setView('instrument')}
+        >
+          Instrument
+        </button>
+        <button
+          className={view === 'guide' ? 'tab tab-active' : 'tab'}
+          onClick={() => setView('guide')}
+        >
+          Guide
+        </button>
+        {view === 'instrument' && (
+          <span className="tab-hint">new here? the Guide has the story and how to read each view</span>
+        )}
+      </nav>
 
-      <Intro
-        onPreset={(name) => {
-          const preset = PRESETS.find((p) => p.name === name);
-          if (preset) sim.applyParams(preset.params, true);
-        }}
-      />
+      {view === 'guide' ? (
+        <Guide
+          onPreset={(name) => {
+            const preset = PRESETS.find((p) => p.name === name);
+            if (preset) {
+              sim.applyParams(preset.params, true);
+              setView('instrument');
+            }
+          }}
+        />
+      ) : (
+        <>
+          <div className="stats-rule">
+            <span className="stat">
+              <strong>{sim.t.toLocaleString()}</strong> steps
+            </span>
+            <span className="stat">
+              <strong>{sim.episodes.length}</strong> episodes
+            </span>
+            <span className="stat">
+              <strong>{sim.distinctAttractors}</strong> attractors
+            </span>
+            <span className="stat">
+              <strong>{sim.realizedK.toFixed(2)}</strong> realized K
+            </span>
+            <span
+              className="stat"
+              title="the random draw behind this network — sliders keep it, “New network” rerolls it"
+            >
+              <strong>{sim.seed.toString(36)}</strong> seed
+            </span>
+          </div>
 
-      <Controls sim={sim} />
+          <Controls sim={sim} />
 
-      <div className="live-row">
-        <NetworkView sim={sim} />
-        <RasterView sim={sim} />
-      </div>
+          <div className="live-row">
+            <NetworkView sim={sim} />
+            <RasterView sim={sim} />
+          </div>
 
-      <div className="run-figure">
-        <RibbonView sim={sim} />
-        <OmegaChart sim={sim} />
-      </div>
-
-      <footer className="footer">
-        <p>
-          <strong>What Ω means.</strong> Every step, all {sim.n} switches update at once from
-          their inputs. Sooner or later the whole network hits a pattern it has been in before —
-          from there it must repeat, like a song stuck on a loop. That loop is a{' '}
-          <em>recurrence episode</em>: <span className="mono">k</span> is how many steps the loop
-          is long, <span className="mono">d</span> is how many steps the network stays in it.
-          Random switching can knock it out of the loop; it wanders, then falls into another one.
-        </p>
-        <p>
-          Ω multiplies loop-length by time-spent for every episode, adds them up, and divides by
-          the total run time squared. Freeze into one loop forever and Ω fades toward zero; wander
-          forever without looping and Ω is zero too. Ω is only large when the network keeps
-          finding <em>new</em> loops and living in them — sustained novelty with staying power,
-          the signature this paper proposes for open-ended evolution.
-        </p>
-      </footer>
+          <div className="run-figure">
+            <RibbonView sim={sim} />
+            <OmegaChart sim={sim} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

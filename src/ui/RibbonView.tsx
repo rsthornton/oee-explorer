@@ -123,9 +123,8 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">Recurrence episodes</span>
         <span className="panel-note">
-          the whole run · each bar = one loop the network fell into (color = which loop; the term
-          of art is <em>attractor</em>) · width = time in it · height = loop length ·{' '}
-          <strong>area = its share of Ω</strong> · arcs = returns to an old loop
+          the whole run · each bar = one loop · <strong>area = its share of Ω</strong> · arcs =
+          returns
         </span>
       </div>
       <div className="ribbon-wrap">

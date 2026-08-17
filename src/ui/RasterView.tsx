@@ -58,9 +58,8 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">State raster</span>
         <span className="panel-note">
-          each row = one node&apos;s ON/OFF life, scrolling left (last {RASTER_WINDOW} steps).
-          How to read: repeating vertical texture = the network is in a loop · a sudden texture
-          change = it escaped · flat stripes = frozen
+          each row = one node&apos;s history, scrolling (last {RASTER_WINDOW} steps) · repeating
+          texture = in a loop
         </span>
       </div>
       <div className="raster-wrap">
