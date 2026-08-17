@@ -13,44 +13,47 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div>
-          <h1>Ω Explorer</h1>
+        <div className="masthead">
+          <h1>
+            <span className="omega-glyph">Ω</span> Explorer
+          </h1>
           <p className="subtitle">
             Open-endedness in Random Boolean Networks — a live companion to López-Díaz, Rivera
-            Torres, Febres &amp; Gershenson (npj Systems Biology &amp; Applications, 2026)
+            Torres, Febres &amp; Gershenson, <em>npj Systems Biology &amp; Applications</em> (2026)
           </p>
         </div>
-        <div className="stats">
-          <div className="stat stat-hero">
-            <span className="stat-value">{sim.omega.toExponential(3)}</span>
-            <span className="stat-label">Ω</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">{sim.t.toLocaleString()}</span>
-            <span className="stat-label">steps</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">{sim.episodes.length}</span>
-            <span className="stat-label">episodes</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">{sim.distinctAttractors}</span>
-            <span className="stat-label">attractors</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">{sim.realizedK.toFixed(2)}</span>
-            <span className="stat-label">realized K</span>
-          </div>
+        <div className="hero">
+          <span className="hero-value">{sim.omega.toExponential(3)}</span>
+          <span className="hero-formula">Ω = Σ k·d / t²</span>
         </div>
       </header>
 
+      <div className="stats-rule">
+        <span className="stat">
+          <strong>{sim.t.toLocaleString()}</strong> steps
+        </span>
+        <span className="stat">
+          <strong>{sim.episodes.length}</strong> episodes
+        </span>
+        <span className="stat">
+          <strong>{sim.distinctAttractors}</strong> attractors
+        </span>
+        <span className="stat">
+          <strong>{sim.realizedK.toFixed(2)}</strong> realized K
+        </span>
+      </div>
+
       <Controls sim={sim} />
+
       <div className="live-row">
         <NetworkView sim={sim} />
         <RasterView sim={sim} />
       </div>
-      <RibbonView sim={sim} />
-      <OmegaChart sim={sim} />
+
+      <div className="run-figure">
+        <RibbonView sim={sim} />
+        <OmegaChart sim={sim} />
+      </div>
 
       <footer className="footer">
         A network of {sim.n} nodes updates synchronously; when the trajectory re-enters a state it

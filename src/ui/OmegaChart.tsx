@@ -1,17 +1,17 @@
 /**
- * Ω(t) strip chart — the metric accumulating live under the animation
- * (the Particle Lenia energy-plot pattern). Single series: the title names
- * it, no legend box. Crosshair + readout on hover.
+ * Ω(t) strip chart — the metric accumulating live beneath the ribbon,
+ * sharing its time axis (the Particle Lenia energy-plot pattern).
+ * Single series: the title names it, no legend box. Crosshair + readout
+ * on hover; the bottom axis serves both this chart and the ribbon above.
  */
 
 import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { OMEGA_LINE, GRID, INK_MUTED } from './theme';
+import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
 
-const W = 960;
-const H = 120;
-const PAD_L = 46;
-const PAD_B = 16;
+const H = 132;
+const PAD_B = 24;
 const PAD_T = 8;
 
 export function OmegaChart({ sim }: { sim: SimHandle }) {
@@ -29,27 +29,42 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, PLOT_W, H);
 
-    const plotW = W - PAD_L - 8;
+    const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
     const plotH = H - PAD_T - PAD_B;
-    const xOf = (t: number) => PAD_L + (t / tMax) * plotW;
+    const xOf = (t: number) => PLOT_PAD_L + (t / tMax) * plotW;
     const yOf = (v: number) => PAD_T + plotH - (v / yMax) * plotH;
 
-    // recessive grid: three horizontal lines with axis labels
+    // recessive grid + y labels
     ctx.strokeStyle = GRID;
     ctx.fillStyle = INK_MUTED;
-    ctx.font = '10px system-ui, sans-serif';
+    ctx.font = `10px ${MONO}`;
     ctx.lineWidth = 1;
     for (const frac of [0, 0.5, 1]) {
       const v = yMax * frac;
       const y = yOf(v);
       ctx.beginPath();
-      ctx.moveTo(PAD_L, y);
-      ctx.lineTo(W - 8, y);
+      ctx.moveTo(PLOT_PAD_L, y);
+      ctx.lineTo(PLOT_W - PLOT_PAD_R, y);
       ctx.stroke();
-      ctx.fillText(v.toExponential(1), 4, y + 3);
+      ctx.fillText(v.toExponential(1), 2, y + 3);
     }
+
+    // shared time axis (serves ribbon above too)
+    ctx.textAlign = 'center';
+    for (const frac of [0, 0.25, 0.5, 0.75, 1]) {
+      const t = tMax * frac;
+      const x = xOf(t);
+      ctx.beginPath();
+      ctx.moveTo(x, H - PAD_B + 2);
+      ctx.lineTo(x, H - PAD_B + 6);
+      ctx.strokeStyle = INK_MUTED;
+      ctx.stroke();
+      ctx.fillText(Math.round(t).toLocaleString(), Math.min(Math.max(x, 20), PLOT_W - 30), H - 6);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillText('steps', PLOT_W - PLOT_PAD_R - 34, H - PAD_B - 6);
 
     ctx.strokeStyle = OMEGA_LINE;
     ctx.lineWidth = 2;
@@ -76,11 +91,10 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - rect.left) / rect.width) * W;
-    const plotW = W - PAD_L - 8;
-    const t = ((px - PAD_L) / plotW) * tMax;
+    const px = ((e.clientX - rect.left) / rect.width) * PLOT_W;
+    const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
+    const t = ((px - PLOT_PAD_L) / plotW) * tMax;
     if (t < 0 || samples.length === 0) return setHover(null);
-    // nearest sample by time (samples are time-ordered)
     let lo = 0;
     let hi = samples.length - 1;
     while (lo < hi) {
@@ -97,7 +111,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">Ω over time</span>
         <span className="panel-note">
-          Ω(t) = Σ k·d / t² — recurrence-weighted sustained novelty
+          Ω(t) = Σ k·d / t²
           {hover && (
             <strong>
               {' '}
@@ -108,7 +122,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       </div>
       <canvas
         ref={canvasRef}
-        width={W}
+        width={PLOT_W}
         height={H}
         className="chart-canvas"
         onMouseMove={onMove}
