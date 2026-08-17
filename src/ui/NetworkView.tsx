@@ -72,18 +72,29 @@ export function NetworkView({ sim }: { sim: SimHandle }) {
       ctx.stroke();
     }
 
-    // nodes
+    // nodes — larger with numbers at small N, where tracing individuals is the point
     const state = sim.state;
+    const small = net.n <= 12;
+    const r = small ? 11 : 3.6;
     for (let i = 0; i < net.n; i++) {
       const on = state ? state[i] === 1 : false;
       ctx.beginPath();
-      ctx.arc(px(i), py(i), hovered === i ? 6 : 3.6, 0, Math.PI * 2);
+      ctx.arc(px(i), py(i), hovered === i ? r + 2 : r, 0, Math.PI * 2);
       ctx.fillStyle = on ? RASTER_ON : RASTER_OFF;
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = hovered === i ? OMEGA_LINE : '#94a3b8';
       ctx.stroke();
+      if (small) {
+        ctx.fillStyle = on ? '#f8fafc' : '#475569';
+        ctx.font = '11px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(i + 1), px(i), py(i));
+      }
     }
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
   }, [sim.frame, net, layout, hovered, inEdges, sim.state]);
 
   const nodeAt = (e: React.MouseEvent<HTMLCanvasElement>): number | null => {

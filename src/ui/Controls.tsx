@@ -41,9 +41,9 @@ export function Controls({ sim }: { sim: SimHandle }) {
           nodes <strong>{p.n}</strong>
           <input
             type="range"
-            min={5}
+            min={2}
             max={300}
-            step={5}
+            step={1}
             value={p.n}
             onChange={(e) => set({ n: Number(e.target.value) })}
           />

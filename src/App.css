@@ -275,8 +275,30 @@ body {
   cursor: pointer;
 }
 
+.raster-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.raster-gutter {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  flex: 0 0 auto;
+}
+
+.raster-gutter span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+
 .raster-canvas {
   width: 100%;
+  min-width: 0;
   height: 300px;
   image-rendering: pixelated;
   display: block;

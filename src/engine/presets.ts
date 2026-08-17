@@ -33,6 +33,12 @@ export const DEFAULT_PARAMS: SimParams = {
 
 export const PRESETS: Preset[] = [
   {
+    name: 'Tiny World',
+    blurb:
+      'Three nodes — eight possible states. Watch novelty run out: soon every pattern is one the network has already seen, escape becomes impossible, and Ω starves. A world too small to be open-ended.',
+    params: { n: 3, k: 2.0, topology: 'poisson', bias: 0.5, numContexts: 3, switching: 0.05 },
+  },
+  {
     name: 'Deep Freeze',
     blurb: 'Sparse wiring (K≈1). The network falls into one attractor and stays. Ω → 0.',
     params: { n: 100, k: 1.2, topology: 'poisson', bias: 0.5, numContexts: 1, switching: 0 },

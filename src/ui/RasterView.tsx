@@ -63,7 +63,16 @@ export function RasterView({ sim }: { sim: SimHandle }) {
           change = it escaped · flat stripes = frozen
         </span>
       </div>
-      <canvas ref={canvasRef} className="raster-canvas" />
+      <div className="raster-wrap">
+        {sim.n <= 12 && (
+          <div className="raster-gutter">
+            {Array.from({ length: sim.n }, (_, i) => (
+              <span key={i}>{i + 1}</span>
+            ))}
+          </div>
+        )}
+        <canvas ref={canvasRef} className="raster-canvas" />
+      </div>
     </div>
   );
 }
