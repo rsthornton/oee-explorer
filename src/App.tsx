@@ -1,5 +1,7 @@
 import { useSimulation } from './ui/useSimulation';
 import { DEFAULT_PARAMS } from './engine/presets';
+import { PRESETS } from './engine/presets';
+import { Intro } from './ui/Intro';
 import { Controls } from './ui/Controls';
 import { NetworkView } from './ui/NetworkView';
 import { RasterView } from './ui/RasterView';
@@ -49,6 +51,13 @@ export default function App() {
           <strong>{sim.seed.toString(36)}</strong> seed
         </span>
       </div>
+
+      <Intro
+        onPreset={(name) => {
+          const preset = PRESETS.find((p) => p.name === name);
+          if (preset) sim.applyParams(preset.params, true);
+        }}
+      />
 
       <Controls sim={sim} />
 
