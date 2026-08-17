@@ -166,6 +166,27 @@ body {
   width: 120px;
 }
 
+.live-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.live-row .panel-network {
+  flex: 0 0 auto;
+}
+
+.live-row .panel:last-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.network-canvas {
+  display: block;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
 /* panels */
 
 .panel {

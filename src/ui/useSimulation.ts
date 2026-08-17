@@ -9,9 +9,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { mulberry32 } from '../engine/prng';
-import { generateNetwork } from '../engine/network';
+import { generateNetwork, type Network } from '../engine/network';
 import { Simulator } from '../engine/simulate';
 import { EpisodeTracker, type Episode } from '../engine/episodes';
+import { forceLayout, type Layout } from '../engine/layout';
 import { type SimParams } from '../engine/presets';
 
 export const RASTER_WINDOW = 640; // recent steps kept for the raster view
@@ -37,6 +38,13 @@ export interface SimHandle {
   rasterAt: (i: number) => Uint8Array | null;
   rasterCount: number;
   n: number;
+  /** the generated network (wiring, for the diagram) — replaced on rebuild */
+  network: Network | null;
+  layout: Layout | null;
+  /** live node states (mutable view; read-only for consumers) */
+  state: Uint8Array | null;
+  /** flip one node's state — a hand-delivered perturbation */
+  flipNode: (i: number) => void;
   setRunning: (r: boolean) => void;
   setStepsPerFrame: (s: number) => void;
   applyParams: (p: SimParams, newSeed?: boolean) => void;
@@ -57,6 +65,8 @@ export function useSimulation(initial: SimParams): SimHandle {
   const rasterCountRef = useRef(0);
   const samplesRef = useRef<OmegaSample[]>([]);
   const realizedKRef = useRef(0);
+  const networkRef = useRef<Network | null>(null);
+  const layoutRef = useRef<Layout | null>(null);
 
   const rebuild = useCallback((p: SimParams, s: number) => {
     const rng = mulberry32(s);
@@ -74,6 +84,8 @@ export function useSimulation(initial: SimParams): SimHandle {
     rasterCountRef.current = 1;
     samplesRef.current = [{ t: 0, omega: 0 }];
     realizedKRef.current = net.realizedK;
+    networkRef.current = net;
+    layoutRef.current = forceLayout(net, rng);
     setFrame((f) => f + 1);
   }, []);
 
@@ -135,6 +147,15 @@ export function useSimulation(initial: SimParams): SimHandle {
     },
     rasterCount: Math.min(rasterCountRef.current, RASTER_WINDOW),
     n: params.n,
+    network: networkRef.current,
+    layout: layoutRef.current,
+    state: simRef.current?.state ?? null,
+    flipNode: (i: number) => {
+      const sim = simRef.current;
+      if (!sim || i < 0 || i >= sim.state.length) return;
+      sim.state[i] ^= 1;
+      setFrame((f) => f + 1);
+    },
     setRunning,
     setStepsPerFrame,
     applyParams: (p: SimParams, newSeed = false) => {

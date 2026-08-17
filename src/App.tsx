@@ -1,6 +1,7 @@
 import { useSimulation } from './ui/useSimulation';
 import { DEFAULT_PARAMS } from './engine/presets';
 import { Controls } from './ui/Controls';
+import { NetworkView } from './ui/NetworkView';
 import { RasterView } from './ui/RasterView';
 import { RibbonView } from './ui/RibbonView';
 import { OmegaChart } from './ui/OmegaChart';
@@ -44,7 +45,10 @@ export default function App() {
       </header>
 
       <Controls sim={sim} />
-      <RasterView sim={sim} />
+      <div className="live-row">
+        <NetworkView sim={sim} />
+        <RasterView sim={sim} />
+      </div>
       <RibbonView sim={sim} />
       <OmegaChart sim={sim} />
 
