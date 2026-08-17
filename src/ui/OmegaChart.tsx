@@ -9,10 +9,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { OMEGA_LINE, GRID, INK_MUTED } from './theme';
 import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
+import { fmtOmega } from './format';
 
 const H = 132;
 const PAD_B = 24;
 const PAD_T = 8;
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
 export function OmegaChart({ sim }: { sim: SimHandle }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -29,6 +31,11 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    if (canvas.width !== PLOT_W * DPR) {
+      canvas.width = PLOT_W * DPR;
+      canvas.height = H * DPR;
+    }
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, PLOT_W, H);
 
     const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
@@ -48,7 +55,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       ctx.moveTo(PLOT_PAD_L, y);
       ctx.lineTo(PLOT_W - PLOT_PAD_R, y);
       ctx.stroke();
-      ctx.fillText(v.toExponential(1), 2, y + 3);
+      ctx.fillText(fmtOmega(v), 2, y + 3);
     }
 
     // shared time axis (serves ribbon above too)
@@ -111,11 +118,12 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">Ω over time</span>
         <span className="panel-note">
-          Ω(t) = Σ k·d / t²
+          the score accumulating as the run unfolds — it climbs when a new loop is found and held,
+          fades when nothing new recurs
           {hover && (
             <strong>
               {' '}
-              · t = {Math.round(hover.t).toLocaleString()} · Ω = {hover.omega.toExponential(3)}
+              · step {Math.round(hover.t).toLocaleString()} · Ω = {fmtOmega(hover.omega)}
             </strong>
           )}
         </span>

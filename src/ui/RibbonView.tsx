@@ -20,6 +20,7 @@ import { attractorColor, TRANSIENT, INK_MUTED } from './theme';
 import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
 
 const H = 152;
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
 const BASE_Y = 102; // top of the transient strip
 const STRIP_H = 5;
 const MAX_BAR = 84;
@@ -38,6 +39,11 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    if (canvas.width !== PLOT_W * DPR) {
+      canvas.width = PLOT_W * DPR;
+      canvas.height = H * DPR;
+    }
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, PLOT_W, H);
 
     // transient base strip across elapsed time
@@ -117,8 +123,9 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">Recurrence episodes</span>
         <span className="panel-note">
-          full run · color = attractor · width = dwell · height = cycle length ·{' '}
-          <strong>area = Ω contribution</strong> · arcs = revisits
+          the whole run · each bar = one loop the network fell into (color = which loop; the term
+          of art is <em>attractor</em>) · width = time in it · height = loop length ·{' '}
+          <strong>area = its share of Ω</strong> · arcs = returns to an old loop
         </span>
       </div>
       <div className="ribbon-wrap">
@@ -134,12 +141,12 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
           <div className="tooltip" style={{ left: Math.min(hover.x, 780) }}>
             <div>
               <span className="swatch" style={{ background: attractorColor(hover.ep.attractorId) }} />
-              attractor #{hover.ep.attractorId + 1}
-              {hover.ep.isRevisit ? ' · revisit' : ' · first visit'}
+              loop #{hover.ep.attractorId + 1}
+              {hover.ep.isRevisit ? ' · a return visit' : ' · first time here'}
             </div>
-            <div>cycle length k = {hover.ep.cycleLen.toLocaleString()}</div>
-            <div>dwell d = {hover.ep.dwell.toLocaleString()} steps</div>
-            <div>Ω contribution k·d = {(hover.ep.cycleLen * hover.ep.dwell).toLocaleString()}</div>
+            <div>loop length k = {hover.ep.cycleLen.toLocaleString()} steps</div>
+            <div>time in it d = {hover.ep.dwell.toLocaleString()} steps</div>
+            <div>share of Ω: k·d = {(hover.ep.cycleLen * hover.ep.dwell).toLocaleString()}</div>
           </div>
         )}
       </div>

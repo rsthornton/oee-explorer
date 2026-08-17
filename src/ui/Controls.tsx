@@ -38,6 +38,18 @@ export function Controls({ sim }: { sim: SimHandle }) {
         </button>
 
         <label className="slider-label">
+          nodes <strong>{p.n}</strong>
+          <input
+            type="range"
+            min={20}
+            max={300}
+            step={10}
+            value={p.n}
+            onChange={(e) => set({ n: Number(e.target.value) })}
+          />
+        </label>
+
+        <label className="slider-label">
           connectivity K <strong>{p.k.toFixed(1)}</strong>
           <input
             type="range"

@@ -85,7 +85,7 @@ export function useSimulation(initial: SimParams): SimHandle {
     samplesRef.current = [{ t: 0, omega: 0 }];
     realizedKRef.current = net.realizedK;
     networkRef.current = net;
-    layoutRef.current = forceLayout(net, rng);
+    layoutRef.current = forceLayout(net, rng, net.n > 180 ? 140 : 260);
     setFrame((f) => f + 1);
   }, []);
 
