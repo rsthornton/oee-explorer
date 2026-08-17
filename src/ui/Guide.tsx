@@ -79,10 +79,15 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
 
       <section className="guide-section">
         <h2 className="guide-head">What Ω means</h2>
+        <div className="callout">
+          <span className="callout-formula">Ω = Σ k·d / t²</span>
+          <p>
+            For every episode, multiply the loop&apos;s length <span className="mono">k</span> by
+            the time <span className="mono">d</span> the network stayed in it. Add these up across
+            the run and divide by the total time squared.
+          </p>
+        </div>
         <p>
-          For every episode, multiply the loop's length <span className="mono">k</span> by the
-          time <span className="mono">d</span> the network stayed in it. Add these up across the
-          run and divide by the total time squared: <span className="mono">Ω = Σ k·d / t²</span>.
           Freeze into one loop forever and Ω fades toward zero. Wander forever without looping and
           Ω is zero too. Ω is only large when the network keeps finding new loops and living in
           them.

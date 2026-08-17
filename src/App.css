@@ -8,9 +8,11 @@
   --border: #e2e8f0;
   --rule: #cbd5e1;
   --ink: #1e293b;
+  --ink-soft: #3f4a5e; /* reading prose: darker than chrome captions */
   --ink-muted: #64748b;
   --accent: #0d9488;
   --accent-ink: #0f766e;
+  --accent-wash: #f0fdfa; /* one tinted moment per page, no more */
   --display: 'Cormorant Garamond', Georgia, serif;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -190,14 +192,14 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: var(--ink);
+  color: var(--accent-ink);
   margin: 0 0 8px;
 }
 
 .guide-section p {
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.65;
-  color: var(--ink-muted);
+  color: var(--ink-soft);
   margin: 0 0 8px;
 }
 
@@ -219,21 +221,44 @@ body {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--ink);
-  margin-top: 8px;
+  margin-top: 10px;
+  border-left: 2px solid var(--accent);
+  padding-left: 9px;
 }
 
 .guide-list dd {
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.6;
-  color: var(--ink-muted);
-  margin: 2px 0 0;
+  color: var(--ink-soft);
+  margin: 3px 0 0;
+  padding-left: 11px;
+}
+
+.callout {
+  background: var(--accent-wash);
+  border-left: 2px solid var(--accent-ink);
+  padding: 10px 14px;
+  margin: 0 0 10px;
+}
+
+.callout .callout-formula {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent-ink);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.callout p {
+  margin: 0;
+  color: var(--ink-soft);
 }
 
 .intro-lead {
   font-family: var(--display);
   font-style: italic;
-  font-size: 21px;
-  margin: 0 0 8px;
+  font-size: 27px;
+  margin: 0 0 10px;
   color: var(--ink);
 }
 
@@ -259,6 +284,11 @@ body {
   font-size: 11px;
   color: var(--ink-muted);
   font-style: italic;
+}
+
+.intro-tour .chip {
+  color: var(--accent-ink);
+  font-weight: 500;
 }
 
 /* controls — a quiet toolbar, not a card */
@@ -383,7 +413,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: var(--ink);
+  color: var(--accent-ink);
 }
 
 .panel-note {
