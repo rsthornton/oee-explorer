@@ -30,8 +30,8 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
           hits a pattern it has been in before, and from there it must repeat: a loop. Random
           switching can knock it out; it wanders, then falls into another. Ω scores a run by the
           loops it keeps finding. A frozen system scores zero, and so does pure noise. The only
-          way to score is sustained novelty with staying power, a signature proposed for
-          open-ended evolution.
+          way to score is <mark className="hl">sustained novelty with staying power</mark>, a
+          signature proposed for open-ended evolution.
         </p>
         <div className="intro-tour">
           <span className="control-label">A good first path</span>
@@ -48,7 +48,7 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head">Reading the instrument</h2>
+        <h2 className="guide-head"><span className="guide-num">01</span>Reading the instrument</h2>
         <dl className="guide-list">
           <dt>The network</dt>
           <dd>
@@ -66,8 +66,8 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
           <dd>
             The whole run as one ribbon. Each bar is one loop the network fell into: color says
             which loop (the term of art is <em>attractor</em>), width is time spent in it, height
-            is the loop's length, so a bar's area is its k·d contribution to Ω. Ω is literally how
-            much ink is on this chart. Arcs below the baseline mark returns to a loop seen before.
+            is the loop's length, so a bar's area is its k·d contribution to Ω.{' '}
+            <mark className="hl">Ω is literally how much ink is on this chart.</mark> Arcs below the baseline mark returns to a loop seen before.
           </dd>
           <dt>Ω over time</dt>
           <dd>
@@ -78,7 +78,7 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head">What Ω means</h2>
+        <h2 className="guide-head"><span className="guide-num">02</span>What Ω means</h2>
         <div className="callout">
           <span className="callout-formula">Ω = Σ k·d / t²</span>
           <p>
@@ -101,7 +101,7 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head">Provenance</h2>
+        <h2 className="guide-head"><span className="guide-num">03</span>Provenance</h2>
         <p>
           The metric and the mechanisms compared here are from{' '}
           <a href="https://doi.org/10.1038/s41540-026-00770-8" target="_blank" rel="noreferrer">
