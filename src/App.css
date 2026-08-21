@@ -349,6 +349,18 @@ body {
   color: var(--accent-ink);
 }
 
+.chip-on {
+  color: var(--accent-ink);
+  border-bottom: 2px solid var(--accent-ink);
+  font-weight: 500;
+}
+
+.chip-planned {
+  color: var(--rule);
+  border-bottom-style: dashed;
+  cursor: default;
+}
+
 .chip-zap {
   color: var(--accent-ink);
 }

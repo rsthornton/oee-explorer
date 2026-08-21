@@ -6,9 +6,24 @@
 import type { SimHandle } from './useSimulation';
 import { PRESETS, type SimParams } from '../engine/presets';
 
+const MECHANISMS: { key: string; label: string; live: boolean }[] = [
+  { key: 'classical', label: 'Classical', live: true },
+  { key: 'pbn', label: 'Context switching (PBN)', live: true },
+  { key: 'paraconsistent', label: 'Paraconsistent', live: false },
+  { key: 'modal', label: 'Modal', live: false },
+  { key: 'quantum', label: 'Quantum-inspired', live: false },
+  { key: 'arm', label: 'Rule mutation (ARM)', live: false },
+];
+
 export function Controls({ sim }: { sim: SimHandle }) {
   const p = sim.params;
   const set = (patch: Partial<SimParams>) => sim.applyParams({ ...p, ...patch });
+  // Mechanism is derived from params: one context = classical, several = PBN.
+  const mechanism = p.numContexts > 1 ? 'pbn' : 'classical';
+  const pick = (key: string) => {
+    if (key === 'classical') set({ numContexts: 1, switching: 0 });
+    else if (key === 'pbn') set({ numContexts: Math.max(p.numContexts, 4), switching: p.switching || 0.01 });
+  };
 
   return (
     <div className="controls">
@@ -34,6 +49,23 @@ export function Controls({ sim }: { sim: SimHandle }) {
             ↻ New network
           </button>
         </span>
+      </div>
+
+      <div className="control-row">
+        <span className="control-label">Mechanism</span>
+        {MECHANISMS.map((m) => (
+          <button
+            key={m.key}
+            className={
+              'chip' + (mechanism === m.key ? ' chip-on' : '') + (m.live ? '' : ' chip-planned')
+            }
+            disabled={!m.live}
+            title={m.live ? undefined : 'planned (Phase 2)'}
+            onClick={() => pick(m.key)}
+          >
+            {m.label}
+          </button>
+        ))}
       </div>
 
       <div className="control-row">
@@ -68,18 +100,21 @@ export function Controls({ sim }: { sim: SimHandle }) {
           />
         </label>
 
+        {mechanism === 'pbn' && (
         <label className="slider-label">
           contexts <strong>{p.numContexts}</strong>
           <input
             type="range"
-            min={1}
+            min={2}
             max={8}
             step={1}
             value={p.numContexts}
             onChange={(e) => set({ numContexts: Number(e.target.value) })}
           />
         </label>
+        )}
 
+        {mechanism === 'pbn' && (
         <label className="slider-label">
           switching <strong>{p.switching.toFixed(3)}</strong>
           <input
@@ -89,9 +124,9 @@ export function Controls({ sim }: { sim: SimHandle }) {
             step={0.001}
             value={p.switching}
             onChange={(e) => set({ switching: Number(e.target.value) })}
-            disabled={p.numContexts < 2}
           />
         </label>
+        )}
 
         <label className="slider-label">
           speed <strong>{sim.stepsPerFrame}×</strong>
