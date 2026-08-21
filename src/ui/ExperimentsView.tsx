@@ -41,8 +41,17 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
   const [note, setNote] = useState('');
   const workersRef = useRef<Worker[]>([]);
 
+  const [bundled, setBundled] = useState<ExperimentRecord[]>([]);
   useEffect(() => {
     listExperiments().then(setSaved);
+    // Reproductions computed headlessly (scripts/reproduce) and shipped with the app.
+    Promise.all(
+      ['fig1', 'fig2'].map((f) =>
+        fetch(`${import.meta.env.BASE_URL}data/${f}.json`)
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
+      ),
+    ).then((rs) => setBundled(rs.filter(Boolean) as ExperimentRecord[]));
   }, []);
 
   const stop = () => {
@@ -222,6 +231,17 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
             <button className="chip" onClick={() => download('oee-sweep.csv', experimentToCsv({ id: '', createdAt: Date.now(), note, spec: {}, series }), 'text/csv')}>
               export CSV
             </button>
+          </div>
+        )}
+        {bundled.length > 0 && (
+          <div className="saved-list">
+            <span className="control-label">Paper reproductions (computed headlessly, shipped with the app)</span>
+            {bundled.map((e) => (
+              <button key={e.id} className="chip chip-zap" title={e.note} onClick={() => setSeries(e.series)}>
+                {e.id === 'repro-homogeneous' ? 'Fig. 1 · homogeneous' : 'Fig. 2 · heterogeneous'} — {String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')} steps
+                {(e.spec as { finished?: boolean }).finished === false ? ' (partial)' : ''}
+              </button>
+            ))}
           </div>
         )}
         {saved.length > 0 && (
