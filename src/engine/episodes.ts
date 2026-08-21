@@ -60,9 +60,15 @@ export class EpisodeTracker {
   P = 0;
   KD = 0;
 
-  /** Ω(t) = KD / t² — 0 until at least one recurrence episode exists. */
+  /** steps simulated so far (the reference's T); the initial state is not a step */
+  get steps(): number {
+    return Math.max(this.t - 1, 0);
+  }
+
+  /** Ω = KD / T², T = steps, matching `KD / steps**2` in the reference (single.py:93). */
   get omega(): number {
-    return this.t > 0 ? this.KD / (this.t * this.t) : 0;
+    const T = this.steps;
+    return T > 0 ? this.KD / (T * T) : 0;
   }
 
   /** Pack a token state vector (2 bits per node: 0, 1, C0, C1) into a string key. */

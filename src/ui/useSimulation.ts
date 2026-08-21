@@ -122,7 +122,7 @@ export function useSimulation(initial: SimParams): SimHandle {
       rasterCountRef.current += 1;
     }
     const samples = samplesRef.current;
-    samples.push({ t: tracker.t, omega: tracker.omega });
+    samples.push({ t: tracker.steps, omega: tracker.omega });
     if (samples.length > 4000) {
       // decimate: keep every other sample to bound memory over long runs
       samplesRef.current = samples.filter((_, i) => i % 2 === 0 || i === samples.length - 1);
@@ -148,7 +148,7 @@ export function useSimulation(initial: SimParams): SimHandle {
     seed,
     running,
     frame,
-    t: tracker?.t ?? 0,
+    t: tracker?.steps ?? 0,
     omega: tracker?.omega ?? 0,
     episodes: tracker?.episodes ?? [],
     distinctAttractors: tracker?.distinctAttractors ?? 0,

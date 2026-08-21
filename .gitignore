@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+reference/.parity/
+reference/.venv/
+reference/.parity-export.mjs
