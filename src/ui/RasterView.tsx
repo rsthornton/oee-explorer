@@ -7,10 +7,13 @@
 import { useEffect, useRef } from 'react';
 import type { SimHandle } from './useSimulation';
 import { RASTER_WINDOW } from './useSimulation';
-import { RASTER_ON, RASTER_OFF } from './theme';
+import { RASTER_ON, RASTER_OFF, TOKEN_C0, TOKEN_C1 } from './theme';
 
 const ON_RGB = hexToRgb(RASTER_ON);
 const OFF_RGB = hexToRgb(RASTER_OFF);
+const C0_RGB = hexToRgb(TOKEN_C0);
+const C1_RGB = hexToRgb(TOKEN_C1);
+const TOK_RGB = [OFF_RGB, ON_RGB, C0_RGB, C1_RGB];
 
 function hexToRgb(hex: string): [number, number, number] {
   return [
@@ -43,7 +46,7 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       const state = x < count ? sim.rasterAt(x) : null;
       for (let y = 0; y < rows; y++) {
         const p = (y * cols + x) * 4;
-        const rgb = state === null ? OFF_RGB : state[y] ? ON_RGB : OFF_RGB;
+        const rgb = state === null ? OFF_RGB : TOK_RGB[state[y] & 3];
         data[p] = rgb[0];
         data[p + 1] = rgb[1];
         data[p + 2] = rgb[2];
@@ -59,7 +62,7 @@ export function RasterView({ sim }: { sim: SimHandle }) {
         <span className="panel-title">State raster</span>
         <span className="panel-note">
           each row = one node&apos;s history, scrolling (last {RASTER_WINDOW} steps) · repeating
-          texture = in a loop
+          texture = in a loop · amber = contradiction token
         </span>
       </div>
       <div className="raster-wrap">

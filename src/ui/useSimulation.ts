@@ -45,6 +45,10 @@ export interface SimHandle {
   state: Uint8Array | null;
   /** flip one node's state — a hand-delivered perturbation */
   flipNode: (i: number) => void;
+  /** the live simulator, for the step trace (read-only use) */
+  simulator: Simulator | null;
+  V: number;
+  P: number;
   setRunning: (r: boolean) => void;
   setStepsPerFrame: (s: number) => void;
   applyParams: (p: SimParams, newSeed?: boolean) => void;
@@ -71,10 +75,23 @@ export function useSimulation(initial: SimParams): SimHandle {
   const rebuild = useCallback((p: SimParams, s: number) => {
     const rng = mulberry32(s);
     const net = generateNetwork(
-      { n: p.n, k: p.k, topology: p.topology, bias: p.bias, numContexts: p.numContexts },
+      {
+        n: p.n,
+        k: p.k,
+        topology: p.topology,
+        bias: p.bias,
+        numContexts: p.numContexts,
+        mechanism: p.mechanism,
+        mech: p.mech,
+        semantics: p.semantics,
+      },
       rng,
     );
-    const sim = new Simulator(net, p.switching, rng);
+    const sim = new Simulator(
+      net,
+      { switching: p.switching, semantics: p.semantics, mutationProb: p.mech.mutationProb, update: p.update },
+      rng,
+    );
     const tracker = new EpisodeTracker();
     tracker.push(sim.state); // t=0: the initial state is part of the trajectory
     simRef.current = sim;
@@ -149,11 +166,14 @@ export function useSimulation(initial: SimParams): SimHandle {
     n: params.n,
     network: networkRef.current,
     layout: layoutRef.current,
+    simulator: simRef.current,
+    V: tracker?.V ?? 0,
+    P: tracker?.P ?? 0,
     state: simRef.current?.state ?? null,
     flipNode: (i: number) => {
       const sim = simRef.current;
       if (!sim || i < 0 || i >= sim.state.length) return;
-      sim.state[i] ^= 1;
+      sim.state[i] = sim.state[i] === 1 ? 0 : 1;
       setFrame((f) => f + 1);
     },
     setRunning,

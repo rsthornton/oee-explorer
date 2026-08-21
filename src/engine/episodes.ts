@@ -65,12 +65,12 @@ export class EpisodeTracker {
     return this.t > 0 ? this.KD / (this.t * this.t) : 0;
   }
 
-  /** Pack a Boolean state vector into a compact string key. */
+  /** Pack a token state vector (2 bits per node: 0, 1, C0, C1) into a string key. */
   static keyOf(state: Uint8Array): string {
-    const nBytes = (state.length + 7) >> 3;
+    const nBytes = (state.length + 3) >> 2;
     const codes = new Array<number>(nBytes).fill(0);
     for (let i = 0; i < state.length; i++) {
-      if (state[i]) codes[i >> 3] |= 1 << (i & 7);
+      codes[i >> 2] |= (state[i] & 3) << ((i & 3) * 2);
     }
     return String.fromCharCode(...codes);
   }

@@ -7,6 +7,7 @@ import { NetworkView } from './ui/NetworkView';
 import { RasterView } from './ui/RasterView';
 import { RibbonView } from './ui/RibbonView';
 import { OmegaChart } from './ui/OmegaChart';
+import { TracePanel } from './ui/TracePanel';
 import { fmtOmega } from './ui/format';
 import './App.css';
 
@@ -15,6 +16,7 @@ type View = 'instrument' | 'guide';
 export default function App() {
   const sim = useSimulation(DEFAULT_PARAMS);
   const [view, setView] = useState<View>('instrument');
+  const [focusNode, setFocusNode] = useState<number | null>(null);
 
   return (
     <div className="app">
@@ -75,6 +77,12 @@ export default function App() {
             <span className="stat">
               <strong>{sim.distinctAttractors}</strong> attractors
             </span>
+            <span className="stat" title="V = Σ cycle lengths">
+              <strong>{sim.V.toLocaleString()}</strong> V
+            </span>
+            <span className="stat" title="P = Σ dwell steps">
+              <strong>{sim.P.toLocaleString()}</strong> P
+            </span>
             <span className="stat">
               <strong>{sim.realizedK.toFixed(2)}</strong> realized K
             </span>
@@ -89,9 +97,11 @@ export default function App() {
           <Controls sim={sim} />
 
           <div className="live-row">
-            <NetworkView sim={sim} />
+            <NetworkView sim={sim} onFocus={setFocusNode} />
             <RasterView sim={sim} />
           </div>
+
+          <TracePanel sim={sim} node={focusNode} />
 
           <div className="run-figure">
             <RibbonView sim={sim} />

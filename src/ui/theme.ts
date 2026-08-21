@@ -23,6 +23,8 @@ export function attractorColor(id: number): string {
 }
 
 export const RASTER_ON = '#334155'; // slate-700
+export const TOKEN_C0 = '#fbbf24'; // amber-400: contradiction carrying 0
+export const TOKEN_C1 = '#b45309'; // amber-700: contradiction carrying 1
 export const RASTER_OFF = '#f1f5f9'; // slate-100
 export const TRANSIENT = '#cbd5e1'; // slate-300 — pre-recurrence wandering
 export const OMEGA_LINE = '#0d9488'; // teal — the metric's own color throughout the UI

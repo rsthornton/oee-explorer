@@ -507,6 +507,35 @@ body {
   display: block;
 }
 
+/* step trace */
+
+.panel-trace {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.trace-body {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  min-height: 48px;
+}
+
+.trace-line::before {
+  content: '› ';
+  color: var(--rule);
+}
+
+.trace-emph {
+  color: var(--accent-ink);
+}
+
+.trace-muted {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
 /* the run figure: ribbon + Ω chart butted together, one shared time axis */
 
 .run-figure {

@@ -7,12 +7,14 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
-import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE } from './theme';
+import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE, TOKEN_C0, TOKEN_C1 } from './theme';
+
+const TOK_FILL = [RASTER_OFF, RASTER_ON, TOKEN_C0, TOKEN_C1];
 
 const SIZE = 340;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
-export function NetworkView({ sim }: { sim: SimHandle }) {
+export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: number | null) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hovered, setHovered] = useState<number | null>(null);
 
@@ -77,10 +79,11 @@ export function NetworkView({ sim }: { sim: SimHandle }) {
     const small = net.n <= 12;
     const r = small ? 11 : 3.6;
     for (let i = 0; i < net.n; i++) {
-      const on = state ? state[i] === 1 : false;
+      const tok = state ? state[i] & 3 : 0;
+      const on = tok !== 0;
       ctx.beginPath();
       ctx.arc(px(i), py(i), hovered === i ? r + 2 : r, 0, Math.PI * 2);
-      ctx.fillStyle = on ? RASTER_ON : RASTER_OFF;
+      ctx.fillStyle = TOK_FILL[tok];
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = hovered === i ? OMEGA_LINE : '#94a3b8';
@@ -129,8 +132,15 @@ export function NetworkView({ sim }: { sim: SimHandle }) {
         ref={canvasRef}
         className="network-canvas"
         style={{ width: SIZE, height: SIZE }}
-        onMouseMove={(e) => setHovered(nodeAt(e))}
-        onMouseLeave={() => setHovered(null)}
+        onMouseMove={(e) => {
+          const i = nodeAt(e);
+          setHovered(i);
+          onFocus?.(i);
+        }}
+        onMouseLeave={() => {
+          setHovered(null);
+          onFocus?.(null);
+        }}
         onClick={(e) => {
           const i = nodeAt(e);
           if (i !== null) sim.flipNode(i);
