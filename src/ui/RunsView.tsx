@@ -8,12 +8,12 @@ import type { SimHandle } from './useSimulation';
 import { deleteRun, download, listRuns, putRun, runsToCsv, type RunRecord } from '../lab/registry';
 import { fmtOmega } from './format';
 
-export function RunsView({ sim, onReplay }: { sim: SimHandle; onReplay: () => void }) {
+export function RunsView({ sim, active, onReplay }: { sim: SimHandle; active: boolean; onReplay: () => void }) {
   const [runs, setRuns] = useState<RunRecord[]>([]);
   const refresh = () => listRuns().then(setRuns);
   useEffect(() => {
-    refresh();
-  }, []);
+    if (active) refresh();
+  }, [active]);
 
   const update = async (r: RunRecord, patch: Partial<RunRecord>) => {
     await putRun({ ...r, ...patch });

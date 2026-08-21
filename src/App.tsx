@@ -62,8 +62,13 @@ export default function App() {
         )}
       </nav>
 
-      {view === 'experiments' && <ExperimentsView sim={sim} />}
-      {view === 'runs' && <RunsView sim={sim} onReplay={() => setView('instrument')} />}
+      {/* kept mounted so sweeps and tables survive tab switches */}
+      <div style={{ display: view === 'experiments' ? 'block' : 'none' }}>
+        <ExperimentsView sim={sim} />
+      </div>
+      <div style={{ display: view === 'runs' ? 'block' : 'none' }}>
+        <RunsView sim={sim} active={view === 'runs'} onReplay={() => setView('instrument')} />
+      </div>
       {view === 'guide' ? (
         <Guide
           onPreset={(name) => {
