@@ -70,6 +70,18 @@ Explorer's shipped reproductions use T = 10⁵ (the browser and an evening of CP
 not the paper's T = 10⁶; classical runs use the cycle-tail shortcut from
 `single.py`. The headless script accepts `--T 1000000`.
 
+## 7. Heterogeneous regime is emulated, not mirrored
+
+The reference runs the heterogeneous regime only on the GPU path
+(`_gpu_state_stream_PBN`, cubewalkers masks, `OEE_PBN_DEPENDENT`), which the
+Explorer cannot execute. It emulates `asynchronous_set` per cubewalkers'
+definition (each node updates with probability 0.5 per step) on the CPU
+semantics above. Our T = 10⁵ Fig. 2 reproduction agrees with the text on the
+paraconsistent shoulder near K ≈ 2 and quantum's low-K advantage, and disagrees
+on PBN collapsing and modal spiking at high K. Horizon is the first suspect
+(short-cycle Ω scales like 1/T); mask semantics the second. Treat the Fig. 2
+reproduction as lower confidence than Fig. 1.
+
 ## What matches
 
 On the same networks and initial states, the Explorer's engine reproduces

@@ -238,7 +238,7 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
             <span className="control-label">Paper reproductions (computed headlessly, shipped with the app)</span>
             {bundled.map((e) => (
               <button key={e.id} className="chip chip-zap" title={e.note} onClick={() => setSeries(e.series)}>
-                {e.id === 'repro-homogeneous' ? 'Fig. 1 · homogeneous' : 'Fig. 2 · heterogeneous'} — {String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')} steps
+                {e.id === 'repro-homogeneous' ? 'Fig. 1 · homogeneous' : 'Fig. 2 · heterogeneous (emulated async, lower confidence)'} — {String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')} steps
                 {(e.spec as { finished?: boolean }).finished === false ? ' (partial)' : ''}
               </button>
             ))}
