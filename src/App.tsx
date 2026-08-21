@@ -8,10 +8,14 @@ import { RasterView } from './ui/RasterView';
 import { RibbonView } from './ui/RibbonView';
 import { OmegaChart } from './ui/OmegaChart';
 import { TracePanel } from './ui/TracePanel';
+import { RunsView } from './ui/RunsView';
+import { ExperimentsView } from './ui/ExperimentsView';
+import { newId, putRun } from './lab/registry';
+import { ENGINE_VERSION } from './lab/run';
 import { fmtOmega } from './ui/format';
 import './App.css';
 
-type View = 'instrument' | 'guide';
+type View = 'instrument' | 'experiments' | 'runs' | 'guide';
 
 export default function App() {
   const sim = useSimulation(DEFAULT_PARAMS);
@@ -44,10 +48,13 @@ export default function App() {
         >
           Instrument
         </button>
-        <button
-          className={view === 'guide' ? 'tab tab-active' : 'tab'}
-          onClick={() => setView('guide')}
-        >
+        <button className={view === 'experiments' ? 'tab tab-active' : 'tab'} onClick={() => setView('experiments')}>
+          Experiments
+        </button>
+        <button className={view === 'runs' ? 'tab tab-active' : 'tab'} onClick={() => setView('runs')}>
+          Runs
+        </button>
+        <button className={view === 'guide' ? 'tab tab-active' : 'tab'} onClick={() => setView('guide')}>
           Guide
         </button>
         {view === 'instrument' && (
@@ -55,6 +62,8 @@ export default function App() {
         )}
       </nav>
 
+      {view === 'experiments' && <ExperimentsView sim={sim} />}
+      {view === 'runs' && <RunsView sim={sim} onReplay={() => setView('instrument')} />}
       {view === 'guide' ? (
         <Guide
           onPreset={(name) => {
@@ -65,7 +74,7 @@ export default function App() {
             }
           }}
         />
-      ) : (
+      ) : view !== 'instrument' ? null : (
         <>
           <div className="stats-rule">
             <span className="stat">
@@ -92,6 +101,32 @@ export default function App() {
             >
               <strong>{sim.seed.toString(36)}</strong> seed
             </span>
+            <button
+              className="chip save-run"
+              title="record this run's identity and numbers in Runs"
+              onClick={() =>
+                putRun({
+                  id: newId(),
+                  createdAt: Date.now(),
+                  note: '',
+                  pinned: false,
+                  seed: sim.seed,
+                  params: sim.params,
+                  engineVersion: ENGINE_VERSION,
+                  T: sim.t,
+                  omega: sim.omega,
+                  V: sim.V,
+                  P: sim.P,
+                  KD: sim.omega * sim.t * sim.t,
+                  episodes: sim.episodes.length,
+                  attractors: sim.distinctAttractors,
+                  realizedK: sim.realizedK,
+                  source: 'instrument',
+                })
+              }
+            >
+              save run
+            </button>
           </div>
 
           <Controls sim={sim} />

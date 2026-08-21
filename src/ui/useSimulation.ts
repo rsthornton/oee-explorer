@@ -54,6 +54,8 @@ export interface SimHandle {
   applyParams: (p: SimParams, newSeed?: boolean) => void;
   reroll: () => void;
   stepOnce: () => void;
+  /** replay a recorded run: its seed and parameters */
+  loadRun: (seed: number, p: SimParams) => void;
 }
 
 export function useSimulation(initial: SimParams): SimHandle {
@@ -184,5 +186,9 @@ export function useSimulation(initial: SimParams): SimHandle {
     },
     reroll: () => setSeed(Math.floor(Math.random() * 2 ** 31)),
     stepOnce: () => advance(1),
+    loadRun: (s: number, p: SimParams) => {
+      setSeed(s);
+      setParams(p);
+    },
   };
 }
