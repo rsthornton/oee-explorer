@@ -19,8 +19,10 @@
  *     table index instead of triggering a coin flip;
  *   - modal truthiness is "state == 1".
  *
- * Updating: synchronous (all nodes), or asynchronous_set (a random subset updates
- * each step; see heterogeneous regime).
+ * Updating: synchronous (all nodes), or asynchronous_set — cubewalkers'
+ * `update_schemes.asynchronous_set` (prob = 0.5): each node independently updates
+ * with probability 0.5 per step, the rest carry their state over. This is the
+ * heterogeneous regime's scheme (paper Fig. 2; reference runs it on GPU only).
  */
 
 import { type Rng, weightedChoice } from './prng';
