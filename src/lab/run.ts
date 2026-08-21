@@ -97,3 +97,64 @@ export function runClassicalCycleTail(params: SimParams, seed: number, T: number
   }
   return { seed, T, omega: tr.omega, V: tr.V, P: tr.P, KD: tr.KD, episodes: [], distinctAttractors: tr.distinctAttractors, realizedK: net.realizedK };
 }
+
+/**
+ * PBN measured the way the reference measures it for Fig. 1:
+ * `measure_kd_piecewise` (axiomatic.py:480). Context segments have geometric
+ * length L ~ Geom(σ) (≥1, capped by the steps left). Within a segment the seen
+ * table starts empty; simulate until the first repeat or L is exhausted. If a
+ * cycle is entered at index `entered` < L: λ = cycle length, dwell = L − entered
+ * (counted from the first pass), V += λ, P += dwell, KD += λ·dwell, and the
+ * segment's final state is advanced along the cycle. Otherwise the final state
+ * is the last state reached. Contexts are redrawn uniformly at each segment.
+ * Ω = KD / T². Deterministic contexts only (classical tables).
+ */
+export function runPbnPiecewise(params: SimParams, seed: number, T: number): RunResult {
+  const rng = mulberry32(seed);
+  const net = generateNetwork(
+    { n: params.n, k: params.k, topology: params.topology, bias: params.bias, numContexts: Math.max(2, params.numContexts), mechanism: 'pbn', mech: params.mech, semantics: params.semantics },
+    rng,
+  );
+  const sigma = params.switching;
+  const nctx = net.contexts.length;
+  const sim = new Simulator(net, { switching: 0, semantics: params.semantics, mutationProb: 0, update: 'synchronous' }, rng);
+  sim.context = Math.floor(rng() * nctx);
+  let V = 0;
+  let P = 0;
+  let KD = 0;
+  let stepsLeft = T;
+  while (stepsLeft > 0) {
+    // numpy geometric(p): number of trials to first success, ≥ 1
+    const L = sigma <= 0 ? stepsLeft : Math.min(Math.max(1, Math.ceil(Math.log(1 - rng()) / Math.log(1 - sigma))), stepsLeft);
+    const seen = new Map<string, number>();
+    const segStates: Uint8Array[] = [sim.state.slice()];
+    seen.set(EpisodeTracker.keyOf(sim.state), 0);
+    let entered = -1;
+    let lam = 0;
+    for (let i = 0; i < L; i++) {
+      sim.step();
+      const key = EpisodeTracker.keyOf(sim.state);
+      segStates.push(sim.state.slice());
+      const prev = seen.get(key);
+      if (prev !== undefined) {
+        entered = prev;
+        lam = segStates.length - 1 - entered;
+        break;
+      }
+      seen.set(key, segStates.length - 1);
+    }
+    if (lam > 0 && L > entered) {
+      const dwell = L - entered;
+      V += lam;
+      P += dwell;
+      KD += lam * dwell;
+      const consumed = segStates.length - 1;
+      const remaining = L - consumed;
+      sim.state.set(segStates[entered + (remaining % lam)]);
+    }
+    stepsLeft -= L;
+    if (stepsLeft <= 0) break;
+    sim.context = Math.floor(rng() * nctx);
+  }
+  return { seed, T, omega: KD / (T * T), V, P, KD, episodes: [], distinctAttractors: 0, realizedK: net.realizedK };
+}

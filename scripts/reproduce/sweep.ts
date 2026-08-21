@@ -14,7 +14,7 @@
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { writeFileSync } from 'node:fs';
 import { cpus } from 'node:os';
-import { runTrajectory, runClassicalCycleTail, ENGINE_VERSION } from '../../src/lab/run';
+import { runTrajectory, runClassicalCycleTail, runPbnPiecewise, ENGINE_VERSION } from '../../src/lab/run';
 import { DEFAULT_MECH, type Mechanism, type Semantics } from '../../src/engine/network';
 import type { SimParams } from '../../src/engine/presets';
 
@@ -28,6 +28,13 @@ interface Args {
   mechanisms: Mechanism[];
   semantics: Semantics[];
   kStep: number;
+  /** classical: 'shortcut' (reference cycle-tail) or 'streaming' (full extractor) */
+  classical: 'shortcut' | 'streaming';
+  /** pbn: 'streaming' (global extractor) or 'piecewise' (reference measure_kd_piecewise) */
+  pbn: 'streaming' | 'piecewise';
+  tag: string;
+  /** override in-degree distribution regardless of regime */
+  topology: '' | 'poisson' | 'exponential';
 }
 
 function parseArgs(): Args {
@@ -46,6 +53,10 @@ function parseArgs(): Args {
     mechanisms: get('mechanisms', 'classical,pbn,arm,paraconsistent,modal,quantum').split(',') as Mechanism[],
     semantics: get('semantics', 'faithful,intended').split(',') as Semantics[],
     kStep: Number(get('kstep', '0.2')),
+    classical: get('classical', 'shortcut') as Args['classical'],
+    pbn: get('pbn', 'streaming') as Args['pbn'],
+    tag: get('tag', ''),
+    topology: get('topology', '') as Args['topology'],
   };
 }
 
@@ -98,6 +109,7 @@ interface Point {
 if (!isMainThread) {
   const { task, args } = workerData as { task: Task; args: Args };
   const params = { ...paramsFor(task.mechanism, task.semantics, args.regime), k: task.k };
+  if (args.topology) params.topology = args.topology;
   const deterministic = task.mechanism === 'classical' && params.update === 'synchronous';
   const samples: number[] = [];
   const t0 = Date.now();
@@ -105,7 +117,12 @@ if (!isMainThread) {
   while (!done) {
     for (let b = 0; b < args.batch && samples.length < args.netsMax; b++) {
       const seed = 31 * task.series + samples.length * 7919 + Math.round(task.k * 1000) + 17;
-      const r = deterministic ? runClassicalCycleTail(params, seed, args.T) : runTrajectory(params, seed, args.T, false);
+      const r =
+        deterministic && args.classical === 'shortcut'
+          ? runClassicalCycleTail(params, seed, args.T)
+          : task.mechanism === 'pbn' && args.pbn === 'piecewise' && params.update === 'synchronous'
+            ? runPbnPiecewise(params, seed, args.T)
+            : runTrajectory(params, seed, args.T, false);
       samples.push(r.omega);
     }
     const n = samples.length;
@@ -131,9 +148,9 @@ if (!isMainThread) {
   const results: Point[][] = series.map(() => []);
   const write = (finished: boolean) => {
     const record = {
-      id: `repro-${args.regime}`,
+      id: `repro-${args.regime}${args.tag ? '-' + args.tag : ''}`,
       createdAt: Date.now(),
-      note: `Paper ${args.regime === 'homogeneous' ? 'Fig. 1' : 'Fig. 2'} reproduction · T = ${args.T.toLocaleString()} · ≤${args.netsMax} networks/K · δ = ${args.delta} · engine ${ENGINE_VERSION}${finished ? '' : ' · PARTIAL'}`,
+      note: `Paper ${args.regime === 'homogeneous' ? 'Fig. 1' : 'Fig. 2'} reproduction · T = ${args.T.toLocaleString()} · ≤${args.netsMax} networks/K · δ = ${args.delta} · engine ${ENGINE_VERSION}${args.tag ? ' · ' + args.tag : ''}${finished ? '' : ' · PARTIAL'}`,
       spec: { ...args, kGrid, engineVersion: ENGINE_VERSION, finished },
       series: series.map((sr, i) => ({
         label: `${sr.mechanism}${args.semantics.length > 1 ? ` · ${sr.semantics}` : ''}`,
