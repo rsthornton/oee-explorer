@@ -19,12 +19,12 @@ living in them. The reference implementation is
 
 | View | What it shows |
 |------|---------------|
-| Experiments | Ω against K averaged over many networks per K with the reference's CI stopping rule, several mechanisms in parallel workers, drawn live; and a paired comparison of the current network under several mechanisms. |
-| Runs | Every saved run as numbers, with notes, replay, and CSV/JSON export. |
 | The network | The wiring itself. Nodes light up with their state as the run proceeds. Hover shows a node's inputs; clicking flips its state, a one-bit perturbation you can watch propagate. |
 | State raster | Every node's on/off history, scrolling. Repeating vertical texture means the network is in a cycle; a texture break means it escaped. |
 | Recurrence episodes | The whole run as a ribbon. Each bar is one episode: color is the attractor's identity, width is dwell time, height is cycle length, so bar area is the episode's k·d contribution to Ω. Arcs below the baseline mark returns to an attractor seen before. |
 | Ω over time | The metric accumulating as the run unfolds, on the same time axis as the ribbon. |
+| Experiments | Ω against K averaged over many networks per K with the reference's CI stopping rule, several mechanisms in parallel workers, drawn live; and a paired comparison of the current network under several mechanisms. |
+| Runs | Every saved run as numbers, with notes, replay, and CSV/JSON export. |
 
 Named presets stage the regimes: frozen, critical, chaotic, and context-switching
 dynamics at the paper's scale, plus a three-node network whose eight-state world
