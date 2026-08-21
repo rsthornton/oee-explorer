@@ -1,6 +1,8 @@
 # Phase 2 design: mechanisms, experiments, understanding
 
-*2026-08-21. Design only; no implementation yet. Grounded in a line-by-line read of
+*2026-08-21. Written as design; §1, §2 items 1–3 and 6–7, §3 and §4 built the same day (see git log). Remaining: validation suite (§2.5), 10⁶-horizon shortcut (§2.4), witness presets (§4).*
+
+*Original header:* Grounded in a line-by-line read of
 `amahury/oee-metric/code/axiomatic.py` (mechanisms), `parallel_new.py` (sweeps),
 and the two notebooks (which only `np.load` results and plot; they carry no simulator).*
 

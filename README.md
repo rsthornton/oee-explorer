@@ -19,6 +19,8 @@ living in them. The reference implementation is
 
 | View | What it shows |
 |------|---------------|
+| Experiments | Ω against K averaged over many networks per K with the reference's CI stopping rule, several mechanisms in parallel workers, drawn live; and a paired comparison of the current network under several mechanisms. |
+| Runs | Every saved run as numbers, with notes, replay, and CSV/JSON export. |
 | The network | The wiring itself. Nodes light up with their state as the run proceeds. Hover shows a node's inputs; clicking flips its state, a one-bit perturbation you can watch propagate. |
 | State raster | Every node's on/off history, scrolling. Repeating vertical texture means the network is in a cycle; a texture break means it escaped. |
 | Recurrence episodes | The whole run as a ribbon. Each bar is one episode: color is the attractor's identity, width is dwell time, height is cycle length, so bar area is the episode's k·d contribution to Ω. Arcs below the baseline mark returns to an attractor seen before. |
@@ -43,10 +45,22 @@ detector reproduces the reference extractor's V, P, and KD exactly on shared
 test sequences. Attractor identity, used only for coloring, is computed from
 the canonical form of each detected cycle and is not part of the metric.
 
-Current coverage is classical dynamics and probabilistic context switching.
-The paper's other mechanisms (modal, paraconsistent, quantum-inspired,
-annealed rule mutation) and ensemble Ω-versus-K sweeps are planned; see
-[DESIGN.md](./DESIGN.md).
+All six mechanisms are implemented (classical, PBN, paraconsistent, modal,
+quantum-inspired, ARM) in both update regimes (homogeneous: Poisson in-degree,
+synchronous; heterogeneous: exponential in-degree, asynchronous-set). Each runs
+under two switchable semantics. `faithful` reproduces the reference code branch
+for branch, including behaviour the paper's text does not describe: contradiction
+tokens as inputs trigger a coin flip, the quantum pairing branch is unreachable
+for ordinary entries, and ARM never applies its mutation (entries fall through to
+a majority vote). `intended` implements the Methods section as written. The
+divergences are documented in `src/engine/simulate.ts` and
+[docs/phase-2-design.md](./docs/phase-2-design.md).
+
+`npm run parity` vendors nothing new: it builds networks here, exports them in
+the reference's own data shapes, and runs the reference's `simulate_pbn` and
+`extract_attractor_metrics` (unmodified, under `reference/`) on the same networks
+and initial states. Classical runs match V, P, KD and Ω exactly; stochastic
+mechanisms match in distribution.
 
 ## Running
 
@@ -54,6 +68,7 @@ annealed rule mutation) and ensemble Ω-versus-K sweeps are planned; see
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # static site in dist/, no server required
+npm run parity   # needs reference/.venv (python3 -m venv reference/.venv && pip install numpy scipy networkx tqdm matplotlib)
 ```
 
 ## Layout
@@ -62,7 +77,9 @@ npm run build    # static site in dist/, no server required
 |------|----------|
 | `src/engine/` | Simulation core: generator, simulator, episode/Ω tracker. Pure TypeScript, no UI dependencies. |
 | `src/ui/` | Canvas views and controls. One animation-frame hook drives all panels from shared buffers. |
-| `DESIGN.md` | Design rationale and roadmap. |
+| `src/lab/` | Headless runs, the ensemble worker, and the IndexedDB run registry. |
+| `reference/` | The reference implementation (MIT, unmodified) and the parity harness. |
+| `DESIGN.md`, `docs/` | Design rationale, code-grounded mechanism semantics, roadmap. |
 
 ## License
 
