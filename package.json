@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "reproduce": "esbuild scripts/reproduce/sweep.ts --bundle --platform=node --format=esm --outfile=reference/.sweep.mjs --log-level=error && node reference/.sweep.mjs",
+    "ra-export": "esbuild scripts/ra/export.ts --bundle --platform=node --format=esm --outfile=reference/.ra-export.mjs --log-level=error && node reference/.ra-export.mjs",
     "parity": "esbuild scripts/parity/export.ts --bundle --platform=node --format=esm --outfile=reference/.parity-export.mjs --log-level=error && node reference/.parity-export.mjs reference/.parity && reference/.venv/bin/python reference/parity.py reference/.parity"
   },
   "dependencies": {

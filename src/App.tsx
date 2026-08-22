@@ -100,6 +100,11 @@ export default function App() {
             <span className="stat">
               <strong>{sim.realizedK.toFixed(2)}</strong> realized K
             </span>
+            {sim.params.mechanism === 'pbn' && sim.simulator && (
+              <span className="stat" title="which of the rule-table sets the network is reading right now; it may switch each step with probability σ">
+                <strong>{sim.simulator.context + 1}/{sim.params.numContexts}</strong> active rule set
+              </span>
+            )}
             <span
               className="stat"
               title="the random draw behind this network — sliders keep it, “New network” rerolls it"

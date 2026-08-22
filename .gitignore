@@ -27,3 +27,5 @@ reference/.venv/
 reference/.parity-export.mjs
 reference/.sweep.mjs
 reference/.repro-*.log
+reference/.ra-export.mjs
+data/ra/
