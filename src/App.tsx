@@ -8,6 +8,7 @@ import { RasterView } from './ui/RasterView';
 import { RibbonView } from './ui/RibbonView';
 import { OmegaChart } from './ui/OmegaChart';
 import { TracePanel } from './ui/TracePanel';
+import { RuleTables } from './ui/RuleTables';
 import { RunsView } from './ui/RunsView';
 import { ExperimentsView } from './ui/ExperimentsView';
 import { newId, putRun } from './lab/registry';
@@ -145,6 +146,8 @@ export default function App() {
             <NetworkView sim={sim} onFocus={setFocusNode} />
             <RasterView sim={sim} />
           </div>
+
+          <RuleTables sim={sim} />
 
           <TracePanel sim={sim} node={focusNode} />
 

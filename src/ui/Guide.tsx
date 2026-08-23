@@ -56,6 +56,13 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
             flip it: a one-bit nudge. In a frozen network the nudge is absorbed; near the critical
             regime it can knock the whole system into a different loop.
           </dd>
+          <dt>Rule tables (12 nodes or fewer)</dt>
+          <dd>
+            Every node&apos;s rule as a truth table: one row per combination of its inputs, and the bit it outputs next. The
+            row being read this step is highlighted. A greyed input is wired but never changes the output; the rule is
+            constant in it, and no data method could detect it. Under the non-classical mechanisms, rewritten entries are
+            marked: C contradiction, ◇ possible, □ necessary, ? superposed, µ mutable.
+          </dd>
           <dt>State raster</dt>
           <dd>
             Every node's on/off history, scrolling left. Each row is one node; each column is one
