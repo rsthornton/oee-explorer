@@ -67,9 +67,21 @@ function rules(net: Network) {
         output: ctx.val[net.lutOffset[i] + idx],
       })),
     );
+    // essential inputs: those the base-context function actually depends on
+    // (flipping that input changes the output for some assignment). RA recovers
+    // functional dependence; a wired-but-ignored input is invisible to data.
+    const essential: number[] = [];
+    for (let pos = 0; pos < kk; pos++) {
+      let dep = false;
+      for (let idx = 0; idx < 1 << kk && !dep; idx++) {
+        const flipped = idx ^ (1 << (kk - 1 - pos));
+        if (net.contexts[0].val[net.lutOffset[i] + idx] !== net.contexts[0].val[net.lutOffset[i] + flipped]) dep = true;
+      }
+      if (dep) essential.push(inputs[pos]);
+    }
     const accessible: number[] = [];
     for (let j = net.accOffset[i]; j < net.accOffset[i + 1]; j++) accessible.push(net.acc[j]);
-    return { node: i, inputs, tables, accessible, partner: net.partner[i] };
+    return { node: i, inputs, essential, tables, accessible, partner: net.partner[i] };
   });
 }
 
@@ -123,6 +135,8 @@ writeFileSync(
       switching: isPbn ? switching : 0,
       sampling: trajectory > 0 ? { mode: 'trajectory', T: trajectory } : { mode: 'iid', samples },
       rules: rules(net),
+      // structural truth (wiring) and functional truth (essential inputs); RA targets the latter
+      raComponentsFunctional: rules(net).map((r) => [...r.essential.map((j) => `x${j}`), `y${r.node}`]),
       raComponents: Array.from({ length: n }, (_, i) => {
         const comp: string[] = [];
         for (let j = net.inputOffset[i]; j < net.inputOffset[i + 1]; j++) comp.push(`x${net.inputs[j]}`);
