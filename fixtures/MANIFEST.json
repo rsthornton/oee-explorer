@@ -1,0 +1,163 @@
+{
+  "generated": "2026-09-01T15:36:15.948Z",
+  "engineVersion": "0.2.0",
+  "commit": "b1f767a3a75a67184974cfa1b729f8a35072535c",
+  "command": "npm run fixtures",
+  "seedScheme": "run r of a point: seed = seedBase + r; mulberry32(seed) generates the network, then the initial state, exactly as src/lab/run.ts consumes it",
+  "prngNote": "mulberry32 has no Python counterpart; the serialized network and initial state are the portable ground truth. Seeds regenerate everything bit-exactly on the TS side.",
+  "networkFormat": "reference data shapes, identical to the parity harness (reference/parity.py build())",
+  "points": [
+    {
+      "file": "classical-k34.json",
+      "mechanism": "classical",
+      "semantics": [
+        "faithful"
+      ],
+      "paths": [
+        "streaming",
+        "shortcut"
+      ],
+      "n": 100,
+      "k": 3.4,
+      "topology": "poisson",
+      "T": 1000000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 901000,
+      "why": "Contested classical point: the global extractor gives Omega on the order of 1e-2 here; the deposited array is 1e-6 at every K. Both measurement paths run the identical trajectory (same seed, same network, same initial state)."
+    },
+    {
+      "file": "classical-k21.json",
+      "mechanism": "classical",
+      "semantics": [
+        "faithful"
+      ],
+      "paths": [
+        "streaming",
+        "shortcut"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 1000000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 902000,
+      "why": "Classical control point below the contested region."
+    },
+    {
+      "file": "pbn-poisson-k21.json",
+      "mechanism": "pbn",
+      "semantics": [
+        "faithful"
+      ],
+      "paths": [
+        "streaming",
+        "piecewise"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0.1,
+      "seedBase": 903000,
+      "why": "PBN at sigma = 0.1, Poisson: global episode detector vs the piecewise measurement. The two paths use different context-switching draws by construction; the fixture pins network and initial state."
+    },
+    {
+      "file": "pbn-exponential-k30.json",
+      "mechanism": "pbn",
+      "semantics": [
+        "faithful"
+      ],
+      "paths": [
+        "streaming",
+        "piecewise"
+      ],
+      "n": 100,
+      "k": 3,
+      "topology": "exponential",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0.1,
+      "seedBase": 904000,
+      "why": "PBN exponential-topology point on the plateau reported in the note."
+    },
+    {
+      "file": "paraconsistent-k21.json",
+      "mechanism": "paraconsistent",
+      "semantics": [
+        "faithful",
+        "intended"
+      ],
+      "paths": [
+        "streaming"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 905000,
+      "why": "Both semantics at the same seeds: faithful = shipped random-bit fallback on contradiction tokens; intended = local majority resolution as the Methods specify."
+    },
+    {
+      "file": "modal-k21.json",
+      "mechanism": "modal",
+      "semantics": [
+        "faithful",
+        "intended"
+      ],
+      "paths": [
+        "streaming"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 906000,
+      "why": "Modal evaluation-order question flagged in the Explorer, both semantics."
+    },
+    {
+      "file": "quantum-k21.json",
+      "mechanism": "quantum",
+      "semantics": [
+        "faithful",
+        "intended"
+      ],
+      "paths": [
+        "streaming"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 907000,
+      "why": "Paired-state coupling question flagged in the Explorer, both semantics."
+    },
+    {
+      "file": "arm-k21.json",
+      "mechanism": "arm",
+      "semantics": [
+        "faithful",
+        "intended"
+      ],
+      "paths": [
+        "streaming"
+      ],
+      "n": 100,
+      "k": 2.1,
+      "topology": "poisson",
+      "T": 100000,
+      "repeats": 10,
+      "switching": 0,
+      "seedBase": 908000,
+      "why": "ARM point: Omega = 0 under both semantics at mu = 0.4 in our runs, so the published ARM conclusion is robust to the never-called mutate_rule."
+    }
+  ]
+}
