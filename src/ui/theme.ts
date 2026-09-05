@@ -43,3 +43,24 @@ export const TRANSIENT = '#cbd5e1'; // slate-300 — pre-recurrence wandering
 export const OMEGA_LINE = '#0d9488'; // teal — the metric's own color throughout the UI
 export const GRID = '#e2e8f0'; // slate-200
 export const INK_MUTED = '#64748b';
+export const PULSE = '#0891b2'; // cyan-600 — a state flip in transit along a wire
+
+function parseColorChannels(c: string): [number, number, number] {
+  if (c.startsWith('#')) {
+    return [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+  }
+  const m = c.match(/rgba?\(([^)]+)\)/);
+  if (!m) return [0, 0, 0];
+  const [r, g, b] = m[1].split(',').map((s) => parseFloat(s));
+  return [r || 0, g || 0, b || 0];
+}
+
+/** Linear RGB interpolation between two colors given as '#rrggbb' or 'rgb(...)'. */
+export function lerpColor(a: string, b: string, t: number): string {
+  if (t <= 0) return a;
+  if (t >= 1) return b;
+  const [ar, ag, ab] = parseColorChannels(a);
+  const [br, bg, bb] = parseColorChannels(b);
+  const mix = (x: number, y: number) => Math.round(x + (y - x) * t);
+  return `rgb(${mix(ar, br)}, ${mix(ag, bg)}, ${mix(ab, bb)})`;
+}

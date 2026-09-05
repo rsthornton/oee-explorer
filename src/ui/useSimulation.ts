@@ -17,9 +17,20 @@ import { type SimParams } from '../engine/presets';
 
 export const RASTER_WINDOW = 640; // recent steps kept for the raster view
 
+/** how long a signal-pulse dot takes to travel a wire, and the on-screen cap on
+ * concurrent pulses — bounds the extra per-step work even when most nodes flip
+ * every tick (Deep Chaos), where individual pulses are meant to blur together */
+export const PULSE_DURATION_MS = 220;
+const PULSE_CAP = 500;
+
 export interface OmegaSample {
   t: number;
   omega: number;
+}
+
+export interface PulseEvent {
+  node: number;
+  t: number; // performance.now() timestamp the flip landed
 }
 
 export interface SimHandle {
@@ -34,6 +45,9 @@ export interface SimHandle {
   realizedK: number;
   stepsPerFrame: number;
   omegaSamples: OmegaSample[];
+  /** recent per-node state flips, timestamped for the wire-pulse animation; a live
+   * mutable array — read its current contents, don't hold onto the reference */
+  changeEvents: PulseEvent[];
   /** ring of the last RASTER_WINDOW states; use rasterAt(i) for chronological access */
   rasterAt: (i: number) => Uint8Array | null;
   rasterCount: number;
@@ -73,6 +87,8 @@ export function useSimulation(initial: SimParams): SimHandle {
   const realizedKRef = useRef(0);
   const networkRef = useRef<Network | null>(null);
   const layoutRef = useRef<Layout | null>(null);
+  const pulseEventsRef = useRef<PulseEvent[]>([]);
+  const lastAdvanceAtRef = useRef<number | null>(null);
 
   const rebuild = useCallback((p: SimParams, s: number) => {
     const rng = mulberry32(s);
@@ -105,6 +121,8 @@ export function useSimulation(initial: SimParams): SimHandle {
     realizedKRef.current = net.realizedK;
     networkRef.current = net;
     layoutRef.current = forceLayout(net, rng, net.n > 180 ? 140 : 260);
+    pulseEventsRef.current = [];
+    lastAdvanceAtRef.current = null;
     setFrame((f) => f + 1);
   }, []);
 
@@ -117,8 +135,29 @@ export function useSimulation(initial: SimParams): SimHandle {
     const sim = simRef.current;
     const tracker = trackerRef.current;
     if (!sim || !tracker) return;
+
+    // spread this batch's flips across the real time since the last batch, so a
+    // step's pulse departs the moment it actually happened rather than all at once
+    const now = performance.now();
+    const prevAt = lastAdvanceAtRef.current;
+    const span = prevAt != null ? Math.min(now - prevAt, 100) : 16.7;
+    lastAdvanceAtRef.current = now;
+    const events = pulseEventsRef.current;
+    const cutoff = now - PULSE_DURATION_MS;
+    let keepFrom = 0;
+    while (keepFrom < events.length && events[keepFrom].t < cutoff) keepFrom++;
+    if (keepFrom > 0) events.splice(0, keepFrom);
+
     for (let i = 0; i < steps; i++) {
       sim.step();
+      if (events.length < PULSE_CAP) {
+        const t = now - span + ((i + 1) / steps) * span;
+        const s = sim.state;
+        const p = sim.prev;
+        for (let j = 0; j < s.length && events.length < PULSE_CAP; j++) {
+          if (s[j] !== p[j]) events.push({ node: j, t });
+        }
+      }
       tracker.push(sim.state);
       rasterRef.current[rasterCountRef.current % RASTER_WINDOW] = sim.state.slice();
       rasterCountRef.current += 1;
@@ -157,6 +196,7 @@ export function useSimulation(initial: SimParams): SimHandle {
     realizedK: realizedKRef.current,
     stepsPerFrame,
     omegaSamples: samplesRef.current,
+    changeEvents: pulseEventsRef.current,
     rasterAt: (i: number) => {
       const count = rasterCountRef.current;
       const len = Math.min(count, RASTER_WINDOW);
