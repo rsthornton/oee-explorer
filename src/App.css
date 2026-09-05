@@ -831,11 +831,30 @@ body {
   color: var(--accent-ink);
 }
 
-/* narrow viewports: stack the masthead over the hero, drop the chrome that
-   only fits a wide toolbar, and let the network shrink to the column width
-   instead of forcing a fixed 340px that overflows a phone screen */
+/* narrow viewports: the network and raster panels stop sitting side by side
+   and stack into one column, each taking the full column width instead of
+   the network staying pinned at its 340px desktop figure size */
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
+  .live-row {
+    flex-direction: column;
+  }
+
+  .live-row .panel-network,
+  .live-row .panel:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .network-canvas {
+    max-width: none;
+  }
+}
+
+/* phone viewports: drop the chrome that only fits a wide toolbar and let the
+   masthead stack over the hero instead of squeezing both onto one line */
+
+@media (max-width: 480px) {
   .app {
     padding: 20px 16px 40px;
   }
@@ -866,5 +885,14 @@ body {
 
   .tab-hint {
     display: none;
+  }
+
+  .control-hint {
+    display: none;
+  }
+
+  .reroll-group {
+    margin-left: 0;
+    flex-basis: 100%;
   }
 }

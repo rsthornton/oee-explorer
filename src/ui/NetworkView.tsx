@@ -8,15 +8,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE, TOKEN_C0, TOKEN_C1 } from './theme';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const TOK_FILL = [RASTER_OFF, RASTER_ON, TOKEN_C0, TOKEN_C1];
 
-const SIZE = 340;
+const DEFAULT_SIZE = 340;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
 export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: number | null) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hovered, setHovered] = useState<number | null>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
+  // the canvas is square (aspect-ratio: 1/1 in CSS) so its own displayed width
+  // is the whole drawing surface; read it fresh whenever the box changes
+  // (breakpoint change, orientation flip, a plain window resize)
+  const size = canvasRef.current?.clientWidth || DEFAULT_SIZE;
 
   const net = sim.network;
   const layout = sim.layout;
@@ -38,15 +44,15 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     if (!canvas || !net || !layout) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (canvas.width !== SIZE * DPR) {
-      canvas.width = SIZE * DPR;
-      canvas.height = SIZE * DPR;
+    if (canvas.width !== size * DPR) {
+      canvas.width = size * DPR;
+      canvas.height = size * DPR;
     }
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.clearRect(0, 0, size, size);
 
-    const px = (i: number) => layout.x[i] * SIZE;
-    const py = (i: number) => layout.y[i] * SIZE;
+    const px = (i: number) => layout.x[i] * size;
+    const py = (i: number) => layout.y[i] * size;
 
     // edges — faint; hover promotes a node's in-edges
     ctx.lineWidth = 1;
@@ -98,18 +104,18 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     }
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-  }, [sim.frame, net, layout, hovered, inEdges, sim.state]);
+  }, [sim.frame, net, layout, hovered, inEdges, sim.state, size, resizeTick]);
 
   const nodeAt = (e: React.MouseEvent<HTMLCanvasElement>): number | null => {
     if (!net || !layout) return null;
     const rect = e.currentTarget.getBoundingClientRect();
-    const mx = ((e.clientX - rect.left) / rect.width) * SIZE;
-    const my = ((e.clientY - rect.top) / rect.height) * SIZE;
+    const mx = ((e.clientX - rect.left) / rect.width) * size;
+    const my = ((e.clientY - rect.top) / rect.height) * size;
     let best = -1;
     let bestD = 12 * 12;
     for (let i = 0; i < net.n; i++) {
-      const dx = layout.x[i] * SIZE - mx;
-      const dy = layout.y[i] * SIZE - my;
+      const dx = layout.x[i] * size - mx;
+      const dy = layout.y[i] * size - my;
       const d = dx * dx + dy * dy;
       if (d < bestD) {
         bestD = d;

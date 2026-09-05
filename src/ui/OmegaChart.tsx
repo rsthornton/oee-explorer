@@ -10,6 +10,7 @@ import type { SimHandle } from './useSimulation';
 import { OMEGA_LINE, GRID, INK_MUTED } from './theme';
 import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
 import { fmtOmega } from './format';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const H = 132;
 const PAD_B = 24;
@@ -19,6 +20,7 @@ const DPR = Math.min(window.devicePixelRatio || 1, 2);
 export function OmegaChart({ sim }: { sim: SimHandle }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hover, setHover] = useState<{ x: number; t: number; omega: number } | null>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
 
   const samples = sim.omegaSamples;
   const tMax = Math.max(sim.t, 1);
@@ -94,7 +96,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       ctx.stroke();
       ctx.setLineDash([]);
     }
-  }, [sim.frame, samples, tMax, yMax, hover]);
+  }, [sim.frame, samples, tMax, yMax, hover, resizeTick]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

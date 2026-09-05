@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import type { SimHandle } from './useSimulation';
 import { RASTER_WINDOW } from './useSimulation';
 import { RASTER_ON, RASTER_OFF, TOKEN_C0, TOKEN_C1 } from './theme';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const ON_RGB = hexToRgb(RASTER_ON);
 const OFF_RGB = hexToRgb(RASTER_OFF);
@@ -25,6 +26,7 @@ function hexToRgb(hex: string): [number, number, number] {
 
 export function RasterView({ sim }: { sim: SimHandle }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -54,7 +56,7 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       }
     }
     ctx.putImageData(img, 0, 0);
-  }, [sim, sim.frame, sim.n]);
+  }, [sim, sim.frame, sim.n, resizeTick]);
 
   return (
     <div className="panel">
