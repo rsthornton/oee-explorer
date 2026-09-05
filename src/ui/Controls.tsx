@@ -8,6 +8,7 @@ import type { SimHandle } from './useSimulation';
 import { PRESETS, type SimParams } from '../engine/presets';
 import type { Mechanism, MechanismParams } from '../engine/network';
 import { TourPath } from './TourPath';
+import { RecordControl } from './RecordControl';
 
 const MECHANISMS: { key: Mechanism; label: string }[] = [
   { key: 'classical', label: 'Classical' },
@@ -112,6 +113,7 @@ export function Controls({
         <button className="chip advanced-toggle" aria-expanded={expanded} onClick={onToggleExpanded}>
           {expanded ? 'Hide mechanism, sliders & regime ▴' : 'Mechanism, sliders & regime ▾'}
         </button>
+        <RecordControl sim={sim} />
       </div>
 
       {expanded && (
