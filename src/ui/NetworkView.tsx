@@ -131,7 +131,6 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
       <canvas
         ref={canvasRef}
         className="network-canvas"
-        style={{ width: SIZE, height: SIZE }}
         onMouseMove={(e) => {
           const i = nodeAt(e);
           setHovered(i);

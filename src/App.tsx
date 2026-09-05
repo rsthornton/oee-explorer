@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSimulation } from './ui/useSimulation';
-import { DEFAULT_PARAMS, PRESETS } from './engine/presets';
+import { DEFAULT_PARAMS } from './engine/presets';
 import { Guide } from './ui/Guide';
 import { Controls } from './ui/Controls';
 import { NetworkView } from './ui/NetworkView';
@@ -18,10 +18,27 @@ import './App.css';
 
 type View = 'instrument' | 'experiments' | 'runs' | 'guide';
 
+const CONTROLS_EXPANDED_KEY = 'oee-controls-expanded';
+
 export default function App() {
   const sim = useSimulation(DEFAULT_PARAMS);
   const [view, setView] = useState<View>('instrument');
   const [focusNode, setFocusNode] = useState<number | null>(null);
+  const [controlsExpanded, setControlsExpanded] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem(CONTROLS_EXPANDED_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CONTROLS_EXPANDED_KEY, controlsExpanded ? '1' : '0');
+    } catch {
+      // storage unavailable (private mode, disabled site data) — expand state just won't persist
+    }
+  }, [controlsExpanded]);
 
   return (
     <div className="app">
@@ -71,17 +88,14 @@ export default function App() {
         <RunsView sim={sim} active={view === 'runs'} onReplay={() => setView('instrument')} />
       </div>
       {view === 'guide' ? (
-        <Guide
-          onPreset={(name) => {
-            const preset = PRESETS.find((p) => p.name === name);
-            if (preset) {
-              sim.applyParams(preset.params, true);
-              setView('instrument');
-            }
-          }}
-        />
+        <Guide />
       ) : view !== 'instrument' ? null : (
         <>
+          <div className="live-row">
+            <NetworkView sim={sim} onFocus={setFocusNode} />
+            <RasterView sim={sim} />
+          </div>
+
           <div className="stats-rule">
             <span className="stat">
               <strong>{sim.t.toLocaleString()}</strong> steps
@@ -92,20 +106,6 @@ export default function App() {
             <span className="stat">
               <strong>{sim.distinctAttractors}</strong> attractors
             </span>
-            <span className="stat" title="V = Σ cycle lengths">
-              <strong>{sim.V.toLocaleString()}</strong> V
-            </span>
-            <span className="stat" title="P = Σ dwell steps">
-              <strong>{sim.P.toLocaleString()}</strong> P
-            </span>
-            <span className="stat">
-              <strong>{sim.realizedK.toFixed(2)}</strong> realized K
-            </span>
-            {sim.params.mechanism === 'pbn' && sim.simulator && (
-              <span className="stat" title="which of the rule-table sets the network is reading right now; it may switch each step with probability σ">
-                <strong>{sim.simulator.context + 1}/{sim.params.numContexts}</strong> active rule set
-              </span>
-            )}
             <span
               className="stat"
               title="the random draw behind this network — sliders keep it, “New network” rerolls it"
@@ -140,12 +140,11 @@ export default function App() {
             </button>
           </div>
 
-          <Controls sim={sim} />
-
-          <div className="live-row">
-            <NetworkView sim={sim} onFocus={setFocusNode} />
-            <RasterView sim={sim} />
-          </div>
+          <Controls
+            sim={sim}
+            expanded={controlsExpanded}
+            onToggleExpanded={() => setControlsExpanded((v) => !v)}
+          />
 
           <RuleTables sim={sim} />
 

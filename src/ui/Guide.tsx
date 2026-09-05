@@ -5,16 +5,7 @@
  * Instrument view's captions to one line each.
  */
 
-import { PRESETS } from '../engine/presets';
-
-const TOUR: { name: string; gloss: string }[] = [
-  { name: 'Tiny World', gloss: 'novelty runs out in a world of eight states' },
-  { name: 'Deep Freeze', gloss: 'one loop, forever' },
-  { name: 'Edge of Chaos', gloss: 'long structured cycles, no escape' },
-  { name: 'The Switcher', gloss: 'what Ω rewards' },
-];
-
-export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
+export function Guide() {
   return (
     <div className="guide">
       <section className="guide-section">
@@ -31,20 +22,9 @@ export function Guide({ onPreset }: { onPreset: (name: string) => void }) {
           switching can knock it out; it wanders, then falls into another. Ω scores a run by the
           loops it keeps finding. A frozen system scores zero, and so does pure noise. The only
           way to score is <mark className="hl">sustained novelty with staying power</mark>, a
-          signature proposed for open-ended evolution.
+          signature proposed for open-ended evolution. The Instrument tab opens with the same
+          tour, right under the preset chips.
         </p>
-        <div className="intro-tour">
-          <span className="control-label">A good first path</span>
-          {TOUR.filter((t) => PRESETS.some((p) => p.name === t.name)).map((t, i) => (
-            <span key={t.name} className="tour-step">
-              {i > 0 && <span className="tour-arrow">→</span>}
-              <button className="chip" onClick={() => onPreset(t.name)}>
-                {t.name}
-              </button>
-              <span className="tour-gloss">{t.gloss}</span>
-            </span>
-          ))}
-        </div>
       </section>
 
       <section className="guide-section">
