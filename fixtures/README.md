@@ -31,7 +31,7 @@ the recorded initial states unmodified.
 
 | file | what it pins |
 |---|---|
-| `classical-k34.json` | Contested classical point (N=100, K=3.4, T=10^6). Both measurement paths on the identical trajectory: full extractor vs cycle-tail shortcut. In these runs the two agree on the cycle found (same V) and differ on Ω through the dwell-time convention (P = T−μ vs the detector's revisit-based count). All values are far above 10^-6. |
+| `classical-k34.json` | Contested classical point (N=100, K=3.4, T=10^6). Both measurement paths on the identical trajectory: full extractor vs cycle-tail shortcut. In these runs the two agree on the cycle found (same V in all ten) and differ on Ω through the dwell-time convention (P = T−μ vs the detector's revisit-based count). Nine runs lie between 9×10^-4 and 4×10^-1; the tenth (seed 901007) settles on a 2-cycle and gives Ω ≈ 2×10^-6 under both paths, with P differing by exactly one, which is the λ−1 gap between the two conventions. |
 | `classical-k21.json` | Classical control below the contested region. |
 | `pbn-poisson-k21.json` | PBN, σ=0.1, Poisson: global episode detector vs `measure_kd_piecewise` analogue. Observed means: ~1.3×10^-1 vs ~1.7×10^-5 on the same networks and initials (context draws differ by construction). |
 | `pbn-exponential-k30.json` | PBN exponential-topology plateau point. |

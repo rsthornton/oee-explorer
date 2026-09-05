@@ -28,4 +28,6 @@ reference/.parity-export.mjs
 reference/.sweep.mjs
 reference/.repro-*.log
 reference/.ra-export.mjs
+reference/.fixtures-export.mjs
+__pycache__/
 data/ra/
