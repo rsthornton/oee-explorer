@@ -7,7 +7,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
-import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE, TOKEN_C0, TOKEN_C1 } from './theme';
+import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE, TOKEN_C0, TOKEN_C1, attractorColor, tint } from './theme';
 import { useResizeRepaint } from './useResizeRepaint';
 
 const TOK_FILL = [RASTER_OFF, RASTER_ON, TOKEN_C0, TOKEN_C1];
@@ -26,6 +26,17 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
 
   const net = sim.network;
   const layout = sim.layout;
+
+  // the live episode, if the tracker is currently inside one — its attractor
+  // hue tints the whole diagram; between episodes (transient wandering) the
+  // diagram stays neutral slate
+  const liveEpisode = sim.episodes.length > 0 ? sim.episodes[sim.episodes.length - 1] : null;
+  const hue = liveEpisode && liveEpisode.tEnd === null ? attractorColor(liveEpisode.attractorId) : null;
+  const wireColor = hue ? tint(hue, 0.5) : GRID;
+  const tokFill = useMemo(
+    () => (hue ? [tint(hue, 0.78), hue, TOKEN_C0, TOKEN_C1] : TOK_FILL),
+    [hue],
+  );
 
   // regulator list per node, for hover highlighting
   const inEdges = useMemo(() => {
@@ -56,7 +67,7 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
 
     // edges — faint; hover promotes a node's in-edges
     ctx.lineWidth = 1;
-    ctx.strokeStyle = GRID;
+    ctx.strokeStyle = wireColor;
     ctx.beginPath();
     for (let i = 0; i < net.n; i++) {
       if (hovered === i) continue;
@@ -89,7 +100,7 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
       const on = tok !== 0;
       ctx.beginPath();
       ctx.arc(px(i), py(i), hovered === i ? r + 2 : r, 0, Math.PI * 2);
-      ctx.fillStyle = TOK_FILL[tok];
+      ctx.fillStyle = tokFill[tok];
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = hovered === i ? OMEGA_LINE : '#94a3b8';
@@ -104,7 +115,7 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     }
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-  }, [sim.frame, net, layout, hovered, inEdges, sim.state, size, resizeTick]);
+  }, [sim.frame, net, layout, hovered, inEdges, sim.state, size, resizeTick, wireColor, tokFill]);
 
   const nodeAt = (e: React.MouseEvent<HTMLCanvasElement>): number | null => {
     if (!net || !layout) return null;
