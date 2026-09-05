@@ -6,7 +6,7 @@
  * still says what it is once it's off this page.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { PRESETS } from '../engine/presets';
 import { fmtOmega } from './format';
@@ -65,6 +65,16 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
   const [recording, setRecording] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
 
+  // draw() runs inside a requestAnimationFrame loop started at click time, so it
+  // must read the sim through a ref rather than close over the `sim` prop —
+  // useSimulation hands back a fresh object every render, and a closure captured
+  // once at record() time would freeze Ω, seed, and params at their click-time
+  // values for the whole clip.
+  const simRef = useRef(sim);
+  useEffect(() => {
+    simRef.current = sim;
+  }, [sim]);
+
   const supported = typeof window !== 'undefined' && typeof HTMLCanvasElement !== 'undefined' &&
     'captureStream' in HTMLCanvasElement.prototype && typeof MediaRecorder !== 'undefined';
 
@@ -93,7 +103,6 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
     };
 
     let raf = 0;
-    let frames = 0;
     const startedAt = performance.now();
     setRecording(true);
     setStatus('recording…');
@@ -115,20 +124,22 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
       ctx.lineTo(W, headerH + 0.5);
       ctx.stroke();
 
+      const live = simRef.current;
+
       const fontSize = Math.max(11, Math.round(headerH * 0.4));
       ctx.textBaseline = 'middle';
       ctx.font = `${fontSize}px ${MONO}`;
       ctx.textAlign = 'left';
       ctx.fillStyle = INK;
-      ctx.fillText(presetLabel(sim.params), margin, headerH / 2);
+      ctx.fillText(presetLabel(live.params), margin, headerH / 2);
 
-      const omegaText = `Ω ${fmtOmega(sim.omega)}`;
+      const omegaText = `Ω ${fmtOmega(live.omega)}`;
       ctx.textAlign = 'right';
       ctx.fillStyle = ACCENT_INK;
       ctx.fillText(omegaText, W - margin, headerH / 2);
       const omegaWidth = ctx.measureText(omegaText).width;
 
-      const seedText = `seed ${sim.seed.toString(36)}`;
+      const seedText = `seed ${live.seed.toString(36)}`;
       ctx.fillStyle = INK_MUTED;
       ctx.fillText(seedText, W - margin - omegaWidth - margin, headerH / 2);
 
@@ -156,7 +167,6 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
         });
       }
 
-      frames++;
       if (elapsed < DURATION_MS) {
         raf = requestAnimationFrame(draw);
       } else {
@@ -169,18 +179,20 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
       setRecording(false);
       const blob = new Blob(chunks, { type: 'video/webm' });
       const seconds = (performance.now() - startedAt) / 1000;
-      const fps = frames / seconds;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const slug = presetLabel(sim.params).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const slug = presetLabel(simRef.current.params).toLowerCase().replace(/[^a-z0-9]+/g, '-');
       a.href = url;
       a.download = `oee-${slug}-${aspect.replace(':', 'x')}-${stamp}.webm`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      setStatus(`${(blob.size / 1024 / 1024).toFixed(1)} MB · ${fps.toFixed(0)} fps · ${seconds.toFixed(1)}s`);
+      // FPS is the encoded rate handed to captureStream, not the draw loop's
+      // requestAnimationFrame count — the two diverge under throttling or a
+      // slow tab, and the file's actual frame rate is what the issue asks for.
+      setStatus(`${(blob.size / 1024 / 1024).toFixed(1)} MB · ${FPS} fps · ${seconds.toFixed(1)}s`);
     };
 
     recorder.start();
