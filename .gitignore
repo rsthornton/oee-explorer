@@ -31,3 +31,6 @@ reference/.ra-export.mjs
 reference/.fixtures-export.mjs
 __pycache__/
 data/ra/
+
+# ux checkpoint screenshots (metrics.json is committed, images are not)
+docs/ux-checkpoints/**/*.png
