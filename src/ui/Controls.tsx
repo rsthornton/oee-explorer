@@ -7,7 +7,7 @@
 import type { SimHandle } from './useSimulation';
 import { PRESETS, type SimParams } from '../engine/presets';
 import type { Mechanism, MechanismParams } from '../engine/network';
-import { TourPath } from './TourPath';
+import { TOUR_STEPS } from './TourPath';
 import { RecordControl } from './RecordControl';
 
 const MECHANISMS: { key: Mechanism; label: string }[] = [
@@ -83,29 +83,25 @@ export function Controls({
   return (
     <div className="controls">
       <div className="control-row">
-        <span className="control-label">Tour</span>
-        {PRESETS.filter((x) => x.group === 'tour').map((preset) => (
+        <span className="control-label">A good first path</span>
+        {TOUR_STEPS.map((t, i) => {
+          const preset = PRESETS.find((x) => x.name === t.name);
+          if (!preset) return null;
+          return (
+            <span key={t.name} className="tour-step">
+              {i > 0 && <span className="tour-arrow">→</span>}
+              <button className="chip" title={`${t.gloss}. ${preset.blurb}`} onClick={() => applyPresetByName(t.name)}>
+                {t.name}
+              </button>
+            </span>
+          );
+        })}
+        {PRESETS.filter((x) => x.group === 'tour' && !TOUR_STEPS.some((t) => t.name === x.name)).map((preset) => (
           <button key={preset.name} className="chip" title={preset.blurb} onClick={() => sim.applyParams(preset.params, true)}>
             {preset.name}
           </button>
         ))}
-        <span className="control-label" style={{ marginLeft: 10 }}>
-          Paper
-        </span>
-        {PRESETS.filter((x) => x.group === 'paper').map((preset) => (
-          <button key={preset.name} className="chip" title={preset.blurb} onClick={() => sim.applyParams(preset.params, true)}>
-            {preset.name.replace('Fig. 1 ', '')}
-          </button>
-        ))}
-        <span className="reroll-group">
-          <span className="control-hint">sliders keep the same random draw —</span>
-          <button className="chip chip-zap" title="Reroll the seed: a fresh random network with the current parameters" onClick={sim.reroll}>
-            ↻ New network
-          </button>
-        </span>
       </div>
-
-      <TourPath onPreset={applyPresetByName} />
 
       <div className="control-row">
         <button className="btn" onClick={() => sim.setRunning(!sim.running)}>
@@ -113,6 +109,9 @@ export function Controls({
         </button>
         <button className="btn" onClick={sim.stepOnce} disabled={sim.running}>
           Step
+        </button>
+        <button className="chip chip-zap" title="Reroll the seed: a fresh random network with the current parameters; sliders keep the same draw" onClick={sim.reroll}>
+          ↻ New network
         </button>
         <button className="chip advanced-toggle" aria-expanded={expanded} onClick={onToggleExpanded}>
           {expanded ? 'Hide mechanism, sliders & regime ▴' : 'Mechanism, sliders & regime ▾'}
@@ -122,6 +121,14 @@ export function Controls({
 
       {expanded && (
         <>
+          <div className="control-row">
+            <span className="control-label">Paper presets</span>
+            {PRESETS.filter((x) => x.group === 'paper').map((preset) => (
+              <button key={preset.name} className="chip" title={preset.blurb} onClick={() => sim.applyParams(preset.params, true)}>
+                {preset.name.replace('Fig. 1 ', '')}
+              </button>
+            ))}
+          </div>
           <div className="stats-rule stats-secondary">
             <span className="stat" title="V = Σ cycle lengths">
               <strong>{sim.V.toLocaleString()}</strong> V

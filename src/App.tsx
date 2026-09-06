@@ -92,62 +92,64 @@ export default function App() {
         <Guide />
       ) : view !== 'instrument' ? null : (
         <>
-          <div className="live-row">
-            <NetworkView sim={sim} onFocus={setFocusNode} captureTheme={captureTheme} />
-            <RasterView sim={sim} captureTheme={captureTheme} />
-          </div>
+          <div className="instrument-top">
+            <div className="stats-rule">
+              <span className="stat">
+                <strong>{sim.t.toLocaleString()}</strong> steps
+              </span>
+              <span className="stat">
+                <strong>{sim.episodes.length}</strong> episodes
+              </span>
+              <span className="stat">
+                <strong>{sim.distinctAttractors}</strong> attractors
+              </span>
+              <span
+                className="stat"
+                title="the random draw behind this network — sliders keep it, “New network” rerolls it"
+              >
+                <strong>{sim.seed.toString(36)}</strong> seed
+              </span>
+              <button
+                className="chip save-run"
+                title="record this run's identity and numbers in Runs"
+                onClick={() =>
+                  putRun({
+                    id: newId(),
+                    createdAt: Date.now(),
+                    note: '',
+                    pinned: false,
+                    seed: sim.seed,
+                    params: sim.params,
+                    engineVersion: ENGINE_VERSION,
+                    T: sim.t,
+                    omega: sim.omega,
+                    V: sim.V,
+                    P: sim.P,
+                    KD: sim.omega * sim.t * sim.t,
+                    episodes: sim.episodes.length,
+                    attractors: sim.distinctAttractors,
+                    realizedK: sim.realizedK,
+                    source: 'instrument',
+                  })
+                }
+              >
+                save run
+              </button>
+            </div>
 
-          <div className="stats-rule">
-            <span className="stat">
-              <strong>{sim.t.toLocaleString()}</strong> steps
-            </span>
-            <span className="stat">
-              <strong>{sim.episodes.length}</strong> episodes
-            </span>
-            <span className="stat">
-              <strong>{sim.distinctAttractors}</strong> attractors
-            </span>
-            <span
-              className="stat"
-              title="the random draw behind this network — sliders keep it, “New network” rerolls it"
-            >
-              <strong>{sim.seed.toString(36)}</strong> seed
-            </span>
-            <button
-              className="chip save-run"
-              title="record this run's identity and numbers in Runs"
-              onClick={() =>
-                putRun({
-                  id: newId(),
-                  createdAt: Date.now(),
-                  note: '',
-                  pinned: false,
-                  seed: sim.seed,
-                  params: sim.params,
-                  engineVersion: ENGINE_VERSION,
-                  T: sim.t,
-                  omega: sim.omega,
-                  V: sim.V,
-                  P: sim.P,
-                  KD: sim.omega * sim.t * sim.t,
-                  episodes: sim.episodes.length,
-                  attractors: sim.distinctAttractors,
-                  realizedK: sim.realizedK,
-                  source: 'instrument',
-                })
-              }
-            >
-              save run
-            </button>
-          </div>
+            <Controls
+              sim={sim}
+              expanded={controlsExpanded}
+              onToggleExpanded={() => setControlsExpanded((v) => !v)}
+              captureTheme={captureTheme}
+              onToggleCaptureTheme={() => setCaptureTheme((v) => !v)}
+            />
 
-          <Controls
-            sim={sim}
-            expanded={controlsExpanded}
-            onToggleExpanded={() => setControlsExpanded((v) => !v)}
-            captureTheme={captureTheme}
-            onToggleCaptureTheme={() => setCaptureTheme((v) => !v)}
-          />
+            <div className="live-row">
+              <NetworkView sim={sim} onFocus={setFocusNode} captureTheme={captureTheme} />
+              <RasterView sim={sim} captureTheme={captureTheme} />
+            </div>
+          </div>
 
           <RuleTables sim={sim} />
 

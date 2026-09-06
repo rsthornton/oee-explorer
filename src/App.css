@@ -107,7 +107,7 @@ body {
   gap: 0;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--border);
-  margin: 14px 0 0;
+  margin: 8px 0 0;
 }
 
 .stats-rule.stats-secondary {
@@ -316,10 +316,28 @@ body {
   font-weight: 500;
 }
 
+/* the control band sits above the instrument on wide screens and below it on
+   phones, where the picture has to come first */
+
+.instrument-top {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 720px) {
+  .instrument-top .stats-rule,
+  .instrument-top .controls {
+    order: 2;
+  }
+  .instrument-top .live-row {
+    order: 1;
+  }
+}
+
 /* controls — a quiet toolbar, not a card */
 
 .controls {
-  padding: 12px 0 14px;
+  padding: 8px 0 10px;
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
