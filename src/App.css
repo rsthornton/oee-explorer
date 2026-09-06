@@ -102,10 +102,17 @@ body {
 
 .stats-rule {
   display: flex;
+  flex-wrap: wrap;
+  row-gap: 4px;
   gap: 0;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--border);
-  margin: 14px 0 0;
+  margin: 8px 0 0;
+}
+
+.stats-rule.stats-secondary {
+  border-top: none;
+  margin: 0 0 10px;
 }
 
 .stats-rule .stat {
@@ -309,10 +316,28 @@ body {
   font-weight: 500;
 }
 
+/* the control band sits above the instrument on wide screens and below it on
+   phones, where the picture has to come first */
+
+.instrument-top {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 720px) {
+  .instrument-top .stats-rule,
+  .instrument-top .controls {
+    order: 2;
+  }
+  .instrument-top .live-row {
+    order: 1;
+  }
+}
+
 /* controls — a quiet toolbar, not a card */
 
 .controls {
-  padding: 12px 0 14px;
+  padding: 8px 0 10px;
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -363,6 +388,10 @@ body {
 
 .chip-zap {
   color: var(--accent-ink);
+}
+
+.advanced-toggle {
+  margin-left: auto;
 }
 
 .reroll-group {
@@ -451,6 +480,21 @@ body {
   color: var(--ink-muted);
 }
 
+/* capture theme: dark ground for a clip in a dark feed, or a screenshot to
+   match one. Toggled from the record control; default stays light. */
+.panel.capture-theme {
+  background: #0b1220;
+}
+
+.panel.capture-theme .panel-title {
+  color: #5eead4;
+}
+
+.panel.capture-theme .panel-note,
+.panel.capture-theme .raster-gutter span {
+  color: #94a3b8;
+}
+
 .live-row {
   display: flex;
   gap: 26px;
@@ -464,8 +508,9 @@ body {
    never widen it (a basis of auto let the caption shove the raster
    panel to zero width) */
 .live-row .panel-network {
-  flex: 0 0 340px;
-  max-width: 340px;
+  flex: 0 1 340px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .live-row .panel:last-child {
@@ -476,6 +521,10 @@ body {
 .network-canvas {
   display: block;
   cursor: pointer;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  aspect-ratio: 1 / 1;
 }
 
 .raster-wrap {
@@ -813,4 +862,70 @@ body {
 
 .rule-table tr.reading td.out {
   color: var(--accent-ink);
+}
+
+/* narrow viewports: the network and raster panels stop sitting side by side
+   and stack into one column, each taking the full column width instead of
+   the network staying pinned at its 340px desktop figure size */
+
+@media (max-width: 720px) {
+  .live-row {
+    flex-direction: column;
+  }
+
+  .live-row .panel-network,
+  .live-row .panel:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .network-canvas {
+    max-width: none;
+  }
+}
+
+/* phone viewports: drop the chrome that only fits a wide toolbar and let the
+   masthead stack over the hero instead of squeezing both onto one line */
+
+@media (max-width: 480px) {
+  .app {
+    padding: 20px 16px 40px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .masthead h1 {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    max-width: none;
+  }
+
+  .hero {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .hero-value {
+    font-size: 24px;
+  }
+
+  .tab-hint {
+    display: none;
+  }
+
+  .control-hint {
+    display: none;
+  }
+
+  .reroll-group {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
 }

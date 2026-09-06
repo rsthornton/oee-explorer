@@ -7,18 +7,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
-import { OMEGA_LINE, GRID, INK_MUTED } from './theme';
+import { OMEGA_LINE, GRID, INK_MUTED, CAPTURE_GRID, CAPTURE_INK_MUTED } from './theme';
 import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
 import { fmtOmega } from './format';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const H = 132;
 const PAD_B = 24;
 const PAD_T = 8;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
-export function OmegaChart({ sim }: { sim: SimHandle }) {
+export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hover, setHover] = useState<{ x: number; t: number; omega: number } | null>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
 
   const samples = sim.omegaSamples;
   const tMax = Math.max(sim.t, 1);
@@ -38,14 +40,17 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, PLOT_W, H);
 
+    const gridColor = captureTheme ? CAPTURE_GRID : GRID;
+    const inkMuted = captureTheme ? CAPTURE_INK_MUTED : INK_MUTED;
+
     const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
     const plotH = H - PAD_T - PAD_B;
     const xOf = (t: number) => PLOT_PAD_L + (t / tMax) * plotW;
     const yOf = (v: number) => PAD_T + plotH - (v / yMax) * plotH;
 
     // recessive grid + y labels
-    ctx.strokeStyle = GRID;
-    ctx.fillStyle = INK_MUTED;
+    ctx.strokeStyle = gridColor;
+    ctx.fillStyle = inkMuted;
     ctx.font = `10px ${MONO}`;
     ctx.lineWidth = 1;
     for (const frac of [0, 0.5, 1]) {
@@ -66,7 +71,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       ctx.beginPath();
       ctx.moveTo(x, H - PAD_B + 2);
       ctx.lineTo(x, H - PAD_B + 6);
-      ctx.strokeStyle = INK_MUTED;
+      ctx.strokeStyle = inkMuted;
       ctx.stroke();
       ctx.fillText(Math.round(t).toLocaleString(), Math.min(Math.max(x, 20), PLOT_W - 30), H - 6);
     }
@@ -85,7 +90,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
     ctx.stroke();
 
     if (hover) {
-      ctx.strokeStyle = INK_MUTED;
+      ctx.strokeStyle = inkMuted;
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
@@ -94,7 +99,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
       ctx.stroke();
       ctx.setLineDash([]);
     }
-  }, [sim.frame, samples, tMax, yMax, hover]);
+  }, [sim.frame, samples, tMax, yMax, hover, resizeTick, captureTheme]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -114,7 +119,7 @@ export function OmegaChart({ sim }: { sim: SimHandle }) {
   };
 
   return (
-    <div className="panel">
+    <div className={'panel' + (captureTheme ? ' capture-theme' : '')}>
       <div className="panel-head">
         <span className="panel-title">Ω over time</span>
         <span className="panel-note">

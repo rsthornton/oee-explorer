@@ -18,6 +18,7 @@ import type { SimHandle } from './useSimulation';
 import type { Episode } from '../engine/episodes';
 import { attractorColor, TRANSIENT, INK_MUTED } from './theme';
 import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const H = 152;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -29,6 +30,7 @@ const ARC_ZONE = H - BASE_Y - STRIP_H - 4;
 export function RibbonView({ sim }: { sim: SimHandle }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hover, setHover] = useState<{ ep: Episode; x: number } | null>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
 
   const tMax = Math.max(sim.t, 1);
   const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
@@ -105,7 +107,7 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
         ctx.textAlign = 'left';
       }
     }
-  }, [sim, sim.frame, tMax, plotW]);
+  }, [sim, sim.frame, tMax, plotW, resizeTick]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

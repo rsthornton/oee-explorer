@@ -11,7 +11,8 @@
     "reproduce": "esbuild scripts/reproduce/sweep.ts --bundle --platform=node --format=esm --outfile=reference/.sweep.mjs --log-level=error && node reference/.sweep.mjs",
     "ra-export": "esbuild scripts/ra/export.ts --bundle --platform=node --format=esm --outfile=reference/.ra-export.mjs --log-level=error && node reference/.ra-export.mjs",
     "parity": "esbuild scripts/parity/export.ts --bundle --platform=node --format=esm --outfile=reference/.parity-export.mjs --log-level=error && node reference/.parity-export.mjs reference/.parity && reference/.venv/bin/python reference/parity.py reference/.parity",
-    "fixtures": "esbuild scripts/fixtures/export.ts --bundle --platform=node --format=esm --outfile=reference/.fixtures-export.mjs --log-level=error --external:node:* && node reference/.fixtures-export.mjs fixtures"
+    "fixtures": "esbuild scripts/fixtures/export.ts --bundle --platform=node --format=esm --outfile=reference/.fixtures-export.mjs --log-level=error --external:node:* && node reference/.fixtures-export.mjs fixtures",
+    "ux-check": "node scripts/ux/check.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -24,6 +25,7 @@
     "@vitejs/plugin-react": "^6.0.4",
     "esbuild": "^0.28.2",
     "oxlint": "^1.75.0",
+    "playwright-core": "^1.63.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
   }

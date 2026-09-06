@@ -7,19 +7,69 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
-import { RASTER_ON, RASTER_OFF, GRID, OMEGA_LINE, TOKEN_C0, TOKEN_C1 } from './theme';
+import { PULSE_DURATION_MS } from './useSimulation';
+import type { Network } from '../engine/network';
+import {
+  RASTER_ON,
+  RASTER_OFF,
+  GRID,
+  OMEGA_LINE,
+  TOKEN_C0,
+  TOKEN_C1,
+  PULSE,
+  attractorColor,
+  tint,
+  lerpColor,
+  glowSprite,
+} from './theme';
+import { useResizeRepaint } from './useResizeRepaint';
 
 const TOK_FILL = [RASTER_OFF, RASTER_ON, TOKEN_C0, TOKEN_C1];
 
-const SIZE = 340;
+const DEFAULT_SIZE = 340;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const EASE_MS = 120; // node fill transition
+const PULSE_RADIUS = 2.4;
 
-export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: number | null) => void }) {
+export function NetworkView({
+  sim,
+  onFocus,
+  captureTheme,
+}: {
+  sim: SimHandle;
+  onFocus?: (i: number | null) => void;
+  captureTheme?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hovered, setHovered] = useState<number | null>(null);
+  const resizeTick = useResizeRepaint(canvasRef);
+  // per-node fill easing: the token this node last settled on, the one it's
+  // easing away from, and when that transition started
+  const lastTokRef = useRef<Int8Array>(new Int8Array(0));
+  const easeFromRef = useRef<Int8Array>(new Int8Array(0));
+  const easeStartRef = useRef<Float64Array>(new Float64Array(0));
+  const easedNetRef = useRef<Network | null>(null);
+  // forces extra repaints while paused so a single Step's pulse and ease still
+  // play out; while running, the simulation's own per-frame updates cover it
+  const [animTick, setAnimTick] = useState(0);
+  // the canvas is square (aspect-ratio: 1/1 in CSS) so its own displayed width
+  // is the whole drawing surface; read it fresh whenever the box changes
+  // (breakpoint change, orientation flip, a plain window resize)
+  const size = canvasRef.current?.clientWidth || DEFAULT_SIZE;
 
   const net = sim.network;
   const layout = sim.layout;
+
+  // the live episode, if the tracker is currently inside one — its attractor
+  // hue tints the whole diagram; between episodes (transient wandering) the
+  // diagram stays neutral slate
+  const liveEpisode = sim.episodes.length > 0 ? sim.episodes[sim.episodes.length - 1] : null;
+  const hue = liveEpisode && liveEpisode.tEnd === null ? attractorColor(liveEpisode.attractorId) : null;
+  const wireColor = hue ? tint(hue, 0.5) : GRID;
+  const tokFill = useMemo(
+    () => (hue ? [tint(hue, 0.78), hue, TOKEN_C0, TOKEN_C1] : TOK_FILL),
+    [hue],
+  );
 
   // regulator list per node, for hover highlighting
   const inEdges = useMemo(() => {
@@ -38,19 +88,29 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     if (!canvas || !net || !layout) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (canvas.width !== SIZE * DPR) {
-      canvas.width = SIZE * DPR;
-      canvas.height = SIZE * DPR;
+    if (canvas.width !== size * DPR) {
+      canvas.width = size * DPR;
+      canvas.height = size * DPR;
     }
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.clearRect(0, 0, size, size);
 
-    const px = (i: number) => layout.x[i] * SIZE;
-    const py = (i: number) => layout.y[i] * SIZE;
+    const now = performance.now();
+    const state = sim.state;
+    if (easedNetRef.current !== net) {
+      easedNetRef.current = net;
+      lastTokRef.current = new Int8Array(net.n);
+      easeFromRef.current = new Int8Array(net.n);
+      easeStartRef.current = new Float64Array(net.n).fill(-Infinity);
+      for (let i = 0; i < net.n; i++) lastTokRef.current[i] = state ? state[i] & 3 : 0;
+    }
+
+    const px = (i: number) => layout.x[i] * size;
+    const py = (i: number) => layout.y[i] * size;
 
     // edges — faint; hover promotes a node's in-edges
     ctx.lineWidth = 1;
-    ctx.strokeStyle = GRID;
+    ctx.strokeStyle = wireColor;
     ctx.beginPath();
     for (let i = 0; i < net.n; i++) {
       if (hovered === i) continue;
@@ -75,15 +135,31 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     }
 
     // nodes — larger with numbers at small N, where tracing individuals is the point
-    const state = sim.state;
     const small = net.n <= 12;
     const r = small ? 11 : 3.6;
+    const glowR = r * 3.2;
+    const glowColor = hue ?? OMEGA_LINE;
+    const sprite = captureTheme ? glowSprite(glowColor, glowR) : null;
     for (let i = 0; i < net.n; i++) {
       const tok = state ? state[i] & 3 : 0;
       const on = tok !== 0;
+      if (lastTokRef.current[i] !== tok) {
+        easeFromRef.current[i] = lastTokRef.current[i];
+        easeStartRef.current[i] = now;
+        lastTokRef.current[i] = tok;
+      }
+      const elapsed = now - easeStartRef.current[i];
+      const fill =
+        elapsed >= EASE_MS ? tokFill[tok] : lerpColor(tokFill[easeFromRef.current[i]], tokFill[tok], elapsed / EASE_MS);
+      if (sprite && on) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.drawImage(sprite, px(i) - glowR, py(i) - glowR, glowR * 2, glowR * 2);
+        ctx.restore();
+      }
       ctx.beginPath();
       ctx.arc(px(i), py(i), hovered === i ? r + 2 : r, 0, Math.PI * 2);
-      ctx.fillStyle = TOK_FILL[tok];
+      ctx.fillStyle = fill;
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = hovered === i ? OMEGA_LINE : '#94a3b8';
@@ -98,18 +174,73 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     }
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-  }, [sim.frame, net, layout, hovered, inEdges, sim.state]);
+
+    // signal pulses — a dot per regulator wire, in transit toward the node whose
+    // state it just decided; this is what makes the synchronous update visible
+    // as computation rather than a color flip
+    ctx.fillStyle = PULSE;
+    for (const ev of sim.changeEvents) {
+      const elapsed = now - ev.t;
+      if (elapsed < 0 || elapsed > PULSE_DURATION_MS) continue;
+      const frac = elapsed / PULSE_DURATION_MS;
+      for (const reg of inEdges[ev.node] ?? []) {
+        if (reg === ev.node) continue;
+        const x = px(reg) + (px(ev.node) - px(reg)) * frac;
+        const y = py(reg) + (py(ev.node) - py(reg)) * frac;
+        ctx.beginPath();
+        ctx.arc(x, y, PULSE_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }, [
+    sim.frame,
+    sim.state,
+    sim.changeEvents,
+    net,
+    layout,
+    hovered,
+    inEdges,
+    size,
+    resizeTick,
+    wireColor,
+    tokFill,
+    animTick,
+    captureTheme,
+    hue,
+  ]);
+
+  // while paused, keep repainting until the last pulse/ease from a manual Step
+  // or a click-flip has finished — the run loop's own frames cover this while running
+  useEffect(() => {
+    if (sim.running) return;
+    let raf = 0;
+    const stillAnimating = () => {
+      const now = performance.now();
+      if (sim.changeEvents.some((ev) => now - ev.t < PULSE_DURATION_MS)) return true;
+      const starts = easeStartRef.current;
+      for (let i = 0; i < starts.length; i++) {
+        if (now - starts[i] < EASE_MS) return true;
+      }
+      return false;
+    };
+    const loop = () => {
+      setAnimTick((t) => t + 1);
+      if (stillAnimating()) raf = requestAnimationFrame(loop);
+    };
+    if (stillAnimating()) raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [sim.running, sim.frame, sim.changeEvents]);
 
   const nodeAt = (e: React.MouseEvent<HTMLCanvasElement>): number | null => {
     if (!net || !layout) return null;
     const rect = e.currentTarget.getBoundingClientRect();
-    const mx = ((e.clientX - rect.left) / rect.width) * SIZE;
-    const my = ((e.clientY - rect.top) / rect.height) * SIZE;
+    const mx = ((e.clientX - rect.left) / rect.width) * size;
+    const my = ((e.clientY - rect.top) / rect.height) * size;
     let best = -1;
     let bestD = 12 * 12;
     for (let i = 0; i < net.n; i++) {
-      const dx = layout.x[i] * SIZE - mx;
-      const dy = layout.y[i] * SIZE - my;
+      const dx = layout.x[i] * size - mx;
+      const dy = layout.y[i] * size - my;
       const d = dx * dx + dy * dy;
       if (d < bestD) {
         bestD = d;
@@ -120,7 +251,7 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
   };
 
   return (
-    <div className="panel panel-network">
+    <div className={'panel panel-network' + (captureTheme ? ' capture-theme' : '')}>
       <div className="panel-head">
         <span className="panel-title">The network</span>
         <span className="panel-note">
@@ -131,7 +262,6 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
       <canvas
         ref={canvasRef}
         className="network-canvas"
-        style={{ width: SIZE, height: SIZE }}
         onMouseMove={(e) => {
           const i = nodeAt(e);
           setHovered(i);
