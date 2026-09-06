@@ -20,6 +20,7 @@ import {
   attractorColor,
   tint,
   lerpColor,
+  glowSprite,
 } from './theme';
 import { useResizeRepaint } from './useResizeRepaint';
 
@@ -30,7 +31,15 @@ const DPR = Math.min(window.devicePixelRatio || 1, 2);
 const EASE_MS = 120; // node fill transition
 const PULSE_RADIUS = 2.4;
 
-export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: number | null) => void }) {
+export function NetworkView({
+  sim,
+  onFocus,
+  captureTheme,
+}: {
+  sim: SimHandle;
+  onFocus?: (i: number | null) => void;
+  captureTheme?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const resizeTick = useResizeRepaint(canvasRef);
@@ -128,6 +137,9 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
     // nodes — larger with numbers at small N, where tracing individuals is the point
     const small = net.n <= 12;
     const r = small ? 11 : 3.6;
+    const glowR = r * 3.2;
+    const glowColor = hue ?? OMEGA_LINE;
+    const sprite = captureTheme ? glowSprite(glowColor, glowR) : null;
     for (let i = 0; i < net.n; i++) {
       const tok = state ? state[i] & 3 : 0;
       const on = tok !== 0;
@@ -139,6 +151,12 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
       const elapsed = now - easeStartRef.current[i];
       const fill =
         elapsed >= EASE_MS ? tokFill[tok] : lerpColor(tokFill[easeFromRef.current[i]], tokFill[tok], elapsed / EASE_MS);
+      if (sprite && on) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.drawImage(sprite, px(i) - glowR, py(i) - glowR, glowR * 2, glowR * 2);
+        ctx.restore();
+      }
       ctx.beginPath();
       ctx.arc(px(i), py(i), hovered === i ? r + 2 : r, 0, Math.PI * 2);
       ctx.fillStyle = fill;
@@ -174,7 +192,22 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
         ctx.fill();
       }
     }
-  }, [sim.frame, sim.state, sim.changeEvents, net, layout, hovered, inEdges, size, resizeTick, wireColor, tokFill, animTick]);
+  }, [
+    sim.frame,
+    sim.state,
+    sim.changeEvents,
+    net,
+    layout,
+    hovered,
+    inEdges,
+    size,
+    resizeTick,
+    wireColor,
+    tokFill,
+    animTick,
+    captureTheme,
+    hue,
+  ]);
 
   // while paused, keep repainting until the last pulse/ease from a manual Step
   // or a click-flip has finished — the run loop's own frames cover this while running
@@ -218,7 +251,7 @@ export function NetworkView({ sim, onFocus }: { sim: SimHandle; onFocus?: (i: nu
   };
 
   return (
-    <div className="panel panel-network">
+    <div className={'panel panel-network' + (captureTheme ? ' capture-theme' : '')}>
       <div className="panel-head">
         <span className="panel-title">The network</span>
         <span className="panel-note">

@@ -462,6 +462,21 @@ body {
   color: var(--ink-muted);
 }
 
+/* capture theme: dark ground for a clip in a dark feed, or a screenshot to
+   match one. Toggled from the record control; default stays light. */
+.panel.capture-theme {
+  background: #0b1220;
+}
+
+.panel.capture-theme .panel-title {
+  color: #5eead4;
+}
+
+.panel.capture-theme .panel-note,
+.panel.capture-theme .raster-gutter span {
+  color: #94a3b8;
+}
+
 .live-row {
   display: flex;
   gap: 26px;

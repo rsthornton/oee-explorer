@@ -58,10 +58,14 @@ export function Controls({
   sim,
   expanded,
   onToggleExpanded,
+  captureTheme,
+  onToggleCaptureTheme,
 }: {
   sim: SimHandle;
   expanded: boolean;
   onToggleExpanded: () => void;
+  captureTheme: boolean;
+  onToggleCaptureTheme: () => void;
 }) {
   const p = sim.params;
   const set = (patch: Partial<SimParams>) => sim.applyParams({ ...p, ...patch });
@@ -113,7 +117,7 @@ export function Controls({
         <button className="chip advanced-toggle" aria-expanded={expanded} onClick={onToggleExpanded}>
           {expanded ? 'Hide mechanism, sliders & regime ▴' : 'Mechanism, sliders & regime ▾'}
         </button>
-        <RecordControl sim={sim} />
+        <RecordControl sim={sim} captureTheme={captureTheme} onToggleCaptureTheme={onToggleCaptureTheme} />
       </div>
 
       {expanded && (

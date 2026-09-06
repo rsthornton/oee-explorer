@@ -15,11 +15,21 @@
 import { useEffect, useRef } from 'react';
 import type { SimHandle } from './useSimulation';
 import { RASTER_WINDOW } from './useSimulation';
-import { RASTER_ON, RASTER_OFF, TOKEN_C0, TOKEN_C1, attractorColor } from './theme';
+import {
+  RASTER_ON,
+  RASTER_OFF,
+  TOKEN_C0,
+  TOKEN_C1,
+  CAPTURE_RASTER_ON,
+  CAPTURE_RASTER_OFF,
+  attractorColor,
+} from './theme';
 import { useResizeRepaint } from './useResizeRepaint';
 
 const ON_RGB = hexToRgb(RASTER_ON);
 const OFF_RGB = hexToRgb(RASTER_OFF);
+const ON_RGB_CAPTURE = hexToRgb(CAPTURE_RASTER_ON);
+const OFF_RGB_CAPTURE = hexToRgb(CAPTURE_RASTER_OFF);
 const C0_RGB = hexToRgb(TOKEN_C0);
 const C1_RGB = hexToRgb(TOKEN_C1);
 
@@ -59,7 +69,7 @@ function offRgbFor(id: number): [number, number, number] {
   return rgb;
 }
 
-export function RasterView({ sim }: { sim: SimHandle }) {
+export function RasterView({ sim, captureTheme }: { sim: SimHandle; captureTheme?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const resizeTick = useResizeRepaint(canvasRef);
 
@@ -76,6 +86,9 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       canvas.height = rows;
     }
 
+    const baseOnRgb = captureTheme ? ON_RGB_CAPTURE : ON_RGB;
+    const baseOffRgb = captureTheme ? OFF_RGB_CAPTURE : OFF_RGB;
+
     const img = ctx.createImageData(cols, rows);
     const data = img.data;
     const count = sim.rasterCount; // capped at cols; valid range for rasterAt(x)
@@ -87,8 +100,8 @@ export function RasterView({ sim }: { sim: SimHandle }) {
 
     for (let x = 0; x < cols; x++) {
       const state = x < count ? sim.rasterAt(x) : null;
-      let onRgb = ON_RGB;
-      let offRgb = OFF_RGB;
+      let onRgb = baseOnRgb;
+      let offRgb = baseOffRgb;
       if (state !== null) {
         const tAbs = winStart + x;
         while (epIdx < episodes.length && (episodes[epIdx].tEnd ?? sim.t) < tAbs) epIdx++;
@@ -101,7 +114,7 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       for (let y = 0; y < rows; y++) {
         const p = (y * cols + x) * 4;
         const tok = state === null ? 0 : state[y] & 3;
-        const rgb = state === null ? OFF_RGB : tok === 0 ? offRgb : tok === 1 ? onRgb : tok === 2 ? C0_RGB : C1_RGB;
+        const rgb = state === null ? baseOffRgb : tok === 0 ? offRgb : tok === 1 ? onRgb : tok === 2 ? C0_RGB : C1_RGB;
         data[p] = rgb[0];
         data[p + 1] = rgb[1];
         data[p + 2] = rgb[2];
@@ -109,10 +122,10 @@ export function RasterView({ sim }: { sim: SimHandle }) {
       }
     }
     ctx.putImageData(img, 0, 0);
-  }, [sim, sim.frame, sim.n, resizeTick]);
+  }, [sim, sim.frame, sim.n, resizeTick, captureTheme]);
 
   return (
-    <div className="panel">
+    <div className={'panel' + (captureTheme ? ' capture-theme' : '')}>
       <div className="panel-head">
         <span className="panel-title">State raster</span>
         <span className="panel-note">

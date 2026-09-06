@@ -24,6 +24,7 @@ export default function App() {
   const sim = useSimulation(DEFAULT_PARAMS);
   const [view, setView] = useState<View>('instrument');
   const [focusNode, setFocusNode] = useState<number | null>(null);
+  const [captureTheme, setCaptureTheme] = useState(false);
   const [controlsExpanded, setControlsExpanded] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem(CONTROLS_EXPANDED_KEY) === '1';
@@ -92,8 +93,8 @@ export default function App() {
       ) : view !== 'instrument' ? null : (
         <>
           <div className="live-row">
-            <NetworkView sim={sim} onFocus={setFocusNode} />
-            <RasterView sim={sim} />
+            <NetworkView sim={sim} onFocus={setFocusNode} captureTheme={captureTheme} />
+            <RasterView sim={sim} captureTheme={captureTheme} />
           </div>
 
           <div className="stats-rule">
@@ -144,6 +145,8 @@ export default function App() {
             sim={sim}
             expanded={controlsExpanded}
             onToggleExpanded={() => setControlsExpanded((v) => !v)}
+            captureTheme={captureTheme}
+            onToggleCaptureTheme={() => setCaptureTheme((v) => !v)}
           />
 
           <RuleTables sim={sim} />
@@ -152,7 +155,7 @@ export default function App() {
 
           <div className="run-figure">
             <RibbonView sim={sim} />
-            <OmegaChart sim={sim} />
+            <OmegaChart sim={sim} captureTheme={captureTheme} />
           </div>
         </>
       )}

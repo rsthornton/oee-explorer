@@ -10,6 +10,14 @@ import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { PRESETS } from '../engine/presets';
 import { fmtOmega } from './format';
+import {
+  CAPTURE_BG,
+  CAPTURE_BAR_BG,
+  CAPTURE_BORDER,
+  CAPTURE_INK,
+  CAPTURE_INK_MUTED,
+  CAPTURE_ACCENT_INK,
+} from './theme';
 
 type Aspect = '16:9' | '9:16';
 
@@ -28,6 +36,17 @@ const INK = '#1e293b';
 const INK_MUTED = '#64748b';
 const ACCENT_INK = '#0f766e';
 const MONO = '"IBM Plex Mono", ui-monospace, monospace';
+
+// capture theme: the chrome the composite draws for a clip headed to a dark
+// feed. The panels themselves are drawImage'd straight from the live,
+// already-themed source canvases (see App.tsx), so only this bar's own
+// colors need a dark variant here.
+const BG_CAPTURE = CAPTURE_BG;
+const BAR_BG_CAPTURE = CAPTURE_BAR_BG;
+const BORDER_CAPTURE = CAPTURE_BORDER;
+const INK_CAPTURE = CAPTURE_INK;
+const INK_MUTED_CAPTURE = CAPTURE_INK_MUTED;
+const ACCENT_INK_CAPTURE = CAPTURE_ACCENT_INK;
 
 function presetLabel(params: SimHandle['params']): string {
   const match = PRESETS.find((p) => JSON.stringify(p.params) === JSON.stringify(params));
@@ -52,18 +71,34 @@ function fitContain(srcW: number, srcH: number, box: Box): Box {
   return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h };
 }
 
-function drawPanel(ctx: CanvasRenderingContext2D, source: HTMLCanvasElement | null, box: Box) {
-  ctx.strokeStyle = BORDER;
+function drawPanel(ctx: CanvasRenderingContext2D, source: HTMLCanvasElement | null, box: Box, border: string) {
+  ctx.strokeStyle = border;
   ctx.strokeRect(box.x + 0.5, box.y + 0.5, box.w - 1, box.h - 1);
   if (!source || source.width === 0 || source.height === 0) return;
   const rect = fitContain(source.width, source.height, { x: box.x + 1, y: box.y + 1, w: box.w - 2, h: box.h - 2 });
   ctx.drawImage(source, rect.x, rect.y, rect.w, rect.h);
 }
 
-export function RecordControl({ sim }: { sim: SimHandle }) {
+export function RecordControl({
+  sim,
+  captureTheme,
+  onToggleCaptureTheme,
+}: {
+  sim: SimHandle;
+  captureTheme: boolean;
+  onToggleCaptureTheme: () => void;
+}) {
   const [aspect, setAspect] = useState<Aspect>('16:9');
   const [recording, setRecording] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+
+  // read at click time via a ref for the same reason simRef exists below: the
+  // draw loop spans the whole clip and must not freeze the theme at its
+  // click-time value if the prop were to change mid-recording.
+  const captureThemeRef = useRef(captureTheme);
+  useEffect(() => {
+    captureThemeRef.current = captureTheme;
+  }, [captureTheme]);
 
   // draw() runs inside a requestAnimationFrame loop started at click time, so it
   // must read the sim through a ref rather than close over the `sim` prop —
@@ -112,13 +147,20 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
       const landscape = W >= H;
       const margin = Math.round(H * 0.02);
       const headerH = Math.round(H * (landscape ? 0.1 : 0.06));
+      const dark = captureThemeRef.current;
+      const bg = dark ? BG_CAPTURE : BG;
+      const barBg = dark ? BAR_BG_CAPTURE : BAR_BG;
+      const border = dark ? BORDER_CAPTURE : BORDER;
+      const ink = dark ? INK_CAPTURE : INK;
+      const inkMuted = dark ? INK_MUTED_CAPTURE : INK_MUTED;
+      const accentInk = dark ? ACCENT_INK_CAPTURE : ACCENT_INK;
 
-      ctx.fillStyle = BG;
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      ctx.fillStyle = BAR_BG;
+      ctx.fillStyle = barBg;
       ctx.fillRect(0, 0, W, headerH);
-      ctx.strokeStyle = BORDER;
+      ctx.strokeStyle = border;
       ctx.beginPath();
       ctx.moveTo(0, headerH + 0.5);
       ctx.lineTo(W, headerH + 0.5);
@@ -130,17 +172,17 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
       ctx.textBaseline = 'middle';
       ctx.font = `${fontSize}px ${MONO}`;
       ctx.textAlign = 'left';
-      ctx.fillStyle = INK;
+      ctx.fillStyle = ink;
       ctx.fillText(presetLabel(live.params), margin, headerH / 2);
 
       const omegaText = `Ω ${fmtOmega(live.omega)}`;
       ctx.textAlign = 'right';
-      ctx.fillStyle = ACCENT_INK;
+      ctx.fillStyle = accentInk;
       ctx.fillText(omegaText, W - margin, headerH / 2);
       const omegaWidth = ctx.measureText(omegaText).width;
 
       const seedText = `seed ${live.seed.toString(36)}`;
-      ctx.fillStyle = INK_MUTED;
+      ctx.fillStyle = inkMuted;
       ctx.fillText(seedText, W - margin - omegaWidth - margin, headerH / 2);
 
       const contentY = headerH + margin;
@@ -148,23 +190,33 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
 
       if (landscape) {
         const leftW = Math.round(W * 0.42);
-        drawPanel(ctx, network, { x: margin, y: contentY, w: leftW - margin, h: contentH });
+        drawPanel(ctx, network, { x: margin, y: contentY, w: leftW - margin, h: contentH }, border);
         const rightX = leftW + margin / 2;
         const rightW = W - rightX - margin;
         const rasterH = Math.round(contentH * 0.42);
-        drawPanel(ctx, raster, { x: rightX, y: contentY, w: rightW, h: rasterH });
-        drawPanel(ctx, omega, { x: rightX, y: contentY + rasterH + margin, w: rightW, h: contentH - rasterH - margin });
+        drawPanel(ctx, raster, { x: rightX, y: contentY, w: rightW, h: rasterH }, border);
+        drawPanel(
+          ctx,
+          omega,
+          { x: rightX, y: contentY + rasterH + margin, w: rightW, h: contentH - rasterH - margin },
+          border,
+        );
       } else {
         const networkH = Math.round(contentH * 0.42);
         const rasterH = Math.round(contentH * 0.2);
-        drawPanel(ctx, network, { x: margin, y: contentY, w: W - margin * 2, h: networkH });
-        drawPanel(ctx, raster, { x: margin, y: contentY + networkH + margin, w: W - margin * 2, h: rasterH });
-        drawPanel(ctx, omega, {
-          x: margin,
-          y: contentY + networkH + rasterH + margin * 2,
-          w: W - margin * 2,
-          h: contentH - networkH - rasterH - margin * 2,
-        });
+        drawPanel(ctx, network, { x: margin, y: contentY, w: W - margin * 2, h: networkH }, border);
+        drawPanel(ctx, raster, { x: margin, y: contentY + networkH + margin, w: W - margin * 2, h: rasterH }, border);
+        drawPanel(
+          ctx,
+          omega,
+          {
+            x: margin,
+            y: contentY + networkH + rasterH + margin * 2,
+            w: W - margin * 2,
+            h: contentH - networkH - rasterH - margin * 2,
+          },
+          border,
+        );
       }
 
       if (elapsed < DURATION_MS) {
@@ -201,6 +253,13 @@ export function RecordControl({ sim }: { sim: SimHandle }) {
 
   return (
     <span className="reroll-group record-control">
+      <button
+        className={'chip' + (captureTheme ? ' chip-on' : '')}
+        title="dark ground for a clip in a dark feed, or a screenshot to match one — same attractor hues, glow on the active nodes. Default stays light."
+        onClick={onToggleCaptureTheme}
+      >
+        capture theme
+      </button>
       <span className="control-label">Clip</span>
       {(['16:9', '9:16'] as const).map((a) => (
         <button
