@@ -231,7 +231,11 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
             </button>
           )}
           <span className="control-hint">
-            {running ? `running ${mechs.length * sems.length} series in parallel workers` : series.length ? 'done' : 'paper: K 1.1–4.5 step 0.2, T = 10⁶, ≤1,000 networks, δ = 0.02'}
+            {running
+              ? `running ${mechs.length * sems.length} series in parallel workers`
+              : series.length > 0 && !caption
+                ? 'done'
+                : 'paper: K 1.1–4.5 step 0.2, T = 10⁶, ≤1,000 networks, δ = 0.02'}
           </span>
         </div>
         {series.length > 0 && <SweepChart series={series} kMin={kMin} kMax={kMax} />}

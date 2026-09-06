@@ -21,28 +21,28 @@
           "cssWidth": 340,
           "cssHeight": 340,
           "top": 239,
-          "darkSamples": 1215
+          "darkSamples": 1276
         },
         {
           "name": "raster-canvas",
           "cssWidth": 606,
           "cssHeight": 300,
           "top": 239,
-          "darkSamples": 7645
+          "darkSamples": 8198
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 972,
           "cssHeight": 154,
           "top": 978,
-          "darkSamples": 9805
+          "darkSamples": 7807
         },
         {
           "name": "chart-canvas",
           "cssWidth": 972,
           "cssHeight": 134,
           "top": 1157,
-          "darkSamples": 915
+          "darkSamples": 926
         }
       ]
     },
@@ -66,28 +66,28 @@
           "cssWidth": 340,
           "cssHeight": 340,
           "top": 239,
-          "darkSamples": 2142
+          "darkSamples": 1773
         },
         {
           "name": "raster-canvas",
           "cssWidth": 606,
           "cssHeight": 300,
           "top": 239,
-          "darkSamples": 7893
+          "darkSamples": 8023
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 972,
           "cssHeight": 154,
           "top": 978,
-          "darkSamples": 14263
+          "darkSamples": 6686
         },
         {
           "name": "chart-canvas",
           "cssWidth": 972,
           "cssHeight": 134,
           "top": 1157,
-          "darkSamples": 942
+          "darkSamples": 1007
         }
       ]
     },
@@ -111,28 +111,28 @@
           "cssWidth": 358,
           "cssHeight": 358,
           "top": 285,
-          "darkSamples": 1576
+          "darkSamples": 1142
         },
         {
           "name": "raster-canvas",
           "cssWidth": 358,
           "cssHeight": 300,
           "top": 755,
-          "darkSamples": 7617
+          "darkSamples": 7887
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 358,
           "cssHeight": 57,
           "top": 1788,
-          "darkSamples": 12060
+          "darkSamples": 8881
         },
         {
           "name": "chart-canvas",
           "cssWidth": 358,
           "cssHeight": 49,
           "top": 1913,
-          "darkSamples": 940
+          "darkSamples": 956
         }
       ]
     }
@@ -160,28 +160,28 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 239,
-            "darkSamples": 142
+            "darkSamples": 285
           },
           {
             "name": "raster-canvas",
             "cssWidth": 594,
             "cssHeight": 300,
             "top": 239,
-            "darkSamples": 232
+            "darkSamples": 0
           },
           {
             "name": "ribbon-canvas",
             "cssWidth": 972,
             "cssHeight": 154,
             "top": 1154,
-            "darkSamples": 20086
+            "darkSamples": 390
           },
           {
             "name": "chart-canvas",
             "cssWidth": 972,
             "cssHeight": 134,
             "top": 1333,
-            "darkSamples": 913
+            "darkSamples": 964
           }
         ]
       }
@@ -208,14 +208,14 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 239,
-            "darkSamples": 459
+            "darkSamples": 384
           },
           {
             "name": "raster-canvas",
             "cssWidth": 606,
             "cssHeight": 300,
             "top": 239,
-            "darkSamples": 8640
+            "darkSamples": 7680
           },
           {
             "name": "ribbon-canvas",
@@ -229,7 +229,7 @@
             "cssWidth": 972,
             "cssHeight": 134,
             "top": 1157,
-            "darkSamples": 919
+            "darkSamples": 907
           }
         ]
       }
@@ -256,14 +256,14 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 239,
-            "darkSamples": 391
+            "darkSamples": 339
           },
           {
             "name": "raster-canvas",
             "cssWidth": 606,
             "cssHeight": 300,
             "top": 239,
-            "darkSamples": 8160
+            "darkSamples": 6720
           },
           {
             "name": "ribbon-canvas",
@@ -277,7 +277,7 @@
             "cssWidth": 972,
             "cssHeight": 134,
             "top": 1157,
-            "darkSamples": 931
+            "darkSamples": 947
           }
         ]
       }
@@ -304,28 +304,28 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 239,
-            "darkSamples": 1990
+            "darkSamples": 1289
           },
           {
             "name": "raster-canvas",
             "cssWidth": 606,
             "cssHeight": 300,
             "top": 239,
-            "darkSamples": 3319
+            "darkSamples": 8696
           },
           {
             "name": "ribbon-canvas",
             "cssWidth": 972,
             "cssHeight": 154,
             "top": 978,
-            "darkSamples": 3768
+            "darkSamples": 15086
           },
           {
             "name": "chart-canvas",
             "cssWidth": 972,
             "cssHeight": 134,
             "top": 1157,
-            "darkSamples": 950
+            "darkSamples": 992
           }
         ]
       }
@@ -333,7 +333,7 @@
   },
   "fps": {
     "medianFps": 60,
-    "frames": 601
+    "frames": 602
   },
   "resizeRepaint": {
     "before": [
@@ -343,11 +343,11 @@
       ],
       [
         "network-canvas",
-        2105
+        2672
       ],
       [
         "raster-canvas",
-        8172
+        7621
       ],
       [
         "ribbon-canvas",
@@ -365,19 +365,19 @@
       ],
       [
         "network-canvas",
-        2439
+        2808
       ],
       [
         "raster-canvas",
-        8204
+        7494
       ],
       [
         "ribbon-canvas",
-        267
+        0
       ],
       [
         "chart-canvas",
-        824
+        740
       ]
     ],
     "allPainted": true
