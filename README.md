@@ -7,7 +7,8 @@ drives every view.
 
 The metric is from López-Díaz, Rivera Torres, Febres, and Gershenson,
 "Characterizing open-ended evolution through undecidability mechanisms in
-random Boolean networks" (*npj Systems Biology and Applications*, 2026).
+random Boolean networks", *npj Systems Biology and Applications* 12, 152 (2026),
+[doi:10.1038/s41540-026-00770-8](https://doi.org/10.1038/s41540-026-00770-8).
 Ω summarizes the residence-time-weighted contribution of cycle lengths across
 the recurrence episodes a trajectory realizes in a finite window. It is zero
 for a system frozen in one attractor and zero for noise that never recurs.
