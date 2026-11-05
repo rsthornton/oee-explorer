@@ -1,5 +1,5 @@
 /**
- * Guide section 05: where the dynamics on this site show up in research.
+ * Research section: where the dynamics on this site show up in research.
  *
  * Every entry says how strong its link is (the evidence label), what the
  * simulation shows, what the cited work found, and what the simulation does not
@@ -11,11 +11,11 @@
 import { CONNECTIONS, EVIDENCE } from './connectionData';
 import type { ShowTarget } from './showTarget';
 
-export function Connections({ onShow }: { onShow: (t: ShowTarget) => void }) {
+export function Connections({ onShow, num }: { onShow: (t: ShowTarget) => void; num: string }) {
   return (
     <section className="guide-section connections">
       <h2 className="guide-head">
-        <span className="guide-num">05</span>Where this shows up in research
+        <span className="guide-num">{num}</span>Where this shows up in research
       </h2>
       <p>
         Random Boolean networks are a cartoon, and this site runs random ones, not models of any real cell or

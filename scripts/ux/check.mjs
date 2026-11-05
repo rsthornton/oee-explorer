@@ -88,8 +88,18 @@ for (const [w, h] of [[1440, 900], [1440, 720], [390, 844]]) {
     await tab.first().click();
     await wait(2000);
     await page.screenshot({ path: join(out, 'experiments-on-open.png') });
-    const m = await page.evaluate(metricsSrc);
-    result.experiments = { canvases: m.canvases.map((c) => [c.name, c.darkSamples]), chartPainted: m.canvases.some((c) => c.darkSamples > 0) };
+    // first view offers the choices (no curve leads); loading a reproduction paints the chart
+    const loads = page.getByRole('button', { name: /^Load Fig\. \d/ });
+    const offered = await loads.count();
+    let chartPainted = false;
+    if (offered > 0) {
+      await loads.first().click();
+      await wait(800);
+      await page.screenshot({ path: join(out, 'experiments-after-load.png') });
+      const m = await page.evaluate(metricsSrc);
+      chartPainted = m.canvases.some((c) => c.darkSamples > 0);
+    }
+    result.experiments = { reproductionsOffered: offered, chartPainted };
   }
   await ctx.close();
 }
@@ -107,6 +117,7 @@ console.log(JSON.stringify({
   networkVisiblePx_390x844: v['390x844']?.networkVisiblePx,
   medianFpsDeepChaos: result.fps?.medianFps,
   resizeAllPainted: result.resizeRepaint?.allPainted,
-  experimentsChartPainted: result.experiments?.chartPainted,
+  experimentsReproductionsOffered: result.experiments?.reproductionsOffered,
+  experimentsChartPaintedAfterLoad: result.experiments?.chartPainted,
 }, null, 2));
 process.exit(0);

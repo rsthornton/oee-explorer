@@ -1136,3 +1136,41 @@ body {
   color: var(--accent-ink);
   font-weight: 600;
 }
+
+/* Experiments' first view: what the tab does, and the choices, before any curve */
+.sweep-start {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+  margin: 8px 0;
+}
+
+.sweep-start p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 72ch;
+  margin: 0 0 12px;
+}
+
+.sweep-start-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.sweep-start-actions .btn + .btn {
+  background: var(--accent-ink);
+  color: #fff;
+}
+
+.guide-steps {
+  margin: 4px 0 6px;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}

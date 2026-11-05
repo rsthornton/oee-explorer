@@ -1,27 +1,10 @@
 /**
- * The Guide view: everything a reader needs that is not the instrument
- * itself. The story, a suggested path through the presets, how to read
- * each view, what Ω means, and provenance. Moving this here keeps the
- * Instrument view's captions to one line each.
+ * The Guide view: what this is and how to use it. The story, four steps to
+ * start, how to read each view, and what Ω means. Everything deeper (the
+ * mechanisms, experiments, research connections, provenance) is on Research.
  */
 
-import { useEffect } from 'react';
-import type { ShowTarget } from './showTarget';
-import { Connections } from './Connections';
-
-interface GuideProps {
-  onShow: (t: ShowTarget) => void;
-  /** a Connections entry to scroll to on open */
-  anchor: { id: string; nonce: number } | null;
-}
-
-export function Guide({ onShow, anchor }: GuideProps) {
-  useEffect(() => {
-    if (!anchor) return;
-    const el = document.getElementById(`conn-${anchor.id}`);
-    el?.scrollIntoView({ block: 'start' });
-  }, [anchor]);
-
+export function Guide() {
   return (
     <div className="guide">
       <section className="guide-section">
@@ -44,11 +27,30 @@ export function Guide({ onShow, anchor }: GuideProps) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">01</span>Reading the instrument</h2>
+        <h2 className="guide-head"><span className="guide-num">01</span>How to use it</h2>
+        <ol className="guide-steps">
+          <li>
+            On <strong>Instrument</strong>, click through <em>A good first path</em>, from Tiny World to The Switcher.
+            The line under the chips says what each stop shows.
+          </li>
+          <li>
+            Watch the <strong>state raster</strong>: repeating texture means the network is in a loop. Under it, each bar
+            of the <strong>ribbon</strong> is one loop, and Ω is how much ink the bars add up to.
+          </li>
+          <li>Click a node in the network to flip it, and see whether the run falls into a different loop.</li>
+          <li>
+            Open <strong>Landscape</strong> to see every possible state of a small network at once, and how a context
+            switch rearranges them.
+          </li>
+        </ol>
+      </section>
+
+      <section className="guide-section">
+        <h2 className="guide-head"><span className="guide-num">02</span>Reading each view</h2>
         <dl className="guide-list">
           <dt>The network</dt>
           <dd>
-            The wiring itself. Dark nodes are ON. Hover a node to see its inputs. Click one to
+            The wiring itself. Filled nodes are ON, in the color of the loop the network is in; moving dots are changes traveling along wires. Hover a node to see its inputs. Click one to
             flip it: a one-bit nudge. In a frozen network the nudge is absorbed; near the critical
             regime it can knock the whole system into a different loop.
           </dd>
@@ -96,7 +98,7 @@ export function Guide({ onShow, anchor }: GuideProps) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">02</span>What Ω means</h2>
+        <h2 className="guide-head"><span className="guide-num">03</span>What Ω means</h2>
         <div className="callout">
           <span className="callout-formula">Ω = Σ k·d / t²</span>
           <p>
@@ -119,72 +121,9 @@ export function Guide({ onShow, anchor }: GuideProps) {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">03</span>The mechanisms</h2>
         <p>
-          The paper compares classical dynamics with five ways of loosening them. In the code every one
-          is the same kind of thing: some truth-table entries are rewritten at build time, and a small
-          rule says how a rewritten entry is read. The step trace on the Instrument shows that rule firing.
-        </p>
-        <dl className="guide-list">
-          <dt>Context switching (PBN)</dt>
-          <dd>Several rule tables over the same wiring; with probability σ each step, the network switches which table it reads.</dd>
-          <dt>Paraconsistent</dt>
-          <dd>
-            Some entries become contradictions. A node reading one takes the unanimous input if there is one, otherwise a
-            contradiction token carrying the majority (amber in the raster). In the reference code a contradiction token used
-            as an input makes the reader flip a coin.
-          </dd>
-          <dt>Modal</dt>
-          <dd>
-            Each node is given a few "accessible" nodes. Some entries become POSSIBLE (1 if any accessible node is ON) or
-            NECESSARY (its bit if all accessible nodes are ON, else 0).
-          </dd>
-          <dt>Quantum-inspired</dt>
-          <dd>
-            Some entries become SUPERPOSED and collapse to a coin flip when read; some node pairs are coupled so one copies the
-            other. In the reference code the coupling is unreachable; "as described in paper" makes it override the update.
-          </dd>
-          <dt>Rule mutation (ARM)</dt>
-          <dd>
-            Every entry should flip with probability µ when read. The reference code never applies the flip: its entries fall
-            through to the contradiction resolver, a majority vote. "As described in paper" applies the flip.
-          </dd>
-        </dl>
-        <p>
-          <mark className="hl">Faithful to code</mark> runs exactly what the reference code runs, quirks included.{' '}
-          <mark className="hl">As described in paper</mark> runs the Methods section as written. Where the two disagree, the
-          disagreement is itself a measurement, and a question for the authors rather than a verdict.
-        </p>
-      </section>
-
-      <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">04</span>Experiments and runs</h2>
-        <p>
-          Experiments runs the paper's comparison: Ω against connectivity K, averaged over many networks per K, with the
-          reference's stopping rule (batches continue until the 95% confidence half-width drops below δ). Several mechanisms
-          run in parallel and draw live. The paired comparison runs the Instrument's current network under several mechanisms
-          at once, which is how the paper isolates a mechanism's effect from the luck of the draw. Runs keeps every saved run
-          as numbers: Ω, V, P, episodes, attractors, seed, and a note; replay any of them, export all as CSV or JSON.
-        </p>
-      </section>
-
-      <Connections onShow={onShow} />
-
-      <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">06</span>Provenance</h2>
-        <p>
-          The metric and the mechanisms compared here are from{' '}
-          <a href="https://doi.org/10.1038/s41540-026-00770-8" target="_blank" rel="noreferrer">
-            López-Díaz, Rivera Torres, Febres &amp; Gershenson, npj Systems Biology &amp;
-            Applications (2026)
-          </a>
-          . The simulation is a TypeScript port of their{' '}
-          <a href="https://github.com/amahury/oee-metric" target="_blank" rel="noreferrer">
-            reference implementation
-          </a>
-          , checked against it: on the same networks and initial states, classical runs match the reference's V,
-          P, KD and Ω exactly, and the stochastic mechanisms match in distribution (the harness is in the repository,{' '}
-          <span className="mono">npm run parity</span>). All six mechanisms and both update regimes are implemented.
+          The mechanisms the paper compares, the ensemble experiments, where these dynamics show up in current research,
+          and how this port was checked against the authors&apos; code are on the <strong>Research</strong> tab.
         </p>
       </section>
     </div>

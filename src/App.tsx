@@ -3,6 +3,7 @@ import { useSimulation } from './ui/useSimulation';
 import { DEFAULT_PARAMS, PRESETS } from './engine/presets';
 import type { ShowTarget, LandscapeFocus } from './ui/showTarget';
 import { Guide } from './ui/Guide';
+import { Research } from './ui/Research';
 import { Controls } from './ui/Controls';
 import { NetworkView } from './ui/NetworkView';
 import { RasterView } from './ui/RasterView';
@@ -18,7 +19,7 @@ import { ENGINE_VERSION } from './lab/run';
 import { fmtOmegaHero } from './ui/format';
 import './App.css';
 
-type View = 'instrument' | 'landscape' | 'experiments' | 'runs' | 'guide';
+type View = 'instrument' | 'landscape' | 'experiments' | 'runs' | 'guide' | 'research';
 
 const CONTROLS_EXPANDED_KEY = 'oee-controls-expanded';
 
@@ -51,10 +52,10 @@ export default function App() {
     setView('landscape');
   };
 
-  // "Where this shows up" from a Landscape panel: open the Guide at that entry
+  // "Where this shows up" from a Landscape panel: open Research at that entry
   const openConnection = (id: string) => {
     setGuideAnchor({ id, nonce: Date.now() });
-    setView('guide');
+    setView('research');
   };
   const [controlsExpanded, setControlsExpanded] = useState<boolean>(() => {
     try {
@@ -111,8 +112,11 @@ export default function App() {
         <button className={view === 'guide' ? 'tab tab-active' : 'tab'} onClick={() => setView('guide')}>
           Guide
         </button>
+        <button className={view === 'research' ? 'tab tab-active' : 'tab'} onClick={() => setView('research')}>
+          Research
+        </button>
         {view === 'instrument' && (
-          <span className="tab-hint">new here? the Guide has the story and how to read each view</span>
+          <span className="tab-hint">new here? the Guide shows how to start and how to read each view</span>
         )}
       </nav>
 
@@ -126,7 +130,9 @@ export default function App() {
       {view === 'landscape' ? (
         <LandscapeView focus={landscapeFocus} onConnection={openConnection} />
       ) : view === 'guide' ? (
-        <Guide onShow={show} anchor={guideAnchor} />
+        <Guide />
+      ) : view === 'research' ? (
+        <Research onShow={show} anchor={guideAnchor} />
       ) : view !== 'instrument' ? null : (
         <>
           <div className="instrument-top">

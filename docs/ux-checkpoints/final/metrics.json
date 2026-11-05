@@ -10,39 +10,32 @@
       "networkVisiblePx": 340,
       "canvases": [
         {
-          "name": "chart-canvas",
-          "cssWidth": 0,
-          "cssHeight": 0,
-          "top": 0,
-          "darkSamples": 16383
-        },
-        {
           "name": "network-canvas",
           "cssWidth": 340,
           "cssHeight": 340,
           "top": 427,
-          "darkSamples": 1722
+          "darkSamples": 1709
         },
         {
           "name": "raster-canvas",
           "cssWidth": 606,
           "cssHeight": 300,
           "top": 427,
-          "darkSamples": 6177
+          "darkSamples": 6123
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 972,
           "cssHeight": 152,
           "top": 855,
-          "darkSamples": 4611
+          "darkSamples": 4635
         },
         {
           "name": "chart-canvas",
           "cssWidth": 972,
           "cssHeight": 132,
           "top": 1037,
-          "darkSamples": 966
+          "darkSamples": 957
         }
       ]
     },
@@ -55,39 +48,32 @@
       "networkVisiblePx": 293,
       "canvases": [
         {
-          "name": "chart-canvas",
-          "cssWidth": 0,
-          "cssHeight": 0,
-          "top": 0,
-          "darkSamples": 16383
-        },
-        {
           "name": "network-canvas",
           "cssWidth": 340,
           "cssHeight": 340,
           "top": 427,
-          "darkSamples": 1476
+          "darkSamples": 1565
         },
         {
           "name": "raster-canvas",
           "cssWidth": 606,
           "cssHeight": 300,
           "top": 427,
-          "darkSamples": 6189
+          "darkSamples": 6158
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 972,
           "cssHeight": 152,
           "top": 855,
-          "darkSamples": 4258
+          "darkSamples": 4415
         },
         {
           "name": "chart-canvas",
           "cssWidth": 972,
           "cssHeight": 132,
           "top": 1037,
-          "darkSamples": 950
+          "darkSamples": 956
         }
       ]
     },
@@ -100,39 +86,32 @@
       "networkVisiblePx": 358,
       "canvases": [
         {
-          "name": "chart-canvas",
-          "cssWidth": 0,
-          "cssHeight": 0,
-          "top": 0,
-          "darkSamples": 16383
-        },
-        {
           "name": "network-canvas",
           "cssWidth": 358,
           "cssHeight": 358,
           "top": 326,
-          "darkSamples": 1474
+          "darkSamples": 1571
         },
         {
           "name": "raster-canvas",
           "cssWidth": 358,
           "cssHeight": 300,
           "top": 803,
-          "darkSamples": 6189
+          "darkSamples": 6157
         },
         {
           "name": "ribbon-canvas",
           "cssWidth": 358,
           "cssHeight": 152,
           "top": 1572,
-          "darkSamples": 1521
+          "darkSamples": 1504
         },
         {
           "name": "chart-canvas",
           "cssWidth": 358,
           "cssHeight": 132,
           "top": 1799,
-          "darkSamples": 578
+          "darkSamples": 573
         }
       ]
     }
@@ -149,32 +128,25 @@
         "networkVisiblePx": 340,
         "canvases": [
           {
-            "name": "chart-canvas",
-            "cssWidth": 0,
-            "cssHeight": 0,
-            "top": 0,
-            "darkSamples": 16383
-          },
-          {
             "name": "network-canvas",
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 427,
-            "darkSamples": 343
+            "darkSamples": 510
           },
           {
             "name": "raster-canvas",
             "cssWidth": 594,
             "cssHeight": 300,
             "top": 427,
-            "darkSamples": 307
+            "darkSamples": 319
           },
           {
             "name": "ribbon-canvas",
             "cssWidth": 972,
             "cssHeight": 152,
             "top": 855,
-            "darkSamples": 3928
+            "darkSamples": 3922
           },
           {
             "name": "chart-canvas",
@@ -196,13 +168,6 @@
         "networkTop": 408,
         "networkVisiblePx": 340,
         "canvases": [
-          {
-            "name": "chart-canvas",
-            "cssWidth": 0,
-            "cssHeight": 0,
-            "top": 0,
-            "darkSamples": 16383
-          },
           {
             "name": "network-canvas",
             "cssWidth": 340,
@@ -229,7 +194,7 @@
             "cssWidth": 972,
             "cssHeight": 132,
             "top": 1018,
-            "darkSamples": 922
+            "darkSamples": 926
           }
         ]
       }
@@ -245,18 +210,11 @@
         "networkVisiblePx": 340,
         "canvases": [
           {
-            "name": "chart-canvas",
-            "cssWidth": 0,
-            "cssHeight": 0,
-            "top": 0,
-            "darkSamples": 16383
-          },
-          {
             "name": "network-canvas",
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 427,
-            "darkSamples": 1396
+            "darkSamples": 1403
           },
           {
             "name": "raster-canvas",
@@ -293,18 +251,11 @@
         "networkVisiblePx": 340,
         "canvases": [
           {
-            "name": "chart-canvas",
-            "cssWidth": 0,
-            "cssHeight": 0,
-            "top": 0,
-            "darkSamples": 16383
-          },
-          {
             "name": "network-canvas",
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 427,
-            "darkSamples": 900
+            "darkSamples": 889
           },
           {
             "name": "raster-canvas",
@@ -338,12 +289,8 @@
   "resizeRepaint": {
     "before": [
       [
-        "chart-canvas",
-        16383
-      ],
-      [
         "network-canvas",
-        2379
+        2332
       ],
       [
         "raster-canvas",
@@ -360,12 +307,8 @@
     ],
     "after": [
       [
-        "chart-canvas",
-        16383
-      ],
-      [
         "network-canvas",
-        2195
+        2187
       ],
       [
         "raster-canvas",
@@ -383,12 +326,7 @@
     "allPainted": true
   },
   "experiments": {
-    "canvases": [
-      [
-        "chart-canvas",
-        16383
-      ]
-    ],
+    "reproductionsOffered": 2,
     "chartPainted": true
   }
 }

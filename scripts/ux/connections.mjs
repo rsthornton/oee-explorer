@@ -1,7 +1,7 @@
 // Checks the Landscape tab and Guide section 05 in a real browser.
 // Usage: npm run build && node scripts/ux/connections.mjs
 //   1. every "Show this" lands on its tab, at its seed (and K), panel in view;
-//   2. every "Where this shows up" chip opens the Guide at an entry that exists;
+//   2. every "Where this shows up" chip opens Research at an entry that exists;
 //   3. no console errors, no horizontal overflow at phone width;
 //   4. every reference URL answers (reported, not failed: some publishers refuse bots).
 import { chromium } from 'playwright-core';
@@ -46,17 +46,17 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
       const r = el.getBoundingClientRect();
       return r.top < innerHeight && r.bottom > 0 ? 'in view' : 'off screen';
     }, id);
-    check(inView === 'in view', `${label}: chip "${id}" opens its Guide entry (${inView})`);
+    check(inView === 'in view', `${label}: chip "${id}" opens its Research entry (${inView})`);
   }
 
-  // Guide → Show this
-  await tab('Guide').click();
+  // Research → Show this
+  await tab('Research').click();
   await wait(300);
-  check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${label}: Guide has no horizontal overflow`);
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${label}: Research has no horizontal overflow`);
   const targets = await page.locator('[data-show]').evaluateAll((els) => els.map((e) => e.dataset.show));
-  check(targets.length > 0, `${label}: Guide lists ${targets.length} Show this links`);
+  check(targets.length > 0, `${label}: Research lists ${targets.length} Show this links`);
   for (let i = 0; i < targets.length; i++) {
-    await tab('Guide').click();
+    await tab('Research').click();
     await wait(200);
     const t = JSON.parse(targets[i]);
     await page.locator('[data-show]').nth(i).click();
@@ -84,7 +84,7 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(url);
-  await page.getByRole('button', { name: 'Guide', exact: true }).click();
+  await page.getByRole('button', { name: 'Research', exact: true }).click();
   const hrefs = [...new Set(await page.locator('.connection-refs a').evaluateAll((els) => els.map((e) => e.href)))];
   for (const href of hrefs) {
     let status = 'error';

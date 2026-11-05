@@ -53,10 +53,9 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
           .catch(() => null),
       ),
     ).then((rs) => {
-      const recs = rs.filter(Boolean) as ExperimentRecord[];
-      setBundled(recs);
-      const fig1 = recs.find((r) => r.id === 'repro-homogeneous');
-      if (fig1) showBundled(fig1);
+      // Nothing is drawn until the reader chooses: the first view states what the
+      // tab does and offers the shipped reproductions, without leading on any one curve.
+      setBundled(rs.filter(Boolean) as ExperimentRecord[]);
     });
   }, []);
 
@@ -238,6 +237,25 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
                 : 'paper: K 1.1–4.5 step 0.2, T = 10⁶, ≤1,000 networks, δ = 0.02'}
           </span>
         </div>
+        {series.length === 0 && !running && (
+          <div className="sweep-start">
+            <p>
+              This tab runs the paper&apos;s comparison: Ω against connectivity K, averaged over many random networks at each K,
+              for whichever mechanisms you pick. Load a reproduction computed ahead of time at the paper&apos;s scale, or pick
+              mechanisms above and run a smaller sweep live in your browser.
+            </p>
+            <div className="sweep-start-actions">
+              {bundled.map((e) => (
+                <button key={e.id} className="btn" onClick={() => showBundled(e)}>
+                  Load {e.id === 'repro-homogeneous' ? 'Fig. 1 (homogeneous)' : 'Fig. 2 (heterogeneous)'} reproduction
+                </button>
+              ))}
+              <button className="chip chip-zap" onClick={start}>
+                Run a live sweep
+              </button>
+            </div>
+          </div>
+        )}
         {series.length > 0 && <SweepChart series={series} kMin={kMin} kMax={kMax} />}
         {series.length > 0 && caption && <div className="control-hint">{caption}</div>}
         {series.length > 0 && !running && (
@@ -251,7 +269,7 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
             </button>
           </div>
         )}
-        {bundled.length > 0 && (
+        {bundled.length > 0 && series.length > 0 && (
           <div className="saved-list">
             <span className="control-label">Paper reproductions (computed headlessly, shipped with the app)</span>
             {bundled.map((e) => (
