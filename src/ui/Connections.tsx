@@ -11,12 +11,10 @@
 import { CONNECTIONS, EVIDENCE } from './connectionData';
 import type { ShowTarget } from './showTarget';
 
-export function Connections({ onShow, num }: { onShow: (t: ShowTarget) => void; num: string }) {
+export function Connections({ onShow }: { onShow: (t: ShowTarget) => void }) {
   return (
     <section className="guide-section connections">
-      <h2 className="guide-head">
-        <span className="guide-num">{num}</span>Where this shows up in research
-      </h2>
+      <h2 className="guide-head">Where this shows up in research</h2>
       <p>
         The networks on this site are random. They do not model any real cell or machine. Several active research areas study the same kinds of behavior, though, and the entries below describe them. Each entry says how close the connection is, links to the matching view, and says what the simulation does not show.
       </p>

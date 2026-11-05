@@ -25,7 +25,7 @@ living in them. The reference implementation is
 | Landscape | `#landscape` | The basin field of a 10-node network and a one-flipped-bit damage map with its Derrida curve. |
 | Experiments | `#experiments` | Ω-versus-K sweeps, paired comparisons, and saved runs. |
 | Guide | `#guide` | How to use it and how to read each view. |
-| Research | `#research` | The mechanisms, the experiments, where these dynamics meet current research (each with its evidence), and provenance. |
+| Research | `#research` | Three sub-tabs, each with its own link: Mechanisms (the six logics and the experiments), Connections (`#research/connections`, where these dynamics meet current research, each with its evidence), and Provenance (`#research/provenance`). |
 
 ## Views on Simulate
 

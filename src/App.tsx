@@ -4,6 +4,7 @@ import { DEFAULT_PARAMS, PRESETS } from './engine/presets';
 import type { ShowTarget, LandscapeFocus } from './ui/showTarget';
 import { Guide } from './ui/Guide';
 import { Research } from './ui/Research';
+import { RESEARCH_SUBS, researchSubFromHash, type ResearchSub } from './ui/researchSubs';
 import { Home } from './ui/Home';
 import { PAPER } from './ui/paper';
 import { PageHead } from './ui/PageHead';
@@ -35,6 +36,7 @@ const HASH: Record<View, string> = {
 };
 const viewFromHash = (h: string): View => {
   if (h === '#runs') return 'experiments';
+  if (h.startsWith('#research')) return 'research';
   const hit = (Object.keys(HASH) as View[]).find((v) => HASH[v] === h && h !== '');
   return hit ?? 'home';
 };
@@ -46,8 +48,12 @@ export default function App() {
   const opening = PRESETS.find((p) => p.name === 'The Switcher');
   const sim = useSimulation(opening?.params ?? DEFAULT_PARAMS, opening?.seed);
   const [view, setView] = useState<View>(() => viewFromHash(window.location.hash));
+  const [researchSub, setResearchSub] = useState<ResearchSub>(() => researchSubFromHash(window.location.hash));
   useEffect(() => {
-    const sync = () => setView(viewFromHash(window.location.hash));
+    const sync = () => {
+      setView(viewFromHash(window.location.hash));
+      setResearchSub(researchSubFromHash(window.location.hash));
+    };
     window.addEventListener('popstate', sync);
     window.addEventListener('hashchange', sync);
     return () => {
@@ -59,7 +65,16 @@ export default function App() {
     const target = HASH[v] || window.location.pathname + window.location.search;
     if ((HASH[v] || '') !== window.location.hash) window.history.pushState(null, '', target);
     setView(v);
+    if (v === 'research') setResearchSub('mechanisms');
     window.scrollTo({ top: 0 });
+  };
+  // a Research sub-tab: its own link, so a section can be shared and Back works
+  const goResearch = (s: ResearchSub, scroll = true) => {
+    const hash = RESEARCH_SUBS.find((r) => r.id === s)!.hash;
+    if (hash !== window.location.hash) window.history.pushState(null, '', hash);
+    setView('research');
+    setResearchSub(s);
+    if (scroll) window.scrollTo({ top: 0 });
   };
   const loadPreset = (name: string) => {
     const preset = PRESETS.find((p) => p.name === name);
@@ -92,8 +107,7 @@ export default function App() {
   // "Where this shows up" from a Landscape panel: open Research at that entry
   const openConnection = (id: string) => {
     setGuideAnchor({ id, nonce: Date.now() });
-    if (HASH.research !== window.location.hash) window.history.pushState(null, '', HASH.research);
-    setView('research');
+    goResearch('connections', false);
   };
   const [controlsExpanded, setControlsExpanded] = useState<boolean>(() => {
     try {
@@ -173,7 +187,7 @@ export default function App() {
             title="Research"
             lead="The paper's mechanisms and experiments, where these dynamics meet current science, and how this port was checked."
           />
-          <Research onShow={show} anchor={guideAnchor} />
+          <Research sub={researchSub} onSub={(s) => goResearch(s)} onShow={show} anchor={guideAnchor} />
         </>
       ) : view !== 'instrument' ? null : (
         <>

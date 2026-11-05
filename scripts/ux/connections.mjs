@@ -1,7 +1,8 @@
 // Checks the Landscape tab and the Research tab's connections in a real browser.
 // Usage: npm run build && node scripts/ux/connections.mjs
 //   1. every "Show this" lands on its tab, at its seed (and K), panel in view;
-//   2. every "Where this shows up" chip opens Research at an entry that exists;
+//   2. every "Where this shows up" chip opens Research > Connections at an entry that exists;
+//   2b. the Research sub-tabs each have their own link, a deep link opens the right one, Back returns;
 //   3. no console errors, no horizontal overflow at phone width;
 //   4. every reference URL answers (reported, not failed: some publishers refuse bots).
 import { chromium } from 'playwright-core';
@@ -27,6 +28,8 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   page.on('console', (m) => { if (m.type() === 'error' && !/favicon/.test(m.location().url)) errors.push(m.text()); });
   await page.goto(url);
   const tab = (name) => page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name, exact: true });
+  const sub = (name) => page.getByRole('navigation', { name: 'Research sections' }).getByRole('link', { name: new RegExp(name) });
+  const activeSub = async () => (await page.locator('.subtab-active').innerText()).replace(/^\d+\s*/, '').trim();
 
   await tab('Landscape').click();
   await wait(800);
@@ -49,14 +52,42 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     check(inView === 'in view', `${label}: chip "${id}" opens its Research entry (${inView})`);
   }
 
+  // Research sub-tabs
+  await tab('Research').click();
+  await wait(200);
+  check((await activeSub()) === 'Mechanisms' && (await page.evaluate(() => location.hash)) === '#research', `${label}: Research opens on Mechanisms at #research`);
+  check((await page.locator('[data-show]').count()) === 0, `${label}: Mechanisms shows no Connections entries`);
+  for (const [name, hash] of [['Connections', '#research/connections'], ['Provenance', '#research/provenance']]) {
+    await sub(name).click();
+    await wait(200);
+    const h = await page.evaluate(() => location.hash);
+    check((await activeSub()) === name && h === hash, `${label}: ${name} sub-tab is active at ${hash} (got ${h})`);
+  }
+  await page.goBack();
+  await wait(200);
+  check((await activeSub()) === 'Connections', `${label}: Back from Provenance returns to Connections`);
+  await page.goto('about:blank');
+  await page.goto(url + '#research/provenance');
+  await wait(400);
+  check((await activeSub()) === 'Provenance' && (await page.locator('.tab-active').innerText()).trim().toLowerCase() === 'research', `${label}: fresh load of #research/provenance opens Provenance`);
+  await sub('Mechanisms').click();
+  await wait(200);
+  await page.locator('.subtab-next').click();
+  await wait(200);
+  check((await activeSub()) === 'Connections', `${label}: "Next" link on Mechanisms opens Connections`);
+
   // Research → Show this
   await tab('Research').click();
+  await wait(200);
+  await sub('Connections').click();
   await wait(300);
   check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${label}: Research has no horizontal overflow`);
   const targets = await page.locator('[data-show]').evaluateAll((els) => els.map((e) => e.dataset.show));
   check(targets.length > 0, `${label}: Research lists ${targets.length} Show this links`);
   for (let i = 0; i < targets.length; i++) {
     await tab('Research').click();
+    await wait(200);
+    await sub('Connections').click();
     await wait(200);
     const t = JSON.parse(targets[i]);
     await page.locator('[data-show]').nth(i).click();
@@ -85,7 +116,8 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(url);
-  await page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Research', exact: true }).click();
+  await page.goto(url + '#research/connections');
+  await wait(300);
   const hrefs = [...new Set(await page.locator('.connection-refs a').evaluateAll((els) => els.map((e) => e.href)))];
   for (const href of hrefs) {
     let status = 'error';

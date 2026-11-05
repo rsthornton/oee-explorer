@@ -162,6 +162,70 @@ body {
 
 /* guide */
 
+/* Research sub-tabs: quieter than the top bar, numbered like the page sections */
+.subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 26px;
+  border-bottom: 1px solid var(--border);
+  margin: 4px 0 6px;
+}
+
+.subtab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: 10px 0 9px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.subtab:hover {
+  color: var(--ink);
+}
+
+.subtab-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.subtab-active {
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom-color: var(--accent-ink);
+}
+
+.subtab-active .subtab-num {
+  color: var(--accent-ink);
+}
+
+@media (max-width: 480px) {
+  .subtabs {
+    gap: 4px 16px;
+  }
+  .subtab {
+    font-size: 13px;
+    gap: 5px;
+  }
+}
+
+.subtab-next {
+  display: inline-block;
+  margin: 18px 0 8px;
+  font-size: 14px;
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+
+.subtab-next:hover {
+  text-decoration: underline;
+}
+
 .guide {
   max-width: 740px;
 }

@@ -1,7 +1,8 @@
 /**
  * The Guide view: what this is and how to use it. The story, four steps to
  * start, how to read each view, and what Ω means. Everything deeper (the
- * mechanisms, experiments, research connections, provenance) is on Research.
+ * mechanisms, experiments, research connections, provenance) is on Research,
+ * in three sub-tabs.
  */
 
 export function Guide() {
