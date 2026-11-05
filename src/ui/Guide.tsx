@@ -33,10 +33,10 @@ export function Guide({ onShow, anchor }: GuideProps) {
           cartoon, live, in your browser.
         </p>
         <p>
-          Every step, all switches update at once from their inputs. Sooner or later the network
+          Every step, the switches update from their inputs (all at once, in the paper&apos;s homogeneous regime). Sooner or later the network
           hits a pattern it has been in before, and from there it must repeat: a loop. Random
           switching can knock it out; it wanders, then falls into another. Ω scores a run by the
-          loops it keeps finding. A frozen system scores zero, and so does pure noise. The only
+          loops it keeps finding. A frozen system scores close to zero, and less the longer it runs; pure noise that never repeats scores zero. The only
           way to score is <mark className="hl">sustained novelty with staying power</mark>, a
           signature proposed for open-ended evolution. The Instrument tab opens with the same
           tour, right under the preset chips.
@@ -69,7 +69,7 @@ export function Guide({ onShow, anchor }: GuideProps) {
           <dd>
             The whole run as one ribbon. Each bar is one loop the network fell into: color says
             which loop (the term of art is <em>attractor</em>), width is time spent in it, height
-            is the loop's length, so a bar's area is its k·d contribution to Ω.{' '}
+            is the loop's length (on a linear scale, with very short loops drawn at a small minimum height), so a bar's area is its k·d contribution to Ω.{' '}
             <mark className="hl">Ω is literally how much ink is on this chart.</mark> Arcs below the baseline mark returns to a loop seen before.
           </dd>
           <dt>Ω over time</dt>
@@ -81,7 +81,7 @@ export function Guide({ onShow, anchor }: GuideProps) {
           <dd>
             Every possible state of a 10-node network, all 1,024 of them, each drawn as a dot with a line to the state
             that follows it. Following the lines from any dot always ends in a loop, drawn as a colored ring: an
-            attractor. Every dot that drains into the same ring forms its basin. The teal token is one live run.
+            attractor. Every dot that drains into the same ring forms its basin. The dark ringed token is one live run.
             Switch context keeps the wiring but swaps the rules, as the paper&apos;s PBN mechanism does, so every dot
             gets a new successor and the whole field rearranges under the token.
           </dd>

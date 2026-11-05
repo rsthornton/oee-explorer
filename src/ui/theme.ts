@@ -10,16 +10,18 @@
 export const ATTRACTOR_HUES = [
   '#4338ca', // indigo
   '#b45309', // amber
-  '#0d9488', // teal
+  '#4d7c0f', // lime-700 (teal is reserved for Ω)
   '#be123c', // rose
   '#0369a1', // sky
   '#7c3aed', // violet
 ] as const;
 
-export const OVERFLOW_HUE = '#64748b'; // slate-500 — identities beyond the palette
+export const OVERFLOW_HUE = '#64748b'; // slate-500: identities beyond the palette
+/** three slate steps for identities beyond the palette, so neighbouring grey bars stay distinct */
+const OVERFLOW_STEPS = ['#64748b', '#94a3b8', '#475569'] as const;
 
 export function attractorColor(id: number): string {
-  return id < ATTRACTOR_HUES.length ? ATTRACTOR_HUES[id] : OVERFLOW_HUE;
+  return id < ATTRACTOR_HUES.length ? ATTRACTOR_HUES[id] : OVERFLOW_STEPS[(id - ATTRACTOR_HUES.length) % 3];
 }
 
 /**
@@ -43,7 +45,7 @@ export const TRANSIENT = '#cbd5e1'; // slate-300 — pre-recurrence wandering
 export const OMEGA_LINE = '#0d9488'; // teal — the metric's own color throughout the UI
 export const GRID = '#e2e8f0'; // slate-200
 export const INK_MUTED = '#64748b';
-export const PULSE = '#0891b2'; // cyan-600 — a state flip in transit along a wire
+export const PULSE = '#475569'; // slate-600: a state flip in transit along a wire (teal is reserved for Ω)
 
 /**
  * Capture theme: a dark ground for a clip headed to a feed, or a screenshot

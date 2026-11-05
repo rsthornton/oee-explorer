@@ -32,7 +32,9 @@ const INK = '#1e293b';
 const MUTED = '#64748b';
 const EDGE = 'rgba(71, 85, 105, 0.22)';
 const DOT = '#94a3b8';
-const TOKEN = '#0f766e';
+// the live run: ink, since teal is reserved for Ω across the site
+const TOKEN = '#0f172a';
+const DERRIDA = '#4338ca';
 const DAMAGE = '#be123c';
 const RULE = '#cbd5e1';
 
@@ -369,7 +371,7 @@ function BasinField({ focus, onConnection }: PanelProps) {
         <span className="panel-title">Basin field</span>
         <span className="panel-note">
           all 1,024 states of a 10-node network · each state points to its successor · trees drain into a ring, the
-          ring is the attractor · the teal token is the live run · click any state to start there
+          ring is the attractor · the dark ringed token is the live run · click any state to start there
         </span>
       </div>
       <div className="landscape-controls">
@@ -596,7 +598,7 @@ function DamageMap({ focus, onConnection }: PanelProps) {
       p.rotate(-Math.PI / 2);
       p.fillText('damage next step', 0, 0);
       p.restore();
-      p.strokeStyle = TOKEN;
+      p.strokeStyle = DERRIDA;
       p.lineWidth = 2.2;
       p.beginPath();
       p.moveTo(sx(0), sy(0));

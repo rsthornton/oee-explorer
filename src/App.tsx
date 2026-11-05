@@ -15,7 +15,7 @@ import { ExperimentsView } from './ui/ExperimentsView';
 import { LandscapeView } from './ui/LandscapeView';
 import { newId, putRun } from './lab/registry';
 import { ENGINE_VERSION } from './lab/run';
-import { fmtOmega } from './ui/format';
+import { fmtOmegaHero } from './ui/format';
 import './App.css';
 
 type View = 'instrument' | 'landscape' | 'experiments' | 'runs' | 'guide';
@@ -23,7 +23,9 @@ type View = 'instrument' | 'landscape' | 'experiments' | 'runs' | 'guide';
 const CONTROLS_EXPANDED_KEY = 'oee-controls-expanded';
 
 export default function App() {
-  const sim = useSimulation(DEFAULT_PARAMS);
+  // open on The Switcher at its pinned seed, so the first view is the same for everyone
+  const opening = PRESETS.find((p) => p.name === 'The Switcher');
+  const sim = useSimulation(opening?.params ?? DEFAULT_PARAMS, opening?.seed);
   const [view, setView] = useState<View>('instrument');
   const [focusNode, setFocusNode] = useState<number | null>(null);
   const [captureTheme, setCaptureTheme] = useState(false);
@@ -34,7 +36,8 @@ export default function App() {
   const show = (t: ShowTarget) => {
     if (t.tab === 'instrument') {
       const preset = PRESETS.find((p) => p.name === t.preset);
-      if (preset) sim.applyParams(preset.params, true);
+      if (preset?.seed !== undefined) sim.loadRun(preset.seed, preset.params);
+      else if (preset) sim.applyParams(preset.params, true);
       setView('instrument');
       window.scrollTo({ top: 0 });
       return;
@@ -77,12 +80,13 @@ export default function App() {
             <span className="omega-glyph">Ω</span> Explorer
           </h1>
           <p className="subtitle">
-            Open-endedness in Random Boolean Networks — a live companion to López-Díaz, Rivera
-            Torres, Febres &amp; Gershenson, <em>npj Systems Biology &amp; Applications</em> (2026)
+            Can a simple network keep surprising you? A live companion to López-Díaz, Rivera Torres, Febres
+            &amp; Gershenson,{' '}
+            <em>npj Systems Biology &amp; Applications</em> (2026)
           </p>
         </div>
         <div className="hero">
-          <span className="hero-value">{fmtOmega(sim.omega)}</span>
+          <span className="hero-value">{fmtOmegaHero(sim.omega)}</span>
           <span className="hero-formula">Ω = Σ k·d / t²</span>
           <span className="hero-gloss">each loop&apos;s length × time in it, summed, ÷ run time²</span>
         </div>
@@ -138,7 +142,7 @@ export default function App() {
               </span>
               <span
                 className="stat"
-                title="the random draw behind this network — sliders keep it, “New network” rerolls it"
+                title="the random draw behind this network: sliders keep it, “New network” rerolls it"
               >
                 <strong>{sim.seed.toString(36)}</strong> seed
               </span>
@@ -184,14 +188,15 @@ export default function App() {
             </div>
           </div>
 
-          <RuleTables sim={sim} />
-
-          <TracePanel sim={sim} node={focusNode} />
-
+          {/* Ω's own pictures come straight after the live views; detail panels follow */}
           <div className="run-figure">
             <RibbonView sim={sim} />
             <OmegaChart sim={sim} captureTheme={captureTheme} />
           </div>
+
+          <RuleTables sim={sim} />
+
+          <TracePanel sim={sim} node={focusNode} />
         </>
       )}
     </div>

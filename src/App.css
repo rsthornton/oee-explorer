@@ -84,11 +84,12 @@ body {
 .hero-formula {
   font-family: var(--mono);
   font-size: 11px;
+  white-space: nowrap;
   color: var(--ink-muted);
 }
 
 .hero-gloss {
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: var(--ink-muted);
   font-style: italic;
 }
@@ -305,12 +306,6 @@ body {
   color: var(--rule);
 }
 
-.tour-gloss {
-  font-size: 11px;
-  color: var(--ink-muted);
-  font-style: italic;
-}
-
 .intro-tour .chip {
   color: var(--accent-ink);
   font-weight: 500;
@@ -365,7 +360,8 @@ body {
   color: var(--ink);
   font-family: var(--sans);
   font-size: 12.5px;
-  padding: 3px 2px;
+  padding: 5px 2px;
+  min-height: 24px;
   cursor: pointer;
 }
 
@@ -476,7 +472,8 @@ body {
 }
 
 .panel-note {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 1.45;
   color: var(--ink-muted);
 }
 
@@ -991,15 +988,11 @@ body {
   margin: 0;
 }
 
-/* five tabs no longer fit a phone row: let the row scroll inside itself */
+/* five tabs no longer fit one phone row: wrap them, so every tab stays visible */
 @media (max-width: 560px) {
   .tabs {
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 14px;
-  }
-  .tab {
-    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 2px 16px;
   }
 }
 
@@ -1129,4 +1122,17 @@ body {
 
 .connection-refs a {
   overflow-wrap: anywhere;
+}
+
+.tour-gloss {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 2px 0 6px;
+  max-width: 80ch;
+}
+
+.tour-gloss strong {
+  color: var(--accent-ink);
+  font-weight: 600;
 }

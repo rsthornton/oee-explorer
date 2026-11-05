@@ -255,8 +255,8 @@ export function NetworkView({
       <div className="panel-head">
         <span className="panel-title">The network</span>
         <span className="panel-note">
-          {net?.n ?? 0} switches, {net ? net.inputOffset[net.n] : 0} wires · dark = ON · hover:
-          inputs · click: flip a node
+          {net?.n ?? 0} switches · filled = ON, in the current loop&apos;s color · moving dots = a change on a
+          wire · hover: inputs · click: flip
         </span>
       </div>
       <canvas

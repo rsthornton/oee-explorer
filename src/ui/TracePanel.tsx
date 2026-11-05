@@ -27,7 +27,7 @@ export function TracePanel({ sim, node }: { sim: SimHandle; node: number | null 
             </div>
           ))
         ) : (
-          <div className="trace-line trace-muted">hover a node to see how its last update was computed</div>
+          <div className="trace-line trace-muted">hover a node to see how its last update was computed (on a phone, tap it; the tap also flips it)</div>
         )}
       </div>
     </div>

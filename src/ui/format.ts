@@ -12,3 +12,10 @@ export function fmtOmega(v: number): string {
   }
   return v.toExponential(1);
 }
+
+/** The masthead's Ω: "< 0.001" instead of scientific notation a newcomer cannot read.
+ * Tables and exports keep fmtOmega's exact values. */
+export function fmtOmegaHero(v: number): string {
+  if (v > 0 && v < 0.001) return '< 0.001';
+  return fmtOmega(v);
+}

@@ -8,6 +8,6 @@
 export const TOUR_STEPS: { name: string; gloss: string }[] = [
   { name: 'Tiny World', gloss: 'novelty runs out in a world of eight states' },
   { name: 'Deep Freeze', gloss: 'one loop, forever' },
-  { name: 'Edge of Chaos', gloss: 'long structured cycles, no escape' },
-  { name: 'The Switcher', gloss: 'what Ω rewards' },
+  { name: 'Edge of Chaos', gloss: 'one long structured loop, no escape' },
+  { name: 'The Switcher', gloss: 'knocked out of loops, it finds others' },
 ];

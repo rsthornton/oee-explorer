@@ -255,7 +255,7 @@ export function RecordControl({
     <span className="reroll-group record-control">
       <button
         className={'chip' + (captureTheme ? ' chip-on' : '')}
-        title="dark ground for a clip in a dark feed, or a screenshot to match one — same attractor hues, glow on the active nodes. Default stays light."
+        title="dark ground for a clip in a dark feed, or a screenshot to match one: same attractor hues, glow on the active nodes. Default stays light."
         onClick={onToggleCaptureTheme}
       >
         capture theme

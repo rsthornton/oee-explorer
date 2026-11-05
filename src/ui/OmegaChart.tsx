@@ -8,7 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import { OMEGA_LINE, GRID, INK_MUTED, CAPTURE_GRID, CAPTURE_INK_MUTED } from './theme';
-import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
+import { PLOT_PAD_L, PLOT_PAD_R, MONO, usePlotWidth } from './plot';
 import { fmtOmega } from './format';
 import { useResizeRepaint } from './useResizeRepaint';
 
@@ -19,6 +19,7 @@ const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
 export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const W = usePlotWidth(canvasRef);
   const [hover, setHover] = useState<{ x: number; t: number; omega: number } | null>(null);
   const resizeTick = useResizeRepaint(canvasRef);
 
@@ -33,17 +34,17 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (canvas.width !== PLOT_W * DPR) {
-      canvas.width = PLOT_W * DPR;
+    if (canvas.width !== W * DPR || canvas.height !== H * DPR) {
+      canvas.width = W * DPR;
       canvas.height = H * DPR;
     }
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, PLOT_W, H);
+    ctx.clearRect(0, 0, W, H);
 
     const gridColor = captureTheme ? CAPTURE_GRID : GRID;
     const inkMuted = captureTheme ? CAPTURE_INK_MUTED : INK_MUTED;
 
-    const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
+    const plotW = W - PLOT_PAD_L - PLOT_PAD_R;
     const plotH = H - PAD_T - PAD_B;
     const xOf = (t: number) => PLOT_PAD_L + (t / tMax) * plotW;
     const yOf = (v: number) => PAD_T + plotH - (v / yMax) * plotH;
@@ -58,7 +59,7 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       const y = yOf(v);
       ctx.beginPath();
       ctx.moveTo(PLOT_PAD_L, y);
-      ctx.lineTo(PLOT_W - PLOT_PAD_R, y);
+      ctx.lineTo(W - PLOT_PAD_R, y);
       ctx.stroke();
       ctx.fillText(fmtOmega(v), 2, y + 3);
     }
@@ -73,10 +74,10 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       ctx.lineTo(x, H - PAD_B + 6);
       ctx.strokeStyle = inkMuted;
       ctx.stroke();
-      ctx.fillText(Math.round(t).toLocaleString(), Math.min(Math.max(x, 20), PLOT_W - 30), H - 6);
+      ctx.fillText(Math.round(t).toLocaleString(), Math.min(Math.max(x, 20), W - 30), H - 6);
     }
     ctx.textAlign = 'left';
-    ctx.fillText('steps', PLOT_W - PLOT_PAD_R - 34, H - PAD_B - 6);
+    ctx.fillText('steps', W - PLOT_PAD_R - 34, H - PAD_B - 6);
 
     ctx.strokeStyle = OMEGA_LINE;
     ctx.lineWidth = 2;
@@ -99,12 +100,12 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       ctx.stroke();
       ctx.setLineDash([]);
     }
-  }, [sim.frame, samples, tMax, yMax, hover, resizeTick, captureTheme]);
+  }, [sim.frame, samples, tMax, yMax, hover, resizeTick, captureTheme, W]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - rect.left) / rect.width) * PLOT_W;
-    const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
+    const px = ((e.clientX - rect.left) / rect.width) * W;
+    const plotW = W - PLOT_PAD_L - PLOT_PAD_R;
     const t = ((px - PLOT_PAD_L) / plotW) * tMax;
     if (t < 0 || samples.length === 0) return setHover(null);
     let lo = 0;
@@ -123,7 +124,7 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       <div className="panel-head">
         <span className="panel-title">Ω over time</span>
         <span className="panel-note">
-          the score accumulating as the run unfolds — it climbs when a new loop is found and held,
+          the score accumulating as the run unfolds: it climbs when a new loop is found and held,
           fades when nothing new recurs
           {hover && (
             <strong>
@@ -135,7 +136,7 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       </div>
       <canvas
         ref={canvasRef}
-        width={PLOT_W}
+        width={W}
         height={H}
         className="chart-canvas"
         onMouseMove={onMove}

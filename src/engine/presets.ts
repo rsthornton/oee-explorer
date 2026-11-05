@@ -24,6 +24,9 @@ export interface Preset {
   blurb: string;
   group: 'tour' | 'paper';
   params: SimParams;
+  /** pinned seed for tour presets: chosen so the run shows its regime every time
+   * (scripts/tour/seeds.ts); "New network" still rerolls */
+  seed?: number;
 }
 
 const BASE: SimParams = {
@@ -54,32 +57,37 @@ export const PRESETS: Preset[] = [
     name: 'Tiny World',
     group: 'tour',
     blurb:
-      'Three nodes — eight possible states. Watch novelty run out: soon every pattern is one the network has already seen, escape becomes impossible, and Ω starves. A world too small to be open-ended.',
+      'Three nodes, eight possible states. Once all eight have been visited nothing is new, so the current episode never ends and Ω fades toward zero. A world too small to be open-ended.',
     params: { ...BASE, n: 3, k: 2.0, numContexts: 3, switching: 0.05 },
+    seed: 93,
   },
   {
     name: 'Deep Freeze',
     group: 'tour',
     blurb: 'Sparse wiring (K≈1). The network falls into one attractor and stays. Ω → 0.',
     params: classical({ k: 1.2 }),
+    seed: 181,
   },
   {
     name: 'Edge of Chaos',
     group: 'tour',
-    blurb: 'Critical wiring (K≈2). Long cycles, structured dynamics — but deterministic, so one attractor holds forever.',
+    blurb: 'Critical wiring (K≈2). Long, structured loops, but deterministic: once a loop is found it holds forever.',
     params: classical({ k: 2.1 }),
+    seed: 319,
   },
   {
     name: 'Deep Chaos',
     group: 'tour',
-    blurb: 'Dense wiring (K≈4). The trajectory wanders an astronomically large state space — novelty without recurrence. Ω stays low.',
+    blurb: 'Dense wiring (K≈4). The run wanders a huge state space and rarely repeats: novelty without recurrence. Ω stays low.',
     params: classical({ k: 4.0 }),
+    seed: 1,
   },
   {
     name: 'The Switcher',
     group: 'tour',
-    blurb: 'Critical wiring + probabilistic context switching (PBN). Escapes and re-entries chain recurrence episodes — this is what Ω rewards.',
+    blurb: 'Critical wiring plus probabilistic context switching (PBN). Switches knock the run out of loops and it settles into others: the pattern Ω scores.',
     params: { ...BASE },
+    seed: 98,
   },
   // The paper's Fig. 1 (homogeneous) AUC-best settings, from the figure caption.
   {
