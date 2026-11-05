@@ -12,7 +12,8 @@
     "ra-export": "esbuild scripts/ra/export.ts --bundle --platform=node --format=esm --outfile=reference/.ra-export.mjs --log-level=error && node reference/.ra-export.mjs",
     "parity": "esbuild scripts/parity/export.ts --bundle --platform=node --format=esm --outfile=reference/.parity-export.mjs --log-level=error && node reference/.parity-export.mjs reference/.parity && reference/.venv/bin/python reference/parity.py reference/.parity",
     "fixtures": "esbuild scripts/fixtures/export.ts --bundle --platform=node --format=esm --outfile=reference/.fixtures-export.mjs --log-level=error --external:node:* && node reference/.fixtures-export.mjs fixtures",
-    "ux-check": "node scripts/ux/check.mjs"
+    "ux-check": "node scripts/ux/check.mjs",
+    "landscape-check": "esbuild scripts/landscape/check.ts --bundle --platform=node --format=esm --outfile=reference/.landscape-check.mjs --log-level=error && node reference/.landscape-check.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

@@ -29,6 +29,7 @@ reference/.sweep.mjs
 reference/.repro-*.log
 reference/.ra-export.mjs
 reference/.fixtures-export.mjs
+reference/.landscape-check.mjs
 __pycache__/
 data/ra/
 

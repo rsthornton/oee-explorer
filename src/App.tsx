@@ -11,12 +11,13 @@ import { TracePanel } from './ui/TracePanel';
 import { RuleTables } from './ui/RuleTables';
 import { RunsView } from './ui/RunsView';
 import { ExperimentsView } from './ui/ExperimentsView';
+import { LandscapeView } from './ui/LandscapeView';
 import { newId, putRun } from './lab/registry';
 import { ENGINE_VERSION } from './lab/run';
 import { fmtOmega } from './ui/format';
 import './App.css';
 
-type View = 'instrument' | 'experiments' | 'runs' | 'guide';
+type View = 'instrument' | 'landscape' | 'experiments' | 'runs' | 'guide';
 
 const CONTROLS_EXPANDED_KEY = 'oee-controls-expanded';
 
@@ -67,6 +68,9 @@ export default function App() {
         >
           Instrument
         </button>
+        <button className={view === 'landscape' ? 'tab tab-active' : 'tab'} onClick={() => setView('landscape')}>
+          Landscape
+        </button>
         <button className={view === 'experiments' ? 'tab tab-active' : 'tab'} onClick={() => setView('experiments')}>
           Experiments
         </button>
@@ -88,7 +92,9 @@ export default function App() {
       <div style={{ display: view === 'runs' ? 'block' : 'none' }}>
         <RunsView sim={sim} active={view === 'runs'} onReplay={() => setView('instrument')} />
       </div>
-      {view === 'guide' ? (
+      {view === 'landscape' ? (
+        <LandscapeView />
+      ) : view === 'guide' ? (
         <Guide />
       ) : view !== 'instrument' ? null : (
         <>
