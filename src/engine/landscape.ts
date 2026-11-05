@@ -17,6 +17,10 @@ import type { Rng } from './prng';
 
 export const MAX_FIELD_N = 12;
 
+/** Seeds for a 10-node, K = 2, two-context PBN whose contexts each give several
+ * basins with real cycles (searched with the engine; see the Landscape commit). */
+export const BASIN_SEEDS = [826, 770, 1364, 1744, 389, 703, 2508, 100, 614, 541];
+
 /** Next state of `s` under context `c`, synchronous update, plain Boolean tables. */
 export function boolStep(net: Network, s: number, c: number): number {
   const { n, inDeg, inputs, inputOffset, lutOffset } = net;
