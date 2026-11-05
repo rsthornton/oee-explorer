@@ -2,8 +2,8 @@
 
 **An interactive companion to the Ω open-endedness metric.** A random Boolean
 network runs live in the browser. You watch it fall into loops, get knocked
-out, and find new ones, while Ω accumulates in real time. One simulation
-drives every view.
+out, and find new ones, while Ω accumulates in real time. On Simulate, one
+simulation drives all four views.
 
 The metric is from López-Díaz, Rivera Torres, Febres, and Gershenson,
 "Characterizing open-ended evolution through undecidability mechanisms in
@@ -79,6 +79,9 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build    # static site in dist/, no server required
 npm run parity   # needs reference/.venv (python3 -m venv reference/.venv && pip install numpy scipy networkx tqdm matplotlib)
+npm run landscape-check    # basin-field successor tables against the simulator
+npm run ux-check -- <label>   # headless layout, paint and fps checks (playwright-core, local Chrome)
+npm run connections-check     # every Research "Show this" link lands on its target
 ```
 
 ## Layout
@@ -89,7 +92,10 @@ npm run parity   # needs reference/.venv (python3 -m venv reference/.venv && pip
 | `src/ui/` | Canvas views and controls. One animation-frame hook drives all panels from shared buffers. |
 | `src/lab/` | Headless runs, the ensemble worker, and the IndexedDB run registry. |
 | `reference/` | The reference implementation (MIT, unmodified) and the parity harness. |
-| `DESIGN.md`, `docs/` | Design rationale, code-grounded mechanism semantics, roadmap. |
+| `fixtures/` | Serialized networks, seeds and initial states for comparing trajectories one by one with the reference code, prepared at the authors' request ([fixtures/README.md](./fixtures/README.md)). |
+| `public/data/` | The shipped Fig. 1 and Fig. 2 reproductions the Experiments tab loads. |
+| `scripts/` | Parity export, sweeps, tour seed search, and the check harnesses above. |
+| `DESIGN.md`, `docs/` | Design rationale, code-grounded mechanism semantics, and the metrics each UX checkpoint recorded. |
 
 ## License
 

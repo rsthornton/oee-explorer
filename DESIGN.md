@@ -25,7 +25,7 @@ Nobody anywhere renders trajectory-level recurrence structure. The episode ribbo
 
 **Layout — one engine, linked views, shared time axis:**
 - **State raster** ("piano roll", rolling window) — running on page load. *Brockmann: press play and keep reading.*
-- **Episode ribbon** (full run) — hue = attractor identity (revisits share hue), width = dwell d, height = cycle length k (log), so **area = Ω contribution — Ω is "how much ink."** Gray base strip = transients. *Grammar: ChromHMM ribbons; MODES gray→color promotion; later: Wattenberg revisit arcs.*
+- **Episode ribbon** (full run) — hue = attractor identity (revisits share hue), width = dwell d, height = cycle length k (linear, 3 px minimum), so **area = Ω contribution — Ω is "how much ink."** Gray base strip = transients. *Grammar: ChromHMM ribbons; MODES gray→color promotion; later: Wattenberg revisit arcs.*
 - **Ω(t) strip chart** under the animation. *Particle Lenia's live energy plot.*
 - Later: **basin graph** growing as cycles are discovered (rings sized by k, moving token — DDLab × Setosa), and a collapsible **recurrence-matrix drawer** (novel on the web).
 
@@ -49,7 +49,11 @@ Nobody anywhere renders trajectory-level recurrence structure. The episode ribbo
 - **Fidelity discipline:** engine semantics mirror the reference Python line-for-line, with provenance comments (`axiomatic.py:71` generator, `axiomatic.py:401` PBN switching, `single.py:29` Ω extractor). Verified: streaming episode tracker matches the verbatim Python algorithm exactly (V/P/KD) on synthetic sequences (see git history / scratch parity test). Known accepted deviation: per-episode accumulation vs Python's entry-time-keyed dicts (differs only on entry-timestamp collisions); attractor *identity* (canonical cycle key) is a visualization layer the metric never depends on.
 - **Non-classical logics** (modal, paraconsistent, quantum-inspired, ARM) are roadmap, not v0: they require non-Boolean state tokens; port them one at a time against the Python oracle.
 
-## Roadmap
+## Status (2026-11-05)
+
+Shipped since the roadmap below was written: all six mechanisms in both regimes with `faithful` and `intended` semantics; revisit arcs; ensemble sweeps with the Fig. 1 and Fig. 2 reproductions; a five-stop tour on pinned seeds; the basin graph with a live token (the Landscape tab, N = 10) and a damage map with its Derrida curve; a Research section; a home page. Still open from the roadmap: URL state sharing, the predict-then-reveal opener, the recurrence-matrix drawer, and `.bnet` import with a curated-model gallery. The roadmap is kept as written for the record.
+
+## Roadmap (as of 2026-08-17)
 
 - **v0 (this checkpoint):** classical + PBN, raster + ribbon + Ω chart + stat row, 4 presets, K/contexts/switching/speed controls, reroll.
 - **v1:** revisit arcs on the ribbon; ensemble mode (web workers, Ω-vs-K sweep building live with confidence bands — "sweep-as-UI", which exists nowhere); URL state sharing; predict-then-reveal intro; figure-reproduction presets (validate against paper's data/npy at reduced scale).
