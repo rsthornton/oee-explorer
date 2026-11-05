@@ -26,6 +26,7 @@ import {
   type FieldLayout,
 } from '../engine/landscape';
 import { attractorColor, OVERFLOW_HUE } from './theme';
+import type { LandscapeFocus } from './showTarget';
 
 const INK = '#1e293b';
 const MUTED = '#64748b';
@@ -78,6 +79,37 @@ function prep(cv: HTMLCanvasElement, cssW: number, cssH: number): CanvasRenderin
   return ctx;
 }
 
+interface PanelProps {
+  focus: LandscapeFocus | null;
+  onConnection: (id: string) => void;
+}
+
+/** Scroll a panel into view and mark it briefly when a "Show this" link targets it. */
+function useFocusFlash(ref: React.RefObject<HTMLElement | null>, active: boolean, nonce: number | undefined) {
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (!active || nonce === undefined) return;
+    ref.current?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    setFlash(true);
+    const id = window.setTimeout(() => setFlash(false), 1800);
+    return () => window.clearTimeout(id);
+  }, [ref, active, nonce]);
+  return flash;
+}
+
+function WhereThisShowsUp({ links, onConnection }: { links: { id: string; label: string }[]; onConnection: (id: string) => void }) {
+  return (
+    <p className="landscape-where">
+      <span>Where this shows up in research:</span>
+      {links.map((l) => (
+        <button key={l.id} className="chip" data-connection={l.id} onClick={() => onConnection(l.id)}>
+          {l.label}
+        </button>
+      ))}
+    </p>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Basin field                                                          */
 /* ------------------------------------------------------------------ */
@@ -128,13 +160,20 @@ function buildField(seed: number): Omit<FieldState, 'layouts'> {
   };
 }
 
-function BasinField() {
+function BasinField({ focus, onConnection }: PanelProps) {
+  const panelRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stripRef = useRef<HTMLCanvasElement>(null);
   const width = useCanvasWidth(canvasRef, FIELD_H);
   const stripW = useCanvasWidth(stripRef, 22);
-  const [seedIdx, setSeedIdx] = useState(0);
-  const seed = GOOD_SEEDS[seedIdx % GOOD_SEEDS.length];
+  const [seed, setSeed] = useState(GOOD_SEEDS[0]);
+  const isFocus = focus?.panel === 'basin';
+  useEffect(() => {
+    if (isFocus && focus) setSeed(focus.seed);
+  }, [isFocus, focus]);
+  const flash = useFocusFlash(panelRef, isFocus, focus?.nonce);
+  const nextSeed = () =>
+    setSeed((cur) => GOOD_SEEDS[(GOOD_SEEDS.indexOf(cur) + 1) % GOOD_SEEDS.length]);
   const [playing, setPlaying] = useState(() => !reducedMotion());
   const [auto, setAuto] = useState(false);
   const [speed, setSpeed] = useState(6);
@@ -325,7 +364,7 @@ function BasinField() {
   };
 
   return (
-    <section className="panel landscape-panel">
+    <section ref={panelRef} className={'panel landscape-panel' + (flash ? ' landscape-flash' : '')}>
       <div className="panel-head">
         <span className="panel-title">Basin field</span>
         <span className="panel-note">
@@ -343,7 +382,7 @@ function BasinField() {
         <button className={'chip' + (auto ? ' chip-on' : '')} aria-pressed={auto} onClick={() => setAuto((a) => !a)}>
           {auto ? 'auto-switch on (σ = 0.02)' : 'auto-switch off'}
         </button>
-        <button className="chip" onClick={() => setSeedIdx((i) => i + 1)}>
+        <button className="chip" onClick={nextSeed}>
           New network
         </button>
         <label className="landscape-slider">
@@ -366,6 +405,13 @@ function BasinField() {
         step, colored by size rank within the current context, with a tick at each switch. Built by the engine&apos;s
         own generator (Poisson in-degree, K = 2, two contexts). Ω is not shown here; the Instrument measures it.
       </p>
+      <WhereThisShowsUp
+        onConnection={onConnection}
+        links={[
+          { id: 'cell-types', label: 'cell types as attractors' },
+          { id: 'reprogramming', label: 'steering cell fate' },
+        ]}
+      />
     </section>
   );
 }
@@ -378,7 +424,8 @@ const DM_N = 64;
 const DM_WINDOW = 220;
 const DM_H = 300;
 
-function DamageMap() {
+function DamageMap({ focus, onConnection }: PanelProps) {
+  const panelRef = useRef<HTMLElement>(null);
   const rasterRef = useRef<HTMLCanvasElement>(null);
   const plotRef = useRef<HTMLCanvasElement>(null);
   const rw = useCanvasWidth(rasterRef, DM_H);
@@ -387,6 +434,13 @@ function DamageMap() {
   const [seed, setSeed] = useState(4242);
   const [playing, setPlaying] = useState(() => !reducedMotion());
   const [readout, setReadout] = useState('');
+  const isFocus = focus?.panel === 'damage';
+  useEffect(() => {
+    if (!isFocus || !focus) return;
+    setSeed(focus.seed);
+    if (focus.k !== undefined) setK(focus.k);
+  }, [isFocus, focus]);
+  const flash = useFocusFlash(panelRef, isFocus, focus?.nonce);
   const live = useRef({ playing });
   live.current = { playing };
   const st = useRef<{
@@ -573,7 +627,7 @@ function DamageMap() {
   }, [rw, pw, k, seed]);
 
   return (
-    <section className="panel landscape-panel">
+    <section ref={panelRef} className={'panel landscape-panel' + (flash ? ' landscape-flash' : '')}>
       <div className="panel-head">
         <span className="panel-title">One flipped bit</span>
         <span className="panel-note">
@@ -607,15 +661,23 @@ function DamageMap() {
         is about the mean in-degree over two, which puts K = 2 at the critical line. In-degree is Poisson as in the
         paper, so the realized mean shows in the readout.
       </p>
+      <WhereThisShowsUp
+        onConnection={onConnection}
+        links={[
+          { id: 'criticality-cells', label: 'are cells critical?' },
+          { id: 'derrida', label: 'the damage map' },
+          { id: 'edge-ai', label: 'edge of chaos in AI' },
+        ]}
+      />
     </section>
   );
 }
 
-export function LandscapeView() {
+export function LandscapeView({ focus, onConnection }: PanelProps) {
   return (
     <div className="landscape">
-      <BasinField />
-      <DamageMap />
+      <BasinField focus={focus} onConnection={onConnection} />
+      <DamageMap focus={focus} onConnection={onConnection} />
     </div>
   );
 }

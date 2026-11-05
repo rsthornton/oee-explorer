@@ -5,7 +5,23 @@
  * Instrument view's captions to one line each.
  */
 
-export function Guide() {
+import { useEffect } from 'react';
+import type { ShowTarget } from './showTarget';
+import { Connections } from './Connections';
+
+interface GuideProps {
+  onShow: (t: ShowTarget) => void;
+  /** a Connections entry to scroll to on open */
+  anchor: { id: string; nonce: number } | null;
+}
+
+export function Guide({ onShow, anchor }: GuideProps) {
+  useEffect(() => {
+    if (!anchor) return;
+    const el = document.getElementById(`conn-${anchor.id}`);
+    el?.scrollIntoView({ block: 'start' });
+  }, [anchor]);
+
   return (
     <div className="guide">
       <section className="guide-section">
@@ -60,6 +76,21 @@ export function Guide() {
           <dd>
             The score accumulating as the run unfolds, on the same time axis as the ribbon. It
             climbs when a new loop is found and held, and fades when nothing new recurs.
+          </dd>
+          <dt>Basin field (Landscape tab)</dt>
+          <dd>
+            Every possible state of a 10-node network, all 1,024 of them, each drawn as a dot with a line to the state
+            that follows it. Following the lines from any dot always ends in a loop, drawn as a colored ring: an
+            attractor. Every dot that drains into the same ring forms its basin. The teal token is one live run.
+            Switch context keeps the wiring but swaps the rules, as the paper&apos;s PBN mechanism does, so every dot
+            gets a new successor and the whole field rearranges under the token.
+          </dd>
+          <dt>One flipped bit (Landscape tab)</dt>
+          <dd>
+            Two copies of one network that differ in a single node. Rose cells mark where they disagree. In a frozen
+            network the difference dies out; in a chaotic one it spreads. Beside it, the Derrida map averages this over
+            many random pairs: how much damage now becomes how much damage one step later. Its slope at the origin
+            separates the regimes, with the critical line at a slope of one.
           </dd>
         </dl>
       </section>
@@ -137,8 +168,10 @@ export function Guide() {
         </p>
       </section>
 
+      <Connections onShow={onShow} />
+
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">05</span>Provenance</h2>
+        <h2 className="guide-head"><span className="guide-num">06</span>Provenance</h2>
         <p>
           The metric and the mechanisms compared here are from{' '}
           <a href="https://doi.org/10.1038/s41540-026-00770-8" target="_blank" rel="noreferrer">

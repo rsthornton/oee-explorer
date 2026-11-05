@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSimulation } from './ui/useSimulation';
-import { DEFAULT_PARAMS } from './engine/presets';
+import { DEFAULT_PARAMS, PRESETS } from './engine/presets';
+import type { ShowTarget, LandscapeFocus } from './ui/showTarget';
 import { Guide } from './ui/Guide';
 import { Controls } from './ui/Controls';
 import { NetworkView } from './ui/NetworkView';
@@ -26,6 +27,32 @@ export default function App() {
   const [view, setView] = useState<View>('instrument');
   const [focusNode, setFocusNode] = useState<number | null>(null);
   const [captureTheme, setCaptureTheme] = useState(false);
+  const [landscapeFocus, setLandscapeFocus] = useState<LandscapeFocus | null>(null);
+  const [guideAnchor, setGuideAnchor] = useState<{ id: string; nonce: number } | null>(null);
+
+  // "Show this" from a Connections entry: land on the view that demonstrates it
+  const show = (t: ShowTarget) => {
+    if (t.tab === 'instrument') {
+      const preset = PRESETS.find((p) => p.name === t.preset);
+      if (preset) sim.applyParams(preset.params, true);
+      setView('instrument');
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    setLandscapeFocus({
+      panel: t.panel,
+      seed: t.seed,
+      k: t.panel === 'damage' ? t.k : undefined,
+      nonce: Date.now(),
+    });
+    setView('landscape');
+  };
+
+  // "Where this shows up" from a Landscape panel: open the Guide at that entry
+  const openConnection = (id: string) => {
+    setGuideAnchor({ id, nonce: Date.now() });
+    setView('guide');
+  };
   const [controlsExpanded, setControlsExpanded] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem(CONTROLS_EXPANDED_KEY) === '1';
@@ -93,9 +120,9 @@ export default function App() {
         <RunsView sim={sim} active={view === 'runs'} onReplay={() => setView('instrument')} />
       </div>
       {view === 'landscape' ? (
-        <LandscapeView />
+        <LandscapeView focus={landscapeFocus} onConnection={openConnection} />
       ) : view === 'guide' ? (
-        <Guide />
+        <Guide onShow={show} anchor={guideAnchor} />
       ) : view !== 'instrument' ? null : (
         <>
           <div className="instrument-top">
