@@ -14,9 +14,9 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { generateNetwork, DEFAULT_MECH, type Network } from '../engine/network';
+import type { Network } from '../engine/network';
 import { mulberry32 } from '../engine/prng';
-import { boolStepArr, hammingArr, derridaCurve, BASIN_SEEDS as GOOD_SEEDS } from '../engine/landscape';
+import { boolStepArr, hammingArr, derridaCurve, damageNetwork, DAMAGE_N, BASIN_SEEDS as GOOD_SEEDS } from '../engine/landscape';
 import { BasinCanvas, type BasinHandle } from './BasinCanvas';
 import { useCanvasWidth, prep, reducedMotion } from './canvasKit';
 import type { LandscapeFocus } from './showTarget';
@@ -141,7 +141,7 @@ function BasinField({ focus, onConnection }: PanelProps) {
 /* Damage spreading and the Derrida map                                 */
 /* ------------------------------------------------------------------ */
 
-const DM_N = 64;
+const DM_N = DAMAGE_N;
 const DM_WINDOW = 220;
 const DM_H = 300;
 
@@ -183,19 +183,7 @@ function DamageMap({ focus, onConnection }: PanelProps) {
   };
 
   useEffect(() => {
-    const net = generateNetwork(
-      {
-        n: DM_N,
-        k,
-        topology: 'poisson',
-        bias: 0.5,
-        numContexts: 1,
-        mechanism: 'classical',
-        mech: DEFAULT_MECH,
-        semantics: 'faithful',
-      },
-      mulberry32(seed),
-    );
+    const net = damageNetwork(k, mulberry32(seed));
     const r = mulberry32(seed + 11);
     let a: Uint8Array = new Uint8Array(DM_N).map(() => (r() < 0.5 ? 1 : 0));
     const tmp = new Uint8Array(DM_N);

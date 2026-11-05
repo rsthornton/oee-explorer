@@ -12,7 +12,7 @@
  * States are integers with bit i = node i.
  */
 
-import { KIND, type Network } from './network';
+import { KIND, DEFAULT_MECH, generateNetwork, type Network } from './network';
 import type { Rng } from './prng';
 
 export const MAX_FIELD_N = 12;
@@ -20,6 +20,25 @@ export const MAX_FIELD_N = 12;
 /** Seeds for a 10-node, K = 2, two-context PBN whose contexts each give several
  * basins with real cycles (searched with the engine; see the Landscape commit). */
 export const BASIN_SEEDS = [826, 770, 1364, 1744, 389, 703, 2508, 100, 614, 541];
+
+export const FIELD_N = 10;
+export const DAMAGE_N = 64;
+
+/** The basin field's network: N = 10, K = 2, Poisson in-degree, two PBN contexts. */
+export function fieldNetwork(rng: Rng): Network {
+  return generateNetwork(
+    { n: FIELD_N, k: 2, topology: 'poisson', bias: 0.5, numContexts: 2, mechanism: 'pbn', mech: DEFAULT_MECH, semantics: 'faithful' },
+    rng,
+  );
+}
+
+/** The damage map's network: N = 64, classical, Poisson in-degree at mean K. */
+export function damageNetwork(k: number, rng: Rng): Network {
+  return generateNetwork(
+    { n: DAMAGE_N, k, topology: 'poisson', bias: 0.5, numContexts: 1, mechanism: 'classical', mech: DEFAULT_MECH, semantics: 'faithful' },
+    rng,
+  );
+}
 
 /** Next state of `s` under context `c`, synchronous update, plain Boolean tables. */
 export function boolStep(net: Network, s: number, c: number): number {

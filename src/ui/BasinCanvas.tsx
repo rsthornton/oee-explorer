@@ -10,9 +10,9 @@
 
 import { useEffect, useImperativeHandle, useRef } from 'react';
 import type { Ref } from 'react';
-import { generateNetwork, DEFAULT_MECH, type Network } from '../engine/network';
+import type { Network } from '../engine/network';
 import { mulberry32 } from '../engine/prng';
-import { analyseField, layoutField, type Field, type FieldLayout } from '../engine/landscape';
+import { analyseField, layoutField, fieldNetwork, type Field, type FieldLayout } from '../engine/landscape';
 import { attractorColor, OVERFLOW_HUE } from './theme';
 import { useCanvasWidth, prep, reducedMotion, ease } from './canvasKit';
 
@@ -21,7 +21,6 @@ const EDGE = 'rgba(71, 85, 105, 0.22)';
 const DOT = '#94a3b8';
 // the live run: ink, since teal is reserved for Ω across the site
 const TOKEN = '#0f172a';
-const FIELD_N = 10;
 
 interface FieldState {
   net: Network;
@@ -39,19 +38,7 @@ interface FieldState {
 }
 
 function buildField(seed: number): Omit<FieldState, 'layouts'> {
-  const net = generateNetwork(
-    {
-      n: FIELD_N,
-      k: 2,
-      topology: 'poisson',
-      bias: 0.5,
-      numContexts: 2,
-      mechanism: 'pbn',
-      mech: DEFAULT_MECH,
-      semantics: 'faithful',
-    },
-    mulberry32(seed),
-  );
+  const net = fieldNetwork(mulberry32(seed));
   const fields = [analyseField(net, 0), analyseField(net, 1)];
   const cur = Math.floor(mulberry32(seed + 3)() * fields[0].size);
   return {

@@ -7,6 +7,7 @@
  */
 
 import type { ShowTarget } from './showTarget';
+import type { FigureKind } from './ConnectionFigure';
 
 export type Evidence = 'direct' | 'tested' | 'concept';
 
@@ -28,7 +29,11 @@ export const EVIDENCE: Record<Evidence, { label: string; meaning: string }> = {
 export interface Connection {
   id: string;
   title: string;
+  /** the field the cited work comes from, for the overview table */
+  field: string;
   evidence: Evidence;
+  /** the still figure beside the entry, drawn from the network "Show this" opens */
+  figure: FigureKind;
   simulation: string;
   research: string;
   notShown: string;
@@ -40,7 +45,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'cell-types',
     title: 'Cell types as attractors',
+    field: 'Theoretical biology',
     evidence: 'direct',
+    figure: 'basin',
     simulation:
       'Every state in the basin field drains into one of a few loops. Wherever the run starts, it ends up in one of a small number of repeating patterns.',
     research:
@@ -58,7 +65,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'reprogramming',
     title: 'Steering cell fate',
+    field: 'Cancer biology',
     evidence: 'direct',
+    figure: 'basin',
     simulation:
       'Click a dot in a different basin and the run is moved there; from then on it drains into a different loop. The rules stay the same; only the state changed.',
     research:
@@ -76,7 +85,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'derrida',
     title: 'The damage map',
+    field: 'Statistical physics',
     evidence: 'direct',
+    figure: 'derrida',
     simulation:
       'The curve beside the raster is this network\'s Derrida map: how much two states differ now, against how much they differ one step later. Where it runs below the diagonal, differences shrink; above it, they grow.',
     research:
@@ -94,7 +105,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'reservoir',
     title: 'Computing with a network near the edge',
+    field: 'Reservoir computing',
     evidence: 'direct',
+    figure: 'derrida-k',
     simulation:
       'At K = 1 a flipped bit fades; at K = 3 it spreads through most of the raster. Near K = 2 it lingers without taking over.',
     research:
@@ -111,7 +124,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'criticality-cells',
     title: 'Are living networks critical?',
+    field: 'Systems biology',
     evidence: 'tested',
+    figure: 'derrida-k',
     simulation:
       'Drag K from 1 to 3 and watch the flipped bit die out, linger, or spread. The view shows each regime. It cannot tell you which one real cells are in.',
     research:
@@ -133,7 +148,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'edge-ai',
     title: 'The edge of chaos in machine learning',
+    field: 'Machine learning',
     evidence: 'concept',
+    figure: 'raster',
     simulation:
       'Edge of Chaos sets the network near K = 2 (2.1). The raster settles into a long, structured loop. It has neither the flat stripes of a frozen network nor the noise of a chaotic one.',
     research:
@@ -155,7 +172,9 @@ export const CONNECTIONS: Connection[] = [
   {
     id: 'open-endedness',
     title: 'Open-endedness as a design goal',
+    field: 'AI and synthetic biology',
     evidence: 'concept',
+    figure: 'basin',
     simulation:
       'Switch context with auto-switch on and the run keeps landing in new basins and loops. Ω, on Simulate, scores that pattern: new loops that are found and then held for a while.',
     research:
