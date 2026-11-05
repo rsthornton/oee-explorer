@@ -32,7 +32,7 @@ const result = { label, viewports: {}, firstPath: {}, fps: null, resizeRepaint: 
 async function fresh(width, height) {
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
-  await page.goto(url, { waitUntil: 'load' });
+  await page.goto(url + '#simulate', { waitUntil: 'load' });
   await wait(1500);
   return { ctx, page };
 }
@@ -81,9 +81,43 @@ for (const [w, h] of [[1440, 900], [1440, 720], [390, 844]]) {
   await ctx.close();
 }
 
+// home: the way in, at both widths; the tour starts at stop 1 and advances; Back returns home
+result.home = {};
+for (const [w, h] of [[1440, 900], [390, 844]]) {
+  const key = `${w}x${h}`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  await page.goto(url, { waitUntil: 'load' });
+  await wait(1800);
+  await page.screenshot({ path: join(out, `home-${key}.png`) });
+  const r = await page.evaluate(() => {
+    const cta = [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Start the tour'));
+    const cv = document.querySelector('.home-figure canvas');
+    let painted = false;
+    if (cv) {
+      const g = cv.getContext('2d');
+      const d = g.getImageData(0, 0, cv.width, cv.height).data;
+      for (let i = 3; i < d.length; i += 4 * 97) if (d[i] > 0) { painted = true; break; }
+    }
+    const ctaBottom = cta ? cta.getBoundingClientRect().bottom : null;
+    return { overflow: document.documentElement.scrollWidth > innerWidth, ctaBottom, ctaAboveFold: ctaBottom !== null && ctaBottom <= innerHeight, figurePainted: painted };
+  });
+  await page.getByRole('button', { name: /Start the tour/ }).click();
+  await wait(600);
+  const stop1 = (await page.locator('.tour-card-head').innerText().catch(() => '')).trim();
+  await page.getByRole('button', { name: /^Next stop/ }).click();
+  await wait(600);
+  const stop2 = (await page.locator('.tour-card-head').innerText().catch(() => '')).trim();
+  await page.goBack();
+  await wait(400);
+  const backHome = (await page.locator('.home-title').count()) > 0;
+  result.home[key] = { ...r, stop1, stop2, hash: await page.evaluate(() => location.hash), backHome };
+  await ctx.close();
+}
+
 {
   const { ctx, page } = await fresh(1440, 900);
-  const tab = page.getByRole('button', { name: 'Experiments', exact: true });
+  const tab = page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Experiments', exact: true });
   if ((await tab.count()) > 0) {
     await tab.first().click();
     await wait(2000);
@@ -117,6 +151,13 @@ console.log(JSON.stringify({
   networkVisiblePx_390x844: v['390x844']?.networkVisiblePx,
   medianFpsDeepChaos: result.fps?.medianFps,
   resizeAllPainted: result.resizeRepaint?.allPainted,
+  homeOverflow_390x844: result.home?.['390x844']?.overflow,
+  homeCtaAboveFold_1440x900: result.home?.['1440x900']?.ctaAboveFold,
+  homeCtaAboveFold_390x844: result.home?.['390x844']?.ctaAboveFold,
+  homeFigurePainted: result.home?.['1440x900']?.figurePainted,
+  tourStop1: result.home?.['1440x900']?.stop1,
+  tourStop2: result.home?.['1440x900']?.stop2,
+  backReturnsHome: result.home?.['1440x900']?.backHome,
   experimentsReproductionsOffered: result.experiments?.reproductionsOffered,
   experimentsChartPaintedAfterLoad: result.experiments?.chartPainted,
 }, null, 2));

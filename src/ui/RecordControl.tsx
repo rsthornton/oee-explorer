@@ -119,7 +119,7 @@ export function RecordControl({
     const raster = document.querySelector<HTMLCanvasElement>('.raster-canvas');
     const omega = document.querySelector<HTMLCanvasElement>('.chart-canvas');
     if (!network || !raster || !omega) {
-      setStatus('open the Instrument view to record');
+      setStatus('open Simulate to record');
       return;
     }
 

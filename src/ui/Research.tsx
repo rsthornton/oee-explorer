@@ -27,7 +27,7 @@ export function Research({ onShow, anchor }: ResearchProps) {
         <p>
           The paper compares classical dynamics with five ways of loosening them. In the code every one
           is the same kind of thing: some truth-table entries are rewritten at build time, and a small
-          rule says how a rewritten entry is read. The step trace on the Instrument shows that rule firing.
+          rule says how a rewritten entry is read. The step trace on Simulate shows that rule firing.
         </p>
         <dl className="guide-list">
           <dt>Context switching (PBN)</dt>
@@ -66,8 +66,8 @@ export function Research({ onShow, anchor }: ResearchProps) {
         <p>
           Experiments runs the paper's comparison: Ω against connectivity K, averaged over many networks per K, with the
           reference's stopping rule (batches continue until the 95% confidence half-width drops below δ). Several mechanisms
-          run in parallel and draw live. The paired comparison runs the Instrument's current network under several mechanisms
-          at once, which is how the paper isolates a mechanism's effect from the luck of the draw. Runs keeps every saved run
+          run in parallel and draw live. The paired comparison runs the current network from Simulate under several mechanisms
+          at once, which is how the paper isolates a mechanism's effect from the luck of the draw. Saved runs, listed under the experiments, keep every run
           as numbers: Ω, V, P, episodes, attractors, seed, and a note; replay any of them, export all as CSV or JSON.
         </p>
       </section>

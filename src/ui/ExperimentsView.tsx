@@ -181,7 +181,7 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
           <span className="panel-title">Ω versus K: ensemble sweep</span>
           <span className="panel-note">
             mean over independent networks per K, 95% CI band; batches continue until the CI half-width &lt; δ or the network cap (the
-            reference&apos;s stopping rule) · N, regime, and mechanism parameters come from the Instrument ({base.n} nodes,{' '}
+            reference&apos;s stopping rule) · N, regime, and mechanism parameters come from Simulate ({base.n} nodes,{' '}
             {base.topology === 'exponential' ? 'heterogeneous' : 'homogeneous'})
           </span>
         </div>
@@ -297,7 +297,7 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
         <div className="panel-head">
           <span className="panel-title">Paired comparison: same network, different mechanisms</span>
           <span className="panel-note">
-            seed {sim.seed.toString(36)}: the Instrument&apos;s current random draw, run under each mechanism (the paper applies each mechanism to the same base networks)
+            seed {sim.seed.toString(36)}: the current random draw on Simulate, run under each mechanism (the paper applies each mechanism to the same base networks)
           </span>
         </div>
         <div className="control-row">

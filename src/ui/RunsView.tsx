@@ -35,7 +35,7 @@ export function RunsView({ sim, active, onReplay }: { sim: SimHandle; active: bo
       </div>
       {runs.length === 0 ? (
         <p className="trace-muted" style={{ fontSize: 13 }}>
-          No runs saved yet. On the Instrument, “save run” records the current run’s identity and numbers.
+          No runs saved yet. On Simulate, “save run” records the current run’s identity and numbers.
         </p>
       ) : (
         <div className="table-wrap">
@@ -92,7 +92,7 @@ export function RunsView({ sim, active, onReplay }: { sim: SimHandle; active: bo
                   <td className="row-actions">
                     <button
                       className="chip"
-                      title="replay this run on the Instrument"
+                      title="replay this run on Simulate"
                       onClick={() => {
                         sim.loadRun(r.seed, r.params);
                         onReplay();

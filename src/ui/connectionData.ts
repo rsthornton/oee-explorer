@@ -157,7 +157,7 @@ export const CONNECTIONS: Connection[] = [
     title: 'Open-endedness as a design goal',
     evidence: 'concept',
     simulation:
-      'Switch context with auto-switch on and the run keeps landing in new basins and loops. Ω, on the Instrument, is a score for that pattern: new loops that are found and then held.',
+      'Switch context with auto-switch on and the run keeps landing in new basins and loops. Ω, on Simulate, is a score for that pattern: new loops that are found and then held.',
     research:
       'Ω is the paper\'s "finite-horizon recurrence diagnostic". It is zero for a single attractor and for pure novelty without recurrence. The authors position it as a guide for engineering evolvable synthetic circuits and propose, as future work, an "OEE controller" that tunes logic parameters to maximize Ω. Two other fields want this property. Hughes and colleagues at Google DeepMind define a system as open-ended if the artifacts it produces are novel and learnable to an observer, and argue that this is essential for artificial superhuman intelligence. Stock and Gorochowski propose open-ended biological design, valuing the novelty of a design at least as much as how well it meets its goal.',
     notShown:

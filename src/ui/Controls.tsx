@@ -87,6 +87,7 @@ export function Controls({
   const active = PRESETS.find(
     (x) => x.group === 'tour' && x.params === sim.params && (x.seed === undefined || x.seed === sim.seed),
   );
+  const stopIdx = active ? TOUR_STEPS.findIndex((t) => t.name === active.name) : -1;
 
   return (
     <div className="controls">
@@ -108,26 +109,33 @@ export function Controls({
             </span>
           );
         })}
-        {PRESETS.filter((x) => x.group === 'tour' && !TOUR_STEPS.some((t) => t.name === x.name)).map((preset) => (
-          <button
-            key={preset.name}
-            className={'chip' + (active?.name === preset.name ? ' chip-on' : '')}
-            aria-pressed={active?.name === preset.name}
-            onClick={() => applyPreset(preset)}
-          >
-            {preset.name}
-          </button>
-        ))}
       </div>
-      <p className="tour-gloss" aria-live="polite">
-        {active ? (
+      <div className="tour-card" aria-live="polite">
+        {stopIdx >= 0 ? (
           <>
-            <strong>{active.name}.</strong> {active.blurb}
+            <p className="tour-card-head">
+              <span className="tour-card-stop">
+                Stop {stopIdx + 1} of {TOUR_STEPS.length}
+              </span>{' '}
+              <strong>{TOUR_STEPS[stopIdx].name}:</strong> {TOUR_STEPS[stopIdx].gloss}
+            </p>
+            <p className="tour-card-body">{active?.blurb}</p>
+            {stopIdx + 1 < TOUR_STEPS.length ? (
+              <button className="chip chip-zap tour-next" onClick={() => applyPresetByName(TOUR_STEPS[stopIdx + 1].name)}>
+                Next stop: {TOUR_STEPS[stopIdx + 1].name} →
+              </button>
+            ) : (
+              <p className="tour-card-body">
+                End of the tour. Change a slider, flip a node, or open the mechanisms under the fold to explore from here.
+              </p>
+            )}
           </>
         ) : (
-          'Start with Tiny World and follow the arrows. Each stop is one regime of the same kind of network.'
+          <p className="tour-card-body">
+            Start with Tiny World and follow the arrows: five stops, each one regime of the same kind of network.
+          </p>
         )}
-      </p>
+      </div>
 
       <div className="control-row">
         <button className="btn" onClick={() => sim.setRunning(!sim.running)}>
@@ -140,8 +148,13 @@ export function Controls({
           ↻ New network
         </button>
         <button className="chip advanced-toggle" aria-expanded={expanded} onClick={onToggleExpanded}>
-          {expanded ? 'Hide mechanism, sliders & regime ▴' : 'Mechanism, sliders & regime ▾'}
+          {expanded ? 'Hide mechanism, sliders & recording ▴' : 'Mechanism, sliders & recording ▾'}
         </button>
+      </div>
+
+      {/* creator tools: inside the fold, but always mounted so closing the fold never cuts a recording short */}
+      <div className="control-row" hidden={!expanded}>
+        <span className="control-label">Record</span>
         <RecordControl sim={sim} captureTheme={captureTheme} onToggleCaptureTheme={onToggleCaptureTheme} />
       </div>
 

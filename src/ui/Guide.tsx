@@ -8,7 +8,6 @@ export function Guide() {
   return (
     <div className="guide">
       <section className="guide-section">
-        <p className="intro-lead">Can a simple network keep surprising you?</p>
         <p>
           A random Boolean network is one of the simplest systems that can behave: a set of on/off
           switches, each wired to a few others, each following a fixed rule. Stuart Kauffman
@@ -21,7 +20,7 @@ export function Guide() {
           switching can knock it out; it wanders, then falls into another. Ω scores a run by the
           loops it keeps finding. A frozen system scores close to zero, and less the longer it runs; pure noise that never repeats scores zero. The only
           way to score is <mark className="hl">sustained novelty with staying power</mark>, a
-          signature proposed for open-ended evolution. The Instrument tab opens with the same
+          signature proposed for open-ended evolution. The Simulate tab opens with the same
           tour, right under the preset chips.
         </p>
       </section>
@@ -30,7 +29,7 @@ export function Guide() {
         <h2 className="guide-head"><span className="guide-num">01</span>How to use it</h2>
         <ol className="guide-steps">
           <li>
-            On <strong>Instrument</strong>, click through <em>A good first path</em>, from Tiny World to The Switcher.
+            On <strong>Simulate</strong> (or with <em>Start the tour</em> on the home page), click through <em>A good first path</em>, five stops from Tiny World to The Switcher.
             The line under the chips says what each stop shows.
           </li>
           <li>

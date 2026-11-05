@@ -1,0 +1,354 @@
+{
+  "label": "entry",
+  "viewports": {
+    "1440x900": {
+      "innerWidth": 1440,
+      "innerHeight": 900,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false,
+      "networkTop": 450,
+      "networkVisiblePx": 340,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 340,
+          "cssHeight": 340,
+          "top": 450,
+          "darkSamples": 1727
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 706,
+          "cssHeight": 300,
+          "top": 433,
+          "darkSamples": 6158
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 152,
+          "top": 850,
+          "darkSamples": 4726
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 132,
+          "top": 1032,
+          "darkSamples": 1003
+        }
+      ]
+    },
+    "1440x720": {
+      "innerWidth": 1440,
+      "innerHeight": 720,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false,
+      "networkTop": 450,
+      "networkVisiblePx": 270,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 340,
+          "cssHeight": 340,
+          "top": 450,
+          "darkSamples": 1718
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 706,
+          "cssHeight": 300,
+          "top": 433,
+          "darkSamples": 6148
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 152,
+          "top": 850,
+          "darkSamples": 5055
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 132,
+          "top": 1032,
+          "darkSamples": 1002
+        }
+      ]
+    },
+    "390x844": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "networkTop": 304,
+      "networkVisiblePx": 358,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 358,
+          "cssHeight": 358,
+          "top": 304,
+          "darkSamples": 1537
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 358,
+          "cssHeight": 300,
+          "top": 781,
+          "darkSamples": 6158
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 358,
+          "cssHeight": 152,
+          "top": 1590,
+          "darkSamples": 1623
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 358,
+          "cssHeight": 132,
+          "top": 1817,
+          "darkSamples": 571
+        }
+      ]
+    }
+  },
+  "firstPath": {
+    "Tiny World": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 460,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 460,
+            "darkSamples": 494
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 694,
+            "cssHeight": 300,
+            "top": 443,
+            "darkSamples": 307
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 152,
+            "top": 861,
+            "darkSamples": 4335
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 132,
+            "top": 1042,
+            "darkSamples": 1094
+          }
+        ]
+      }
+    },
+    "Deep Freeze": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 442,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 442,
+            "darkSamples": 420
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 706,
+            "cssHeight": 300,
+            "top": 424,
+            "darkSamples": 8320
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 152,
+            "top": 842,
+            "darkSamples": 21336
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 132,
+            "top": 1023,
+            "darkSamples": 988
+          }
+        ]
+      }
+    },
+    "Edge of Chaos": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 442,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 442,
+            "darkSamples": 1387
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 706,
+            "cssHeight": 300,
+            "top": 424,
+            "darkSamples": 7475
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 152,
+            "top": 842,
+            "darkSamples": 16044
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 132,
+            "top": 1023,
+            "darkSamples": 971
+          }
+        ]
+      }
+    },
+    "The Switcher": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 450,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 450,
+            "darkSamples": 901
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 706,
+            "cssHeight": 300,
+            "top": 433,
+            "darkSamples": 4186
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 152,
+            "top": 850,
+            "darkSamples": 4283
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 1072,
+            "cssHeight": 132,
+            "top": 1032,
+            "darkSamples": 1080
+          }
+        ]
+      }
+    }
+  },
+  "fps": {
+    "medianFps": 60,
+    "frames": 602
+  },
+  "resizeRepaint": {
+    "before": [
+      [
+        "network-canvas",
+        2060
+      ],
+      [
+        "raster-canvas",
+        8612
+      ],
+      [
+        "ribbon-canvas",
+        159
+      ],
+      [
+        "chart-canvas",
+        786
+      ]
+    ],
+    "after": [
+      [
+        "network-canvas",
+        2264
+      ],
+      [
+        "raster-canvas",
+        8496
+      ],
+      [
+        "ribbon-canvas",
+        159
+      ],
+      [
+        "chart-canvas",
+        734
+      ]
+    ],
+    "allPainted": true
+  },
+  "experiments": {
+    "reproductionsOffered": 2,
+    "chartPainted": true
+  },
+  "home": {
+    "1440x900": {
+      "overflow": false,
+      "ctaBottom": 694.5625,
+      "ctaAboveFold": true,
+      "figurePainted": true,
+      "stop1": "STOP 1 OF 5 Tiny World: novelty runs out in a world of eight states",
+      "stop2": "STOP 2 OF 5 Deep Freeze: one loop, forever",
+      "hash": "",
+      "backHome": true
+    },
+    "390x844": {
+      "overflow": false,
+      "ctaBottom": 723.4375,
+      "ctaAboveFold": true,
+      "figurePainted": true,
+      "stop1": "STOP 1 OF 5 Tiny World: novelty runs out in a world of eight states",
+      "stop2": "STOP 2 OF 5 Deep Freeze: one loop, forever",
+      "hash": "",
+      "backHome": true
+    }
+  }
+}

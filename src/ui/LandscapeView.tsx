@@ -125,7 +125,7 @@ function BasinField({ focus, onConnection }: PanelProps) {
         <b>Switch context</b> keeps the wiring and swaps the truth tables, as a PBN does. Every state slides to its
         place in the new field and the token lands in a different basin. Strip: the basin the token was in at each
         step, colored by size rank within the current context, with a tick at each switch. Built by the engine&apos;s
-        own generator (Poisson in-degree, K = 2, two contexts). Ω is not shown here; the Instrument measures it.
+        own generator (Poisson in-degree, K = 2, two contexts). Ω is not shown here; Simulate measures it.
       </p>
       <WhereThisShowsUp
         onConnection={onConnection}

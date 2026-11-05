@@ -1,4 +1,4 @@
-// Checks the Landscape tab and Guide section 05 in a real browser.
+// Checks the Landscape tab and the Research tab's connections in a real browser.
 // Usage: npm run build && node scripts/ux/connections.mjs
 //   1. every "Show this" lands on its tab, at its seed (and K), panel in view;
 //   2. every "Where this shows up" chip opens Research at an entry that exists;
@@ -26,7 +26,7 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !/favicon/.test(m.location().url)) errors.push(m.text()); });
   await page.goto(url);
-  const tab = (name) => page.getByRole('button', { name, exact: true });
+  const tab = (name) => page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name, exact: true });
 
   await tab('Landscape').click();
   await wait(800);
@@ -62,7 +62,8 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.locator('[data-show]').nth(i).click();
     await wait(1400);
     const active = (await page.locator('.tab-active').innerText()).trim().toLowerCase();
-    check(active === t.tab, `${label}: Show this #${i + 1} lands on ${t.tab} (got ${active})`);
+    const want = t.tab === 'instrument' ? 'simulate' : t.tab; // the Instrument view's tab reads Simulate
+    check(active === want, `${label}: Show this #${i + 1} lands on ${want} (got ${active})`);
     if (t.tab === 'landscape') {
       const idx = t.panel === 'basin' ? 0 : 1;
       const text = await page.locator('.landscape-readout').nth(idx).innerText();
@@ -84,7 +85,7 @@ for (const [w, h, label] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(url);
-  await page.getByRole('button', { name: 'Research', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Research', exact: true }).click();
   const hrefs = [...new Set(await page.locator('.connection-refs a').evaluateAll((els) => els.map((e) => e.href)))];
   for (const href of hrefs) {
     let status = 'error';
