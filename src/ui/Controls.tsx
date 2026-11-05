@@ -75,10 +75,19 @@ export function Controls({
     else set({ mechanism: m, numContexts: 1, switching: 0 });
   };
   const hetero = p.topology === 'exponential';
+  const applyPreset = (preset: (typeof PRESETS)[number]) => {
+    if (preset.seed !== undefined) sim.loadRun(preset.seed, preset.params);
+    else sim.applyParams(preset.params, true);
+  };
   const applyPresetByName = (name: string) => {
     const preset = PRESETS.find((x) => x.name === name);
-    if (preset) sim.applyParams(preset.params, true);
+    if (preset) applyPreset(preset);
   };
+  // the loaded tour stop: same parameter object and, if pinned, the same seed
+  const active = PRESETS.find(
+    (x) => x.group === 'tour' && x.params === sim.params && (x.seed === undefined || x.seed === sim.seed),
+  );
+  const stopIdx = active ? TOUR_STEPS.findIndex((t) => t.name === active.name) : -1;
 
   return (
     <div className="controls">
@@ -90,17 +99,42 @@ export function Controls({
           return (
             <span key={t.name} className="tour-step">
               {i > 0 && <span className="tour-arrow">→</span>}
-              <button className="chip" title={`${t.gloss}. ${preset.blurb}`} onClick={() => applyPresetByName(t.name)}>
+              <button
+                className={'chip' + (active?.name === t.name ? ' chip-on' : '')}
+                aria-pressed={active?.name === t.name}
+                onClick={() => applyPresetByName(t.name)}
+              >
                 {t.name}
               </button>
             </span>
           );
         })}
-        {PRESETS.filter((x) => x.group === 'tour' && !TOUR_STEPS.some((t) => t.name === x.name)).map((preset) => (
-          <button key={preset.name} className="chip" title={preset.blurb} onClick={() => sim.applyParams(preset.params, true)}>
-            {preset.name}
-          </button>
-        ))}
+      </div>
+      <div className="tour-card" aria-live="polite">
+        {stopIdx >= 0 ? (
+          <>
+            <p className="tour-card-head">
+              <span className="tour-card-stop">
+                Stop {stopIdx + 1} of {TOUR_STEPS.length}
+              </span>{' '}
+              <strong>{TOUR_STEPS[stopIdx].name}:</strong> {TOUR_STEPS[stopIdx].gloss}
+            </p>
+            <p className="tour-card-body">{active?.blurb}</p>
+            {stopIdx + 1 < TOUR_STEPS.length ? (
+              <button className="chip chip-zap tour-next" onClick={() => applyPresetByName(TOUR_STEPS[stopIdx + 1].name)}>
+                Next stop: {TOUR_STEPS[stopIdx + 1].name} →
+              </button>
+            ) : (
+              <p className="tour-card-body">
+                That is the end of the tour. From here, try a slider, flip a node, or open the mechanisms under the fold.
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="tour-card-body">
+            Start with Tiny World and follow the arrows. Each of the five stops shows one regime of the same kind of network.
+          </p>
+        )}
       </div>
 
       <div className="control-row">
@@ -114,8 +148,13 @@ export function Controls({
           ↻ New network
         </button>
         <button className="chip advanced-toggle" aria-expanded={expanded} onClick={onToggleExpanded}>
-          {expanded ? 'Hide mechanism, sliders & regime ▴' : 'Mechanism, sliders & regime ▾'}
+          {expanded ? 'Hide mechanism, sliders & recording ▴' : 'Mechanism, sliders & recording ▾'}
         </button>
+      </div>
+
+      {/* creator tools: inside the fold, but always mounted so closing the fold never cuts a recording short */}
+      <div className="control-row" hidden={!expanded}>
+        <span className="control-label">Record</span>
         <RecordControl sim={sim} captureTheme={captureTheme} onToggleCaptureTheme={onToggleCaptureTheme} />
       </div>
 

@@ -1,0 +1,332 @@
+{
+  "label": "final",
+  "viewports": {
+    "1440x900": {
+      "innerWidth": 1440,
+      "innerHeight": 900,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false,
+      "networkTop": 427,
+      "networkVisiblePx": 340,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 340,
+          "cssHeight": 340,
+          "top": 427,
+          "darkSamples": 1709
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 606,
+          "cssHeight": 300,
+          "top": 427,
+          "darkSamples": 6123
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 972,
+          "cssHeight": 152,
+          "top": 855,
+          "darkSamples": 4635
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 972,
+          "cssHeight": 132,
+          "top": 1037,
+          "darkSamples": 957
+        }
+      ]
+    },
+    "1440x720": {
+      "innerWidth": 1440,
+      "innerHeight": 720,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false,
+      "networkTop": 427,
+      "networkVisiblePx": 293,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 340,
+          "cssHeight": 340,
+          "top": 427,
+          "darkSamples": 1565
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 606,
+          "cssHeight": 300,
+          "top": 427,
+          "darkSamples": 6158
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 972,
+          "cssHeight": 152,
+          "top": 855,
+          "darkSamples": 4415
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 972,
+          "cssHeight": 132,
+          "top": 1037,
+          "darkSamples": 956
+        }
+      ]
+    },
+    "390x844": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "networkTop": 326,
+      "networkVisiblePx": 358,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 358,
+          "cssHeight": 358,
+          "top": 326,
+          "darkSamples": 1571
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 358,
+          "cssHeight": 300,
+          "top": 803,
+          "darkSamples": 6157
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 358,
+          "cssHeight": 152,
+          "top": 1572,
+          "darkSamples": 1504
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 358,
+          "cssHeight": 132,
+          "top": 1799,
+          "darkSamples": 573
+        }
+      ]
+    }
+  },
+  "firstPath": {
+    "Tiny World": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 427,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 427,
+            "darkSamples": 510
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 594,
+            "cssHeight": 300,
+            "top": 427,
+            "darkSamples": 319
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 972,
+            "cssHeight": 152,
+            "top": 855,
+            "darkSamples": 3922
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 972,
+            "cssHeight": 132,
+            "top": 1037,
+            "darkSamples": 1014
+          }
+        ]
+      }
+    },
+    "Deep Freeze": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 408,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 408,
+            "darkSamples": 420
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 606,
+            "cssHeight": 300,
+            "top": 408,
+            "darkSamples": 8320
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 972,
+            "cssHeight": 152,
+            "top": 836,
+            "darkSamples": 19236
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 972,
+            "cssHeight": 132,
+            "top": 1018,
+            "darkSamples": 926
+          }
+        ]
+      }
+    },
+    "Edge of Chaos": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 427,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 427,
+            "darkSamples": 1403
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 606,
+            "cssHeight": 300,
+            "top": 427,
+            "darkSamples": 7475
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 972,
+            "cssHeight": 152,
+            "top": 855,
+            "darkSamples": 14532
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 972,
+            "cssHeight": 132,
+            "top": 1037,
+            "darkSamples": 908
+          }
+        ]
+      }
+    },
+    "The Switcher": {
+      "found": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false,
+        "networkTop": 427,
+        "networkVisiblePx": 340,
+        "canvases": [
+          {
+            "name": "network-canvas",
+            "cssWidth": 340,
+            "cssHeight": 340,
+            "top": 427,
+            "darkSamples": 889
+          },
+          {
+            "name": "raster-canvas",
+            "cssWidth": 606,
+            "cssHeight": 300,
+            "top": 427,
+            "darkSamples": 4186
+          },
+          {
+            "name": "ribbon-canvas",
+            "cssWidth": 972,
+            "cssHeight": 152,
+            "top": 855,
+            "darkSamples": 3928
+          },
+          {
+            "name": "chart-canvas",
+            "cssWidth": 972,
+            "cssHeight": 132,
+            "top": 1037,
+            "darkSamples": 1024
+          }
+        ]
+      }
+    }
+  },
+  "fps": {
+    "medianFps": 60,
+    "frames": 601
+  },
+  "resizeRepaint": {
+    "before": [
+      [
+        "network-canvas",
+        2332
+      ],
+      [
+        "raster-canvas",
+        8631
+      ],
+      [
+        "ribbon-canvas",
+        159
+      ],
+      [
+        "chart-canvas",
+        719
+      ]
+    ],
+    "after": [
+      [
+        "network-canvas",
+        2187
+      ],
+      [
+        "raster-canvas",
+        8500
+      ],
+      [
+        "ribbon-canvas",
+        159
+      ],
+      [
+        "chart-canvas",
+        732
+      ]
+    ],
+    "allPainted": true
+  },
+  "experiments": {
+    "reproductionsOffered": 2,
+    "chartPainted": true
+  }
+}

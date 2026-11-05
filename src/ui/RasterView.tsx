@@ -130,7 +130,8 @@ export function RasterView({ sim, captureTheme }: { sim: SimHandle; captureTheme
         <span className="panel-title">State raster</span>
         <span className="panel-note">
           each row = one node&apos;s history, scrolling (last {RASTER_WINDOW} steps) · repeating
-          texture = in a loop · amber = contradiction token
+          texture = in a loop · column tint = the loop it is in
+          {sim.params.mechanism === 'paraconsistent' ? ' · amber = contradiction token' : ''}
         </span>
       </div>
       <div className="raster-wrap">

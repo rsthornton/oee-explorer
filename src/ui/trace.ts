@@ -48,7 +48,7 @@ export function narrate(sim: Simulator, net: Network, i: number): TraceLine[] {
   });
 
   if (code === TRACE.SKIPPED) {
-    lines.push({ text: 'not selected this step (asynchronous set) — state carried over', emphasis: true });
+    lines.push({ text: 'not selected this step (asynchronous set), so its state carried over', emphasis: true });
     return lines;
   }
   if (code === TRACE.FALLBACK_COIN) {

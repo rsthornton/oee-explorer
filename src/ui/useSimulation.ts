@@ -72,9 +72,9 @@ export interface SimHandle {
   loadRun: (seed: number, p: SimParams) => void;
 }
 
-export function useSimulation(initial: SimParams): SimHandle {
+export function useSimulation(initial: SimParams, initialSeed?: number): SimHandle {
   const [params, setParams] = useState<SimParams>(initial);
-  const [seed, setSeed] = useState<number>(() => Math.floor(Math.random() * 2 ** 31));
+  const [seed, setSeed] = useState<number>(() => initialSeed ?? Math.floor(Math.random() * 2 ** 31));
   const [running, setRunning] = useState(true);
   const [stepsPerFrame, setStepsPerFrame] = useState(60);
   const [frame, setFrame] = useState(0);

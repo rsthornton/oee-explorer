@@ -7,7 +7,8 @@ drives every view.
 
 The metric is from López-Díaz, Rivera Torres, Febres, and Gershenson,
 "Characterizing open-ended evolution through undecidability mechanisms in
-random Boolean networks" (*npj Systems Biology and Applications*, 2026).
+random Boolean networks", *npj Systems Biology and Applications* 12, 152 (2026),
+[doi:10.1038/s41540-026-00770-8](https://doi.org/10.1038/s41540-026-00770-8).
 Ω summarizes the residence-time-weighted contribution of cycle lengths across
 the recurrence episodes a trajectory realizes in a finite window. It is zero
 for a system frozen in one attractor and zero for noise that never recurs.
@@ -15,16 +16,25 @@ It is large only when the system keeps finding new persistent cycles and
 living in them. The reference implementation is
 [amahury/oee-metric](https://github.com/amahury/oee-metric).
 
-## Views
+## Sections
+
+| Section | Link | What it is |
+|---------|------|------------|
+| Home | `/` | The way in: the paper's framing in three beats beside a live basin field, *Start the tour* or *Explore on my own*. |
+| Simulate | `#simulate` | The live instrument (views below) and the five-stop tour. |
+| Landscape | `#landscape` | The basin field of a 10-node network and a one-flipped-bit damage map with its Derrida curve. |
+| Experiments | `#experiments` | Ω-versus-K sweeps, paired comparisons, and saved runs. |
+| Guide | `#guide` | How to use it and how to read each view. |
+| Research | `#research` | The mechanisms, the experiments, where these dynamics meet current research (each with its evidence), and provenance. |
+
+## Views on Simulate
 
 | View | What it shows |
 |------|---------------|
 | The network | The wiring itself. Nodes light up with their state as the run proceeds. Hover shows a node's inputs; clicking flips its state, a one-bit perturbation you can watch propagate. |
 | State raster | Every node's on/off history, scrolling. Repeating vertical texture means the network is in a cycle; a texture break means it escaped. |
-| Recurrence episodes | The whole run as a ribbon. Each bar is one episode: color is the attractor's identity, width is dwell time, height is cycle length, so bar area is the episode's k·d contribution to Ω. Arcs below the baseline mark returns to an attractor seen before. |
+| Recurrence episodes | The whole run as a ribbon. Each bar is one episode: color is the attractor's identity, width is dwell time, height is cycle length on a linear scale (short loops at a 3 px minimum), so bar area is the episode's k·d contribution to Ω. Arcs below the baseline mark returns to an attractor seen before. |
 | Ω over time | The metric accumulating as the run unfolds, on the same time axis as the ribbon. |
-| Experiments | Ω against K averaged over many networks per K with the reference's CI stopping rule, several mechanisms in parallel workers, drawn live; and a paired comparison of the current network under several mechanisms. |
-| Runs | Every saved run as numbers, with notes, replay, and CSV/JSON export. |
 
 Named presets stage the regimes: frozen, critical, chaotic, and context-switching
 dynamics at the paper's scale, plus a three-node network whose eight-state world

@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { SimHandle } from './useSimulation';
 import type { Episode } from '../engine/episodes';
 import { attractorColor, TRANSIENT, INK_MUTED } from './theme';
-import { PLOT_W, PLOT_PAD_L, PLOT_PAD_R, MONO } from './plot';
+import { PLOT_PAD_L, PLOT_PAD_R, MONO, usePlotWidth } from './plot';
 import { useResizeRepaint } from './useResizeRepaint';
 
 const H = 152;
@@ -25,15 +25,17 @@ const DPR = Math.min(window.devicePixelRatio || 1, 2);
 const BASE_Y = 102; // top of the transient strip
 const STRIP_H = 5;
 const MAX_BAR = 84;
+const MIN_BAR = 3;
 const ARC_ZONE = H - BASE_Y - STRIP_H - 4;
 
 export function RibbonView({ sim }: { sim: SimHandle }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const W = usePlotWidth(canvasRef);
   const [hover, setHover] = useState<{ ep: Episode; x: number } | null>(null);
   const resizeTick = useResizeRepaint(canvasRef);
 
   const tMax = Math.max(sim.t, 1);
-  const plotW = PLOT_W - PLOT_PAD_L - PLOT_PAD_R;
+  const plotW = W - PLOT_PAD_L - PLOT_PAD_R;
   const xOf = (t: number) => PLOT_PAD_L + (t / tMax) * plotW;
 
   useEffect(() => {
@@ -41,16 +43,22 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (canvas.width !== PLOT_W * DPR) {
-      canvas.width = PLOT_W * DPR;
+    if (canvas.width !== W * DPR || canvas.height !== H * DPR) {
+      canvas.width = W * DPR;
       canvas.height = H * DPR;
     }
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, PLOT_W, H);
+    ctx.clearRect(0, 0, W, H);
 
     // transient base strip across elapsed time
     ctx.fillStyle = TRANSIENT;
     ctx.fillRect(PLOT_PAD_L, BASE_Y, plotW, STRIP_H);
+
+    if (sim.episodes.length === 0 && sim.t > 0) {
+      ctx.fillStyle = INK_MUTED;
+      ctx.font = `11px ${MONO}`;
+      ctx.fillText('no loop found yet, so Ω = 0', PLOT_PAD_L + 6, BASE_Y - 12);
+    }
 
     let maxK = 1;
     let maxArea: Episode | null = null;
@@ -58,7 +66,9 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
       if (ep.cycleLen > maxK) maxK = ep.cycleLen;
       if (!maxArea || ep.cycleLen * ep.dwell > maxArea.cycleLen * maxArea.dwell) maxArea = ep;
     }
-    const hOf = (k: number) => 5 + (Math.log2(k + 1) / Math.log2(maxK + 1)) * MAX_BAR;
+    // height is linear in k, so a bar's area really is its k·d share of Ω;
+    // loops too short to see are drawn at MIN_BAR (named in the caption)
+    const hOf = (k: number) => Math.max(MIN_BAR, (k / maxK) * MAX_BAR);
 
     // revisit arcs below the baseline, drawn first (bars sit on top of endpoints)
     const byId = new Map<number, Episode[]>();
@@ -107,11 +117,11 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
         ctx.textAlign = 'left';
       }
     }
-  }, [sim, sim.frame, tMax, plotW, resizeTick]);
+  }, [sim, sim.frame, tMax, plotW, resizeTick, W]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - rect.left) / rect.width) * PLOT_W;
+    const px = ((e.clientX - rect.left) / rect.width) * W;
     const t = ((px - PLOT_PAD_L) / plotW) * tMax;
     let found: Episode | null = null;
     for (const ep of sim.episodes) {
@@ -125,14 +135,14 @@ export function RibbonView({ sim }: { sim: SimHandle }) {
       <div className="panel-head">
         <span className="panel-title">Recurrence episodes</span>
         <span className="panel-note">
-          the whole run · each bar = one loop · <strong>area = its share of Ω</strong> · arcs =
-          returns
+          the whole run · each bar = one loop: height = loop length, width = time in it ·{' '}
+          <strong>area = its share of Ω</strong> (short loops drawn at a 3 px minimum) · arcs = returns
         </span>
       </div>
       <div className="ribbon-wrap">
         <canvas
           ref={canvasRef}
-          width={PLOT_W}
+          width={W}
           height={H}
           className="ribbon-canvas"
           onMouseMove={onMove}

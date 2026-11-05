@@ -1,46 +1,52 @@
 /**
- * The Guide view: everything a reader needs that is not the instrument
- * itself. The story, a suggested path through the presets, how to read
- * each view, what Ω means, and provenance. Moving this here keeps the
- * Instrument view's captions to one line each.
+ * The Guide view: what this is and how to use it. The story, four steps to
+ * start, how to read each view, and what Ω means. Everything deeper (the
+ * mechanisms, experiments, research connections, provenance) is on Research.
  */
 
 export function Guide() {
   return (
     <div className="guide">
       <section className="guide-section">
-        <p className="intro-lead">Can a simple network keep surprising you?</p>
         <p>
           A random Boolean network is one of the simplest systems that can behave: a set of on/off
-          switches, each wired to a few others, each following a fixed rule. Stuart Kauffman
-          introduced them in 1969 as a cartoon of the genome. Everything on this page runs on that
-          cartoon, live, in your browser.
+          switches, each wired to a few others, each following a fixed rule. Stuart Kauffman introduced them in 1969 as a simple model of gene regulation. Every network on this site runs in your browser.
         </p>
         <p>
-          Every step, all switches update at once from their inputs. Sooner or later the network
-          hits a pattern it has been in before, and from there it must repeat: a loop. Random
-          switching can knock it out; it wanders, then falls into another. Ω scores a run by the
-          loops it keeps finding. A frozen system scores zero, and so does pure noise. The only
-          way to score is <mark className="hl">sustained novelty with staying power</mark>, a
-          signature proposed for open-ended evolution. The Instrument tab opens with the same
-          tour, right under the preset chips.
+          Every step, the switches update from their inputs (all at once, in the paper&apos;s homogeneous regime). Sooner or later the network returns to a pattern it has been in before, and from then on it repeats. That repeating stretch is a loop. Random switching can knock the network out of a loop; it wanders for a while, then falls into another. Ω scores a run by the loops it finds. A network that stays in one loop scores close to zero, and less the longer it runs. Noise that never repeats scores zero. A run scores well only when it <mark className="hl">keeps finding new loops and stays in each for a while</mark>. The paper proposes this as one sign of open-ended evolution.
         </p>
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">01</span>Reading the instrument</h2>
+        <h2 className="guide-head"><span className="guide-num">01</span>How to use it</h2>
+        <ol className="guide-steps">
+          <li>
+            On <strong>Simulate</strong> (or with <em>Start the tour</em> on the home page), click through <em>A good first path</em>, five stops from Tiny World to The Switcher.
+            The line under the chips says what each stop shows.
+          </li>
+          <li>
+            Watch the <strong>state raster</strong>. Repeating texture means the network is in a loop. Under it, each bar
+            of the <strong>ribbon</strong> is one loop, and Ω is how much ink the bars add up to.
+          </li>
+          <li>Click a node in the network to flip it, and see whether the run falls into a different loop.</li>
+          <li>
+            Open <strong>Landscape</strong> to see every possible state of a small network at once, and how a context
+            switch rearranges them.
+          </li>
+        </ol>
+      </section>
+
+      <section className="guide-section">
+        <h2 className="guide-head"><span className="guide-num">02</span>Reading each view</h2>
         <dl className="guide-list">
           <dt>The network</dt>
           <dd>
-            The wiring itself. Dark nodes are ON. Hover a node to see its inputs. Click one to
-            flip it: a one-bit nudge. In a frozen network the nudge is absorbed; near the critical
-            regime it can knock the whole system into a different loop.
+            The wiring itself. Filled nodes are ON, in the color of the loop the network is in; moving dots are changes traveling along wires. Hover a node to see its inputs. Click one to flip it. In a frozen network the change dies out; near the critical regime it can move the whole network into a different loop.
           </dd>
           <dt>Rule tables (12 nodes or fewer)</dt>
           <dd>
             Every node&apos;s rule as a truth table: one row per combination of its inputs, and the bit it outputs next. The
-            row being read this step is highlighted. A greyed input is wired but never changes the output; the rule is
-            constant in it, and no data method could detect it. Under the non-classical mechanisms, rewritten entries are
+            row being read this step is highlighted. A greyed input is wired but never changes the output, so a method working only from data could not detect it. Under the non-classical mechanisms, rewritten entries are
             marked: C contradiction, ◇ possible, □ necessary, ? superposed, µ mutable.
           </dd>
           <dt>State raster</dt>
@@ -53,19 +59,34 @@ export function Guide() {
           <dd>
             The whole run as one ribbon. Each bar is one loop the network fell into: color says
             which loop (the term of art is <em>attractor</em>), width is time spent in it, height
-            is the loop's length, so a bar's area is its k·d contribution to Ω.{' '}
-            <mark className="hl">Ω is literally how much ink is on this chart.</mark> Arcs below the baseline mark returns to a loop seen before.
+            is the loop's length (on a linear scale, with very short loops drawn at a small minimum height), so a bar's area is its k·d contribution to Ω.{' '}
+            <mark className="hl">Ω is the total area of the bars divided by the run length squared.</mark> Arcs below the baseline mark returns to a loop seen before.
           </dd>
           <dt>Ω over time</dt>
           <dd>
             The score accumulating as the run unfolds, on the same time axis as the ribbon. It
             climbs when a new loop is found and held, and fades when nothing new recurs.
           </dd>
+          <dt>Basin field (Landscape tab)</dt>
+          <dd>
+            Every possible state of a 10-node network, all 1,024 of them, each drawn as a dot with a line to the state
+            that follows it. Following the lines from any dot always ends in a loop, drawn as a colored ring: an
+            attractor. Every dot that drains into the same ring forms its basin. The dark ringed token is one live run.
+            Switch context keeps the wiring but swaps the rules, as the paper&apos;s PBN mechanism does, so every dot
+            gets a new successor and the whole field rearranges under the token.
+          </dd>
+          <dt>One flipped bit (Landscape tab)</dt>
+          <dd>
+            Two copies of one network that differ in a single node. Rose cells mark where they disagree. In a frozen
+            network the difference dies out; in a chaotic one it spreads. Beside it, the Derrida map averages this over
+            many random pairs: how much damage now becomes how much damage one step later. Its slope at the origin
+            separates the regimes, with the critical line at a slope of one.
+          </dd>
         </dl>
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">02</span>What Ω means</h2>
+        <h2 className="guide-head"><span className="guide-num">03</span>What Ω means</h2>
         <div className="callout">
           <span className="callout-formula">Ω = Σ k·d / t²</span>
           <p>
@@ -75,9 +96,7 @@ export function Guide() {
           </p>
         </div>
         <p>
-          Freeze into one loop forever and Ω fades toward zero. Wander forever without looping and
-          Ω is zero too. Ω is only large when the network keeps finding new loops and living in
-          them.
+          A network that stays in one loop has Ω near zero, falling as the run gets longer. A network that never repeats has Ω of zero. Ω is large only when the network keeps finding new loops and stays in them.
         </p>
         <p>
           Runs are deterministic: the seed in the stats strip plus the parameter settings fully
@@ -88,70 +107,9 @@ export function Guide() {
       </section>
 
       <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">03</span>The mechanisms</h2>
         <p>
-          The paper compares classical dynamics with five ways of loosening them. In the code every one
-          is the same kind of thing: some truth-table entries are rewritten at build time, and a small
-          rule says how a rewritten entry is read. The step trace on the Instrument shows that rule firing.
-        </p>
-        <dl className="guide-list">
-          <dt>Context switching (PBN)</dt>
-          <dd>Several rule tables over the same wiring; with probability σ each step, the network switches which table it reads.</dd>
-          <dt>Paraconsistent</dt>
-          <dd>
-            Some entries become contradictions. A node reading one takes the unanimous input if there is one, otherwise a
-            contradiction token carrying the majority (amber in the raster). In the reference code a contradiction token used
-            as an input makes the reader flip a coin.
-          </dd>
-          <dt>Modal</dt>
-          <dd>
-            Each node is given a few "accessible" nodes. Some entries become POSSIBLE (1 if any accessible node is ON) or
-            NECESSARY (its bit if all accessible nodes are ON, else 0).
-          </dd>
-          <dt>Quantum-inspired</dt>
-          <dd>
-            Some entries become SUPERPOSED and collapse to a coin flip when read; some node pairs are coupled so one copies the
-            other. In the reference code the coupling is unreachable; "as described in paper" makes it override the update.
-          </dd>
-          <dt>Rule mutation (ARM)</dt>
-          <dd>
-            Every entry should flip with probability µ when read. The reference code never applies the flip: its entries fall
-            through to the contradiction resolver, a majority vote. "As described in paper" applies the flip.
-          </dd>
-        </dl>
-        <p>
-          <mark className="hl">Faithful to code</mark> runs exactly what the reference code runs, quirks included.{' '}
-          <mark className="hl">As described in paper</mark> runs the Methods section as written. Where the two disagree, the
-          disagreement is itself a measurement, and a question for the authors rather than a verdict.
-        </p>
-      </section>
-
-      <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">04</span>Experiments and runs</h2>
-        <p>
-          Experiments runs the paper's comparison: Ω against connectivity K, averaged over many networks per K, with the
-          reference's stopping rule (batches continue until the 95% confidence half-width drops below δ). Several mechanisms
-          run in parallel and draw live. The paired comparison runs the Instrument's current network under several mechanisms
-          at once, which is how the paper isolates a mechanism's effect from the luck of the draw. Runs keeps every saved run
-          as numbers: Ω, V, P, episodes, attractors, seed, and a note; replay any of them, export all as CSV or JSON.
-        </p>
-      </section>
-
-      <section className="guide-section">
-        <h2 className="guide-head"><span className="guide-num">05</span>Provenance</h2>
-        <p>
-          The metric and the mechanisms compared here are from{' '}
-          <a href="https://doi.org/10.1038/s41540-026-00770-8" target="_blank" rel="noreferrer">
-            López-Díaz, Rivera Torres, Febres &amp; Gershenson, npj Systems Biology &amp;
-            Applications (2026)
-          </a>
-          . The simulation is a TypeScript port of their{' '}
-          <a href="https://github.com/amahury/oee-metric" target="_blank" rel="noreferrer">
-            reference implementation
-          </a>
-          , checked against it: on the same networks and initial states, classical runs match the reference's V,
-          P, KD and Ω exactly, and the stochastic mechanisms match in distribution (the harness is in the repository,{' '}
-          <span className="mono">npm run parity</span>). All six mechanisms and both update regimes are implemented.
+          The mechanisms the paper compares, the ensemble experiments, where these dynamics show up in current research,
+          and how this port was checked against the authors&apos; code are on the <strong>Research</strong> tab.
         </p>
       </section>
     </div>

@@ -53,17 +53,16 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
           .catch(() => null),
       ),
     ).then((rs) => {
-      const recs = rs.filter(Boolean) as ExperimentRecord[];
-      setBundled(recs);
-      const fig1 = recs.find((r) => r.id === 'repro-homogeneous');
-      if (fig1) showBundled(fig1);
+      // Nothing is drawn until the reader chooses: the first view states what the
+      // tab does and offers the shipped reproductions, without leading on any one curve.
+      setBundled(rs.filter(Boolean) as ExperimentRecord[]);
     });
   }, []);
 
   const showBundled = (e: ExperimentRecord) => {
     setSeries(e.series);
     const steps = String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    setCaption(`Shown: shipped ${e.id === 'repro-homogeneous' ? 'Fig. 1 (homogeneous)' : 'Fig. 2 (heterogeneous)'} reproduction, computed headlessly, T = ${steps} — not the paper's own figure. Run sweep replaces this with a live run.`);
+    setCaption(`Shown: shipped ${e.id === 'repro-homogeneous' ? 'Fig. 1 (homogeneous)' : 'Fig. 2 (heterogeneous)'} reproduction, computed headlessly at T = ${steps}; not the paper's own figure. Run sweep replaces this with a live run.`);
   };
 
   const stop = () => {
@@ -179,10 +178,10 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
     <div className="experiments">
       <section className="panel">
         <div className="panel-head">
-          <span className="panel-title">Ω versus K — ensemble sweep</span>
+          <span className="panel-title">Ω versus K: ensemble sweep</span>
           <span className="panel-note">
             mean over independent networks per K, 95% CI band; batches continue until the CI half-width &lt; δ or the network cap (the
-            reference&apos;s stopping rule) · N, regime, and mechanism parameters come from the Instrument ({base.n} nodes,{' '}
+            reference&apos;s stopping rule) · N, regime, and mechanism parameters come from Simulate ({base.n} nodes,{' '}
             {base.topology === 'exponential' ? 'heterogeneous' : 'homogeneous'})
           </span>
         </div>
@@ -238,6 +237,24 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
                 : 'paper: K 1.1–4.5 step 0.2, T = 10⁶, ≤1,000 networks, δ = 0.02'}
           </span>
         </div>
+        {series.length === 0 && !running && (
+          <div className="sweep-start">
+            <p>
+              This tab compares mechanisms the way the paper does, plotting Ω against connectivity K, averaged over many random networks at each K. Load a reproduction computed ahead of time at the paper&apos;s scale, or pick
+              mechanisms above and run a smaller sweep live in your browser.
+            </p>
+            <div className="sweep-start-actions">
+              {bundled.map((e) => (
+                <button key={e.id} className="btn" onClick={() => showBundled(e)}>
+                  Load {e.id === 'repro-homogeneous' ? 'Fig. 1 (homogeneous)' : 'Fig. 2 (heterogeneous)'} reproduction
+                </button>
+              ))}
+              <button className="chip chip-zap" onClick={start}>
+                Run a live sweep
+              </button>
+            </div>
+          </div>
+        )}
         {series.length > 0 && <SweepChart series={series} kMin={kMin} kMax={kMax} />}
         {series.length > 0 && caption && <div className="control-hint">{caption}</div>}
         {series.length > 0 && !running && (
@@ -251,12 +268,12 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
             </button>
           </div>
         )}
-        {bundled.length > 0 && (
+        {bundled.length > 0 && series.length > 0 && (
           <div className="saved-list">
             <span className="control-label">Paper reproductions (computed headlessly, shipped with the app)</span>
             {bundled.map((e) => (
               <button key={e.id} className="chip chip-zap" title={e.note} onClick={() => showBundled(e)}>
-                {e.id === 'repro-homogeneous' ? 'Fig. 1 · homogeneous' : 'Fig. 2 · heterogeneous (emulated async, lower confidence)'} — {String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')} steps
+                {e.id === 'repro-homogeneous' ? 'Fig. 1 · homogeneous' : 'Fig. 2 · heterogeneous (emulated async, lower confidence)'} · {String((e.spec as { T?: number }).T ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')} steps
                 {(e.spec as { finished?: boolean }).finished === false ? ' (partial)' : ''}
               </button>
             ))}
@@ -266,9 +283,9 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
           <div className="saved-list">
             <span className="control-label">Saved sweeps</span>
             {saved.map((e) => (
-              <button key={e.id} className="chip" title={new Date(e.createdAt).toLocaleString()} onClick={() => { setSeries(e.series); setCaption(`Shown: saved sweep from ${new Date(e.createdAt).toLocaleDateString()}${e.note ? ` — ${e.note}` : ''}.`); }}>
+              <button key={e.id} className="chip" title={new Date(e.createdAt).toLocaleString()} onClick={() => { setSeries(e.series); setCaption(`Shown: saved sweep from ${new Date(e.createdAt).toLocaleDateString()}${e.note ? `: ${e.note}` : ''}.`); }}>
                 {new Date(e.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · {e.series.map((s) => s.label).join(', ')}
-                {e.note ? ` — ${e.note}` : ''}
+                {e.note ? `: ${e.note}` : ''}
               </button>
             ))}
           </div>
@@ -277,9 +294,9 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
 
       <section className="panel">
         <div className="panel-head">
-          <span className="panel-title">Paired comparison — same network, different mechanism</span>
+          <span className="panel-title">Paired comparison: same network, different mechanisms</span>
           <span className="panel-note">
-            seed {sim.seed.toString(36)}: the Instrument&apos;s current random draw, run under each mechanism (the paper applies each mechanism to the same base networks)
+            seed {sim.seed.toString(36)}: the current random draw on Simulate, run under each mechanism (the paper applies each mechanism to the same base networks)
           </span>
         </div>
         <div className="control-row">
