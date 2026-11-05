@@ -251,7 +251,7 @@ export function BasinCanvas({ seed, height, playing, auto, speed, strip = false,
         `token's basin holds ${((100 * f.basinSize[b]) / n).toFixed(1)}% of states`,
         cyc === 1 ? 'its attractor is a fixed point' : `its attractor is a ${cyc}-cycle`,
         `${s.steps} steps`,
-        `${s.visited.size} basins visited`,
+        `${s.visited.size} ${s.visited.size === 1 ? "basin" : "basins"} visited`,
         `seed ${seed}`,
       ].join(' · ');
       if (text !== lastReadout) {

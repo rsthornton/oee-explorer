@@ -25,9 +25,7 @@ export function Research({ onShow, anchor }: ResearchProps) {
       <section className="guide-section">
         <h2 className="guide-head"><span className="guide-num">01</span>The mechanisms</h2>
         <p>
-          The paper compares classical dynamics with five ways of loosening them. In the code every one
-          is the same kind of thing: some truth-table entries are rewritten at build time, and a small
-          rule says how a rewritten entry is read. The step trace on Simulate shows that rule firing.
+          The paper compares classical dynamics with five ways of loosening them. In the code each one works the same way. Some truth-table entries are rewritten when the network is built, and a small rule says how a rewritten entry is read. The step trace on Simulate shows that rule firing.
         </p>
         <dl className="guide-list">
           <dt>Context switching (PBN)</dt>
@@ -56,15 +54,14 @@ export function Research({ onShow, anchor }: ResearchProps) {
         </dl>
         <p>
           <mark className="hl">Faithful to code</mark> runs exactly what the reference code runs, quirks included.{' '}
-          <mark className="hl">As described in paper</mark> runs the Methods section as written. Where the two disagree, the
-          disagreement is itself a measurement, and a question for the authors rather than a verdict.
+          <mark className="hl">As described in paper</mark> runs the Methods section as written. Where they differ, the site shows both. The difference is an open question for the authors.
         </p>
       </section>
 
       <section className="guide-section">
         <h2 className="guide-head"><span className="guide-num">02</span>Experiments and runs</h2>
         <p>
-          Experiments runs the paper's comparison: Ω against connectivity K, averaged over many networks per K, with the
+          Experiments repeats the paper's comparison of Ω against connectivity K, averaged over many networks per K, with the
           reference's stopping rule (batches continue until the 95% confidence half-width drops below δ). Several mechanisms
           run in parallel and draw live. The paired comparison runs the current network from Simulate under several mechanisms
           at once, which is how the paper isolates a mechanism's effect from the luck of the draw. Saved runs, listed under the experiments, keep every run
@@ -80,7 +77,7 @@ export function Research({ onShow, anchor }: ResearchProps) {
           The metric and the mechanisms compared here are from{' '}
           <a href="https://doi.org/10.1038/s41540-026-00770-8" target="_blank" rel="noreferrer">
             López-Díaz, Rivera Torres, Febres &amp; Gershenson, npj Systems Biology &amp;
-            Applications (2026)
+            Applications 12, 152 (2026)
           </a>
           . The simulation is a TypeScript port of their{' '}
           <a href="https://github.com/amahury/oee-metric" target="_blank" rel="noreferrer">

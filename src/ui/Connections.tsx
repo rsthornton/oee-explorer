@@ -18,10 +18,7 @@ export function Connections({ onShow, num }: { onShow: (t: ShowTarget) => void; 
         <span className="guide-num">{num}</span>Where this shows up in research
       </h2>
       <p>
-        Random Boolean networks are a cartoon, and this site runs random ones, not models of any real cell or
-        machine. Still, the dynamics you can watch here are the same objects several active research areas work
-        with. Each entry below says how direct the link is, shows the matching view, and says what the simulation
-        does not show.
+        The networks on this site are random. They do not model any real cell or machine. Several active research areas study the same kinds of behavior, though, and the entries below describe them. Each entry says how close the connection is, links to the matching view, and says what the simulation does not show.
       </p>
       <dl className="evidence-key">
         {Object.entries(EVIDENCE).map(([key, e]) => (

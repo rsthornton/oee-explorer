@@ -10,18 +10,10 @@ export function Guide() {
       <section className="guide-section">
         <p>
           A random Boolean network is one of the simplest systems that can behave: a set of on/off
-          switches, each wired to a few others, each following a fixed rule. Stuart Kauffman
-          introduced them in 1969 as a cartoon of the genome. Everything on this page runs on that
-          cartoon, live, in your browser.
+          switches, each wired to a few others, each following a fixed rule. Stuart Kauffman introduced them in 1969 as a simple model of gene regulation. Every network on this site runs in your browser.
         </p>
         <p>
-          Every step, the switches update from their inputs (all at once, in the paper&apos;s homogeneous regime). Sooner or later the network
-          hits a pattern it has been in before, and from there it must repeat: a loop. Random
-          switching can knock it out; it wanders, then falls into another. Ω scores a run by the
-          loops it keeps finding. A frozen system scores close to zero, and less the longer it runs; pure noise that never repeats scores zero. The only
-          way to score is <mark className="hl">sustained novelty with staying power</mark>, a
-          signature proposed for open-ended evolution. The Simulate tab opens with the same
-          tour, right under the preset chips.
+          Every step, the switches update from their inputs (all at once, in the paper&apos;s homogeneous regime). Sooner or later the network returns to a pattern it has been in before, and from then on it repeats. That repeating stretch is a loop. Random switching can knock the network out of a loop; it wanders for a while, then falls into another. Ω scores a run by the loops it finds. A network that stays in one loop scores close to zero, and less the longer it runs. Noise that never repeats scores zero. A run scores well only when it <mark className="hl">keeps finding new loops and stays in each for a while</mark>. The paper proposes this as one sign of open-ended evolution.
         </p>
       </section>
 
@@ -33,7 +25,7 @@ export function Guide() {
             The line under the chips says what each stop shows.
           </li>
           <li>
-            Watch the <strong>state raster</strong>: repeating texture means the network is in a loop. Under it, each bar
+            Watch the <strong>state raster</strong>. Repeating texture means the network is in a loop. Under it, each bar
             of the <strong>ribbon</strong> is one loop, and Ω is how much ink the bars add up to.
           </li>
           <li>Click a node in the network to flip it, and see whether the run falls into a different loop.</li>
@@ -49,15 +41,12 @@ export function Guide() {
         <dl className="guide-list">
           <dt>The network</dt>
           <dd>
-            The wiring itself. Filled nodes are ON, in the color of the loop the network is in; moving dots are changes traveling along wires. Hover a node to see its inputs. Click one to
-            flip it: a one-bit nudge. In a frozen network the nudge is absorbed; near the critical
-            regime it can knock the whole system into a different loop.
+            The wiring itself. Filled nodes are ON, in the color of the loop the network is in; moving dots are changes traveling along wires. Hover a node to see its inputs. Click one to flip it. In a frozen network the change dies out; near the critical regime it can move the whole network into a different loop.
           </dd>
           <dt>Rule tables (12 nodes or fewer)</dt>
           <dd>
             Every node&apos;s rule as a truth table: one row per combination of its inputs, and the bit it outputs next. The
-            row being read this step is highlighted. A greyed input is wired but never changes the output; the rule is
-            constant in it, and no data method could detect it. Under the non-classical mechanisms, rewritten entries are
+            row being read this step is highlighted. A greyed input is wired but never changes the output, so a method working only from data could not detect it. Under the non-classical mechanisms, rewritten entries are
             marked: C contradiction, ◇ possible, □ necessary, ? superposed, µ mutable.
           </dd>
           <dt>State raster</dt>
@@ -71,7 +60,7 @@ export function Guide() {
             The whole run as one ribbon. Each bar is one loop the network fell into: color says
             which loop (the term of art is <em>attractor</em>), width is time spent in it, height
             is the loop's length (on a linear scale, with very short loops drawn at a small minimum height), so a bar's area is its k·d contribution to Ω.{' '}
-            <mark className="hl">Ω is literally how much ink is on this chart.</mark> Arcs below the baseline mark returns to a loop seen before.
+            <mark className="hl">Ω is the total area of the bars divided by the run length squared.</mark> Arcs below the baseline mark returns to a loop seen before.
           </dd>
           <dt>Ω over time</dt>
           <dd>
@@ -107,9 +96,7 @@ export function Guide() {
           </p>
         </div>
         <p>
-          Freeze into one loop forever and Ω fades toward zero. Wander forever without looping and
-          Ω is zero too. Ω is only large when the network keeps finding new loops and living in
-          them.
+          A network that stays in one loop has Ω near zero, falling as the run gets longer. A network that never repeats has Ω of zero. Ω is large only when the network keeps finding new loops and stays in them.
         </p>
         <p>
           Runs are deterministic: the seed in the stats strip plus the parameter settings fully

@@ -240,8 +240,7 @@ export function ExperimentsView({ sim }: { sim: SimHandle }) {
         {series.length === 0 && !running && (
           <div className="sweep-start">
             <p>
-              This tab runs the paper&apos;s comparison: Ω against connectivity K, averaged over many random networks at each K,
-              for whichever mechanisms you pick. Load a reproduction computed ahead of time at the paper&apos;s scale, or pick
+              This tab compares mechanisms the way the paper does, plotting Ω against connectivity K, averaged over many random networks at each K. Load a reproduction computed ahead of time at the paper&apos;s scale, or pick
               mechanisms above and run a smaller sweep live in your browser.
             </p>
             <div className="sweep-start-actions">

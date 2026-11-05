@@ -57,7 +57,7 @@ export const PRESETS: Preset[] = [
     name: 'Tiny World',
     group: 'tour',
     blurb:
-      'Three nodes, eight possible states. Once all eight have been visited nothing is new, so the current episode never ends and Ω fades toward zero. A world too small to be open-ended.',
+      'Three nodes, eight possible states. Once all eight have been visited, nothing is new, so the current episode never ends and Ω falls toward zero. The network is too small to keep producing new states.',
     params: { ...BASE, n: 3, k: 2.0, numContexts: 3, switching: 0.05 },
     seed: 93,
   },
@@ -71,21 +71,21 @@ export const PRESETS: Preset[] = [
   {
     name: 'Edge of Chaos',
     group: 'tour',
-    blurb: 'Critical wiring (K≈2). Long, structured loops, but deterministic: once a loop is found it holds forever.',
+    blurb: 'Critical wiring (K≈2). The network settles into a long loop. The rules never change, so it stays in that loop forever.',
     params: classical({ k: 2.1 }),
     seed: 319,
   },
   {
     name: 'Deep Chaos',
     group: 'tour',
-    blurb: 'Dense wiring (K≈4). The run wanders a huge state space and rarely repeats: novelty without recurrence. Ω stays low.',
+    blurb: 'Dense wiring (K≈4). The run wanders a huge state space and rarely repeats, so there is novelty but almost no recurrence. Ω stays low.',
     params: classical({ k: 4.0 }),
     seed: 1,
   },
   {
     name: 'The Switcher',
     group: 'tour',
-    blurb: 'Critical wiring plus probabilistic context switching (PBN). Switches knock the run out of loops and it settles into others: the pattern Ω scores.',
+    blurb: 'Critical wiring plus probabilistic context switching (PBN). Each switch can knock the run out of its loop, and it settles into another. This is the behavior Ω is designed to score.',
     params: { ...BASE },
     seed: 98,
   },

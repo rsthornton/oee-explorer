@@ -80,7 +80,6 @@ function BasinField({ focus, onConnection }: PanelProps) {
   const [speed, setSpeed] = useState(6);
   const [readout, setReadout] = useState('');
   const basin = useRef<BasinHandle>(null);
-  const withSeed = (text: string) => setReadout(`${text} · seed ${seed}`);
 
   return (
     <section ref={panelRef} className={'panel landscape-panel' + (flash ? ' landscape-flash' : '')}>
@@ -117,7 +116,7 @@ function BasinField({ focus, onConnection }: PanelProps) {
         speed={speed}
         strip
         clickToStart
-        onReadout={withSeed}
+        onReadout={setReadout}
         handle={basin}
       />
       <p className="landscape-readout">{readout}</p>

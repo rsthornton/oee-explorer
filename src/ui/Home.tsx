@@ -24,7 +24,7 @@ const WAYS: { to: Destination; title: string; text: string }[] = [
   {
     to: 'instrument',
     title: 'Simulate',
-    text: 'Run a 100-node network live. Flip its switches, follow its loops, and watch Ω accumulate.',
+    text: 'Run a 100-node network. Flip a switch and see whether the run finds a new loop.',
   },
   {
     to: 'landscape',
@@ -34,7 +34,7 @@ const WAYS: { to: Destination; title: string; text: string }[] = [
   {
     to: 'research',
     title: 'Research',
-    text: 'The paper’s six mechanisms, its ensemble experiments, and where these dynamics meet current science.',
+    text: 'The six mechanisms the paper compares, its experiments, and related work in biology and machine learning.',
   },
 ];
 
@@ -50,9 +50,7 @@ export function Home({ onTour, onExplore, onGo }: HomeProps) {
           </p>
           <h1 className="home-title">Can a simple network keep surprising you?</h1>
           <p className="home-lead">
-            López-Díaz, Rivera Torres, Febres and Gershenson look for a signature of open-ended evolution in a model:
-            new states produced again and again, rather than quick settling or unstructured noise. They measure it with
-            one number, Ω.
+            López-Díaz, Rivera Torres, Febres and Gershenson propose a measure, Ω, for one sign of open-ended evolution in a model. A system scores when it keeps producing new states instead of settling down or turning into noise.
           </p>
           <ol className="home-beats">
             <li>
@@ -70,7 +68,7 @@ export function Home({ onTour, onExplore, onGo }: HomeProps) {
             <li>
               <span className="home-beat-num">3</span>
               <span>
-                <strong>Ω grows in between.</strong> A run that keeps entering new loops, and stays in each a while.
+                <strong>Ω grows in between.</strong> A run that keeps finding new loops and stays in each for a while.
               </span>
             </li>
           </ol>
@@ -83,7 +81,7 @@ export function Home({ onTour, onExplore, onGo }: HomeProps) {
             </button>
           </div>
           <p className="home-note">
-            Everything here runs live in your browser, on a port of the authors&apos; code checked against it.
+            The simulation runs in your browser. It is a port of the authors&apos; code and has been checked against it.
           </p>
         </div>
         <figure className="home-figure">
@@ -98,9 +96,7 @@ export function Home({ onTour, onExplore, onGo }: HomeProps) {
             />
           </div>
           <figcaption>
-            Every possible state of a 10-node network. Each dot points to the state that follows it, and every path ends
-            in a colored loop. The ringed token is a live run. Now and then the rules switch: the whole landscape
-            rearranges and the run lands in a new basin.
+            Every possible state of a 10-node network. Each dot has a line to the state that follows it, and every path ends in a colored loop. The ringed token is a live run. Every so often the rules switch. Each state then has a new successor, the basins regroup, and the run ends up in a different one.
           </figcaption>
         </figure>
       </section>

@@ -42,9 +42,9 @@ export const CONNECTIONS: Connection[] = [
     title: 'Cell types as attractors',
     evidence: 'direct',
     simulation:
-      'Every state in the basin field drains into one of a few loops. However the run starts, it ends up in one of a small number of repeating patterns.',
+      'Every state in the basin field drains into one of a few loops. Wherever the run starts, it ends up in one of a small number of repeating patterns.',
     research:
-      'This is where random Boolean networks began. Kauffman (1969) built random networks of on-off genes and proposed that their state cycles, the attractors, correspond to cell types: "It seems reasonable to identify one cell type with one state cycle."',
+      'Kauffman (1969) built random networks of on-off genes and proposed that their state cycles, the attractors, correspond to cell types: "It seems reasonable to identify one cell type with one state cycle."',
     notShown:
       'These networks are random, not models of any real genome. Ten switches give a handful of loops; nothing here predicts how many cell types an organism has.',
     show: { tab: 'landscape', panel: 'basin', seed: 826 },
@@ -60,7 +60,7 @@ export const CONNECTIONS: Connection[] = [
     title: 'Steering cell fate',
     evidence: 'direct',
     simulation:
-      'Click a dot in a different basin and the run is moved there; from then on it drains into a different loop. Changing the state, not the rules, is enough to change where the system ends up.',
+      'Click a dot in a different basin and the run is moved there; from then on it drains into a different loop. The rules stay the same; only the state changed.',
     research:
       'Gong and colleagues inferred a Boolean network model of normal human colon cell differentiation from single-cell data and used network control to pick three target genes (MYB, HDAC2 and FOXA2). Knocking them down together pushed three colorectal cancer cell lines toward a normal-like enterocyte state, in culture and in mouse xenografts. The authors note that their model, built from normal differentiation, is limited in predicting the state of cancer cells.',
     notShown:
@@ -80,7 +80,7 @@ export const CONNECTIONS: Connection[] = [
     simulation:
       'The curve beside the raster is this network\'s Derrida map: how much two states differ now, against how much they differ one step later. Where it runs below the diagonal, differences shrink; above it, they grow.',
     research:
-      'Derrida and Pomeau (1986) introduced the annealed approximation, which reduces the spread of differences in a Kauffman network to a one-dimensional map and predicts a critical connectivity of K = 2. For rules biased by p, their map is y(t+1) = 2p(1−p)[1 − (1 − y(t))^K]. Its slope at zero, 2p(1−p)K, is our reading of their equation; it equals 1 at the transition, which for unbiased rules (p = 1/2) is K = 2.',
+      'Derrida and Pomeau (1986) introduced the annealed approximation, which reduces the spread of differences in a Kauffman network to a one-dimensional map and predicts a critical connectivity of K = 2. For rules biased by p, their map is y(t+1) = 2p(1−p)[1 − (1 − y(t))^K]. Its slope at zero, 2p(1−p)K, is our derivation from their equation. It equals 1 at the transition, which for unbiased rules (p = 1/2) is K = 2.',
     notShown:
       'The approximation treats the wiring as redrawn every step. This view measures one fixed network, so its curve is noisier and its slope only near the prediction.',
     show: { tab: 'landscape', panel: 'damage', seed: 4242, k: 2 },
@@ -113,7 +113,7 @@ export const CONNECTIONS: Connection[] = [
     title: 'Are living networks critical?',
     evidence: 'tested',
     simulation:
-      'Drag K from 1 to 3 and watch the flipped bit die out, linger, or spread. The view lets you see each regime; it does not say which one real cells are in.',
+      'Drag K from 1 to 3 and watch the flipped bit die out, linger, or spread. The view shows each regime. It cannot tell you which one real cells are in.',
     research:
       'This is an open question, and two studies point different ways. Torres-Sosa, Huang and Aldana simulated the evolution of random Boolean networks selected both to keep their attractors and to gain new ones; populations moved toward the critical regime whatever regime they started in. Park and colleagues examined 72 Boolean models of real cell processes from the Cell Collective database. Perturbations usually died out over long times, and they conclude the models are ordered and far from the edge of chaos, even though the standard one-step Derrida measure places many of them near the critical value.',
     notShown:
@@ -135,7 +135,7 @@ export const CONNECTIONS: Connection[] = [
     title: 'The edge of chaos in machine learning',
     evidence: 'concept',
     simulation:
-      'Edge of Chaos sets the network near K = 2 (2.1). The raster settles into long, structured loops: neither the flat stripes of a frozen network nor the noise of a chaotic one.',
+      'Edge of Chaos sets the network near K = 2 (2.1). The raster settles into a long, structured loop. It has neither the flat stripes of a frozen network nor the noise of a chaotic one.',
     research:
       'Zhang and colleagues pretrained small language models on single elementary cellular automaton rules. Models trained on uniform or periodic rules did worse downstream, complex class IV rules did best on chess-move prediction, and some highly chaotic rules also gave weaker results. Separately, deep feedforward networks initialized at the order-chaos boundary are known to train to much greater depth; in a preprint, Bukva and colleagues find that for tanh networks this is necessary but not sufficient.',
     notShown:
@@ -157,7 +157,7 @@ export const CONNECTIONS: Connection[] = [
     title: 'Open-endedness as a design goal',
     evidence: 'concept',
     simulation:
-      'Switch context with auto-switch on and the run keeps landing in new basins and loops. Ω, on Simulate, is a score for that pattern: new loops that are found and then held.',
+      'Switch context with auto-switch on and the run keeps landing in new basins and loops. Ω, on Simulate, scores that pattern: new loops that are found and then held for a while.',
     research:
       'Ω is the paper\'s "finite-horizon recurrence diagnostic". It is zero for a single attractor and for pure novelty without recurrence. The authors position it as a guide for engineering evolvable synthetic circuits and propose, as future work, an "OEE controller" that tunes logic parameters to maximize Ω. Two other fields want this property. Hughes and colleagues at Google DeepMind define a system as open-ended if the artifacts it produces are novel and learnable to an observer, and argue that this is essential for artificial superhuman intelligence. Stock and Gorochowski propose open-ended biological design, valuing the novelty of a design at least as much as how well it meets its goal.',
     notShown:

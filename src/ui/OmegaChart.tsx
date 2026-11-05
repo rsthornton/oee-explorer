@@ -124,8 +124,8 @@ export function OmegaChart({ sim, captureTheme }: { sim: SimHandle; captureTheme
       <div className="panel-head">
         <span className="panel-title">Ω over time</span>
         <span className="panel-note">
-          the score accumulating as the run unfolds: it climbs when a new loop is found and held,
-          fades when nothing new recurs
+          Ω as the run goes on · it rises when the network finds a new loop and stays in it,
+          and falls when nothing new repeats
           {hover && (
             <strong>
               {' '}

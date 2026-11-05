@@ -14,7 +14,45 @@
           "cssWidth": 340,
           "cssHeight": 340,
           "top": 450,
-          "darkSamples": 1727
+          "darkSamples": 1510
+        },
+        {
+          "name": "raster-canvas",
+          "cssWidth": 706,
+          "cssHeight": 300,
+          "top": 433,
+          "darkSamples": 6189
+        },
+        {
+          "name": "ribbon-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 152,
+          "top": 850,
+          "darkSamples": 4713
+        },
+        {
+          "name": "chart-canvas",
+          "cssWidth": 1072,
+          "cssHeight": 132,
+          "top": 1032,
+          "darkSamples": 1012
+        }
+      ]
+    },
+    "1440x720": {
+      "innerWidth": 1440,
+      "innerHeight": 720,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false,
+      "networkTop": 450,
+      "networkVisiblePx": 270,
+      "canvases": [
+        {
+          "name": "network-canvas",
+          "cssWidth": 340,
+          "cssHeight": 340,
+          "top": 450,
+          "darkSamples": 1577
         },
         {
           "name": "raster-canvas",
@@ -39,44 +77,6 @@
         }
       ]
     },
-    "1440x720": {
-      "innerWidth": 1440,
-      "innerHeight": 720,
-      "scrollWidth": 1440,
-      "horizontalOverflow": false,
-      "networkTop": 450,
-      "networkVisiblePx": 270,
-      "canvases": [
-        {
-          "name": "network-canvas",
-          "cssWidth": 340,
-          "cssHeight": 340,
-          "top": 450,
-          "darkSamples": 1718
-        },
-        {
-          "name": "raster-canvas",
-          "cssWidth": 706,
-          "cssHeight": 300,
-          "top": 433,
-          "darkSamples": 6148
-        },
-        {
-          "name": "ribbon-canvas",
-          "cssWidth": 1072,
-          "cssHeight": 152,
-          "top": 850,
-          "darkSamples": 5055
-        },
-        {
-          "name": "chart-canvas",
-          "cssWidth": 1072,
-          "cssHeight": 132,
-          "top": 1032,
-          "darkSamples": 1002
-        }
-      ]
-    },
     "390x844": {
       "innerWidth": 390,
       "innerHeight": 844,
@@ -90,7 +90,7 @@
           "cssWidth": 358,
           "cssHeight": 358,
           "top": 304,
-          "darkSamples": 1537
+          "darkSamples": 1566
         },
         {
           "name": "raster-canvas",
@@ -103,14 +103,14 @@
           "name": "ribbon-canvas",
           "cssWidth": 358,
           "cssHeight": 152,
-          "top": 1590,
+          "top": 1609,
           "darkSamples": 1623
         },
         {
           "name": "chart-canvas",
           "cssWidth": 358,
           "cssHeight": 132,
-          "top": 1817,
+          "top": 1836,
           "darkSamples": 571
         }
       ]
@@ -132,28 +132,28 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 460,
-            "darkSamples": 494
+            "darkSamples": 501
           },
           {
             "name": "raster-canvas",
             "cssWidth": 694,
             "cssHeight": 300,
             "top": 443,
-            "darkSamples": 307
+            "darkSamples": 319
           },
           {
             "name": "ribbon-canvas",
             "cssWidth": 1072,
             "cssHeight": 152,
             "top": 861,
-            "darkSamples": 4335
+            "darkSamples": 4332
           },
           {
             "name": "chart-canvas",
             "cssWidth": 1072,
             "cssHeight": 132,
             "top": 1042,
-            "darkSamples": 1094
+            "darkSamples": 1087
           }
         ]
       }
@@ -214,7 +214,7 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 442,
-            "darkSamples": 1387
+            "darkSamples": 1405
           },
           {
             "name": "raster-canvas",
@@ -255,7 +255,7 @@
             "cssWidth": 340,
             "cssHeight": 340,
             "top": 450,
-            "darkSamples": 901
+            "darkSamples": 886
           },
           {
             "name": "raster-canvas",
@@ -284,17 +284,17 @@
   },
   "fps": {
     "medianFps": 60,
-    "frames": 602
+    "frames": 601
   },
   "resizeRepaint": {
     "before": [
       [
         "network-canvas",
-        2060
+        2311
       ],
       [
         "raster-canvas",
-        8612
+        8631
       ],
       [
         "ribbon-canvas",
@@ -302,17 +302,17 @@
       ],
       [
         "chart-canvas",
-        786
+        781
       ]
     ],
     "after": [
       [
         "network-canvas",
-        2264
+        2191
       ],
       [
         "raster-canvas",
-        8496
+        8500
       ],
       [
         "ribbon-canvas",
@@ -320,7 +320,7 @@
       ],
       [
         "chart-canvas",
-        734
+        732
       ]
     ],
     "allPainted": true
@@ -342,7 +342,7 @@
     },
     "390x844": {
       "overflow": false,
-      "ctaBottom": 723.4375,
+      "ctaBottom": 700.9375,
       "ctaAboveFold": true,
       "figurePainted": true,
       "stop1": "STOP 1 OF 5 Tiny World: novelty runs out in a world of eight states",

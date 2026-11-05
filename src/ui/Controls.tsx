@@ -126,13 +126,13 @@ export function Controls({
               </button>
             ) : (
               <p className="tour-card-body">
-                End of the tour. Change a slider, flip a node, or open the mechanisms under the fold to explore from here.
+                That is the end of the tour. From here, try a slider, flip a node, or open the mechanisms under the fold.
               </p>
             )}
           </>
         ) : (
           <p className="tour-card-body">
-            Start with Tiny World and follow the arrows: five stops, each one regime of the same kind of network.
+            Start with Tiny World and follow the arrows. Each of the five stops shows one regime of the same kind of network.
           </p>
         )}
       </div>
